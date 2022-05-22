@@ -14,7 +14,7 @@ const SocialLinks: NextPage = () => {
         [instagramLogo, "Instagram"],
       ].map(([logo, label]) => (
         <li
-          key={logo}
+          key={label}
           className="mr-6 flex items-center cursor-pointer hover:scale-110"
         >
           <Image src={logo} alt={label} width={25} height={25} />
