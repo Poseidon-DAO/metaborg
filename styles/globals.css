@@ -9,8 +9,13 @@
   --gray: #111111;
   --gray-secondary: #272626;
   --gray-text: #a1a1a1;
+  --transparent: transparent;
 }
 
 body {
   background-color: var(--black);
+}
+
+p {
+  font-size: 1.125rem;
 }

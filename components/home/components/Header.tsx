@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { AudioButton, HamburgerMenu, Logo } from "@metaborg/common";
+import { Navbar, SocialLinks } from "components/home/components";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-import { AudioButton, HamburgerMenu, Logo, SocialLinks } from "@metaborg";
-import { Navbar } from "@metaborg/Navbar";
-
-import type { NextPage } from "next";
 import type { Dispatch, SetStateAction } from "react";
+import type { NextPage } from "next";
 
 interface IHeaderProps {
   renderHero?: ({
@@ -35,6 +35,7 @@ const Header: NextPage<IHeaderProps> = ({ renderHero }) => {
           </div>
 
           <SocialLinks />
+          <ConnectButton />
           <HamburgerMenu />
         </div>
       </header>

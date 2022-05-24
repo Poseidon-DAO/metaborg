@@ -1,3 +1,5 @@
+import { ImageLinks, MBImage } from "@metaborg/common";
+
 import type { NextPage } from "next";
 
 interface IAudioButtonProps {
@@ -11,11 +13,8 @@ const AudioButton: NextPage<IAudioButtonProps> = ({
 }) => {
   return (
     <div className="w-6 cursor-pointer" onClick={toggleVideoSound}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={`https://metaborg.io/wp-content/uploads/2022/01/audio_${
-          videoSound ? "on" : "off"
-        }.png`}
+      <MBImage
+        src={videoSound ? ImageLinks.AudioOn : ImageLinks.AudioOff}
         alt="toggle audio"
       />
     </div>

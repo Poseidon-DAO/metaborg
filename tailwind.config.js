@@ -13,6 +13,7 @@ module.exports = {
       gray: "var(--gray)",
       graySecondary: "var(--gray-secondary)",
       grayText: "var(--gray-text)",
+      transparent: "var(--transparent)",
     },
   },
   plugins: [
