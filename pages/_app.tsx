@@ -1,50 +1,44 @@
-import "styles/globals.css";
-import "@rainbow-me/rainbowkit/styles.css";
+import Head from "next/head";
+import { MoralisProvider } from "react-moralis";
+import { MantineProvider } from "@mantine/core";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-import {
-  apiProvider,
-  configureChains,
-  getDefaultWallets,
-  lightTheme,
-  RainbowKitProvider,
-} from "@rainbow-me/rainbowkit";
-import { chain, createClient, WagmiConfig } from "wagmi";
+import { InitAppProvider } from "containers";
+import { theme, defaultProps } from "theme";
 
 import type { AppProps } from "next/app";
 
-const { chains, provider } = configureChains(
-  [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
-  [
-    apiProvider.infura(process.env.NEXT_PUBLIC_INFURA_ID),
-    apiProvider.fallback(),
-  ]
-);
-
-const { connectors } = getDefaultWallets({
-  appName: "Metaborg",
-  chains,
-});
-
-const client = createClient({
-  autoConnect: true,
-  connectors,
-  provider,
-});
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
-  console.log("id", process.env.NEXT_PUBLIC_INFURA_ID);
   return (
-    <WagmiConfig client={client}>
-      <RainbowKitProvider
-        chains={chains}
-        theme={lightTheme({
-          accentColor: "var(--red)",
-          borderRadius: "none",
-        })}
+    <>
+      <Head>
+        <title>Metaborg</title>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+      </Head>
+
+      <MoralisProvider
+        appId={process.env.NEXT_PUBLIC_APP_ID as string}
+        serverUrl={process.env.NEXT_PUBLIC_SERVER_URL as string}
       >
-        <Component {...pageProps} />;
-      </RainbowKitProvider>
-    </WagmiConfig>
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider
+            theme={theme}
+            defaultProps={defaultProps}
+            withGlobalStyles
+            withNormalizeCSS
+          >
+            <InitAppProvider>
+              <Component {...pageProps} />
+            </InitAppProvider>
+          </MantineProvider>
+        </QueryClientProvider>
+      </MoralisProvider>
+    </>
   );
 }
 

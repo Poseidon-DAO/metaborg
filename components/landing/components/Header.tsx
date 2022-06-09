@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { AudioButton, HamburgerMenu, Logo } from "@metaborg/common";
-import { Navbar, SocialLinks } from "components/home/components";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Navbar, SocialLinks } from "components/landing/components";
 
 import type { Dispatch, SetStateAction } from "react";
 import type { NextPage } from "next";
@@ -16,7 +15,7 @@ interface IHeaderProps {
   }) => JSX.Element;
 }
 
-const Header: NextPage<IHeaderProps> = ({ renderHero }) => {
+const LandingHeader: NextPage<IHeaderProps> = ({ renderHero }) => {
   const [videoSound, setVideoSound] = useState(false);
 
   const toggleVideoSound = () => setVideoSound((prevState) => !prevState);
@@ -35,7 +34,6 @@ const Header: NextPage<IHeaderProps> = ({ renderHero }) => {
           </div>
 
           <SocialLinks />
-          <ConnectButton />
           <HamburgerMenu />
         </div>
       </header>
@@ -45,4 +43,4 @@ const Header: NextPage<IHeaderProps> = ({ renderHero }) => {
   );
 };
 
-export { Header };
+export { LandingHeader };

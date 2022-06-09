@@ -1,17 +1,14 @@
-import { Header, Hero, JoinSection } from "components";
+import { DropShell } from "layout";
+import { Header, Footer } from "components/drop";
 
 import type { NextPage } from "next";
 
-const Home: NextPage = () => {
+const Drop: NextPage = () => {
   return (
-    <div className="overflow-x-hidden">
-      <Header
-        renderHero={({ videoSound }) => <Hero videoSound={videoSound} />}
-      />
-
-      <JoinSection />
-    </div>
+    <DropShell header={<Header />} footer={<Footer />}>
+      <div></div>
+    </DropShell>
   );
 };
 
-export default Home;
+export default Drop;
