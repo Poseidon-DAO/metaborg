@@ -1,21 +1,22 @@
 import { type NextPage } from "next";
 import { useMoralis } from "react-moralis";
-import { Flex, Box, Text } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
 
-import { ConnectWallet } from "components/drop/connect-wallet";
 import { AccountInfo } from "components/drop/account-info";
-import { PageContainer } from "components/common";
+import { Logo, PageContainer } from "components/common";
 
 const Header: NextPage = () => {
   const { isAuthenticated } = useMoralis();
 
   return (
-    <Box borderBottom="1px solid" borderColor="brand.border">
+    <Box py={4} borderBottom="2px solid" borderColor="brand.red">
       <PageContainer>
-        <Flex align="center" justify="space-between" py={4}>
-          <Text fontSize="4xl">Metaborg</Text>
+        <Flex align="center" justify="space-between">
+          <Box>
+            <Logo />
+          </Box>
 
-          <Box>{isAuthenticated ? <AccountInfo /> : <ConnectWallet />}</Box>
+          <Box>{isAuthenticated && <AccountInfo />}</Box>
         </Flex>
       </PageContainer>
     </Box>

@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { useMoralis } from "react-moralis";
-import { Button } from "@chakra-ui/react";
-// import { Wallet } from "tabler-icons-react";
-
-import { ConnectModal } from "components/drop/ConnectModal";
+import { Box, Button } from "@chakra-ui/react";
+import { ConnectModal } from "components/drop/connect-modal";
 
 import type { NextPage } from "next";
 
@@ -19,13 +16,13 @@ const ConnectWallet: NextPage = () => {
   }
 
   return (
-    <>
-      <Button variant="outline" onClick={onModalOpen}>
+    <Box>
+      <Button onClick={onModalOpen} size="xl">
         Connect Wallet
       </Button>
 
       {opened && <ConnectModal onClose={onModalClose} />}
-    </>
+    </Box>
   );
 };
 

@@ -1,7 +1,14 @@
 import { extendTheme, type ThemeOverride } from "@chakra-ui/react";
 
-import { colors, fonts, fontSizes, fontWeights, config } from "./foundations";
-import { Button } from "./components";
+import {
+  colors,
+  fonts,
+  fontSizes,
+  fontWeights,
+  config,
+  global,
+} from "./foundations";
+import { Button, Modal } from "./components";
 
 const theme: ThemeOverride = extendTheme({
   colors,
@@ -9,9 +16,8 @@ const theme: ThemeOverride = extendTheme({
   fontSizes,
   fontWeights,
   config,
-  components: {
-    Button,
-  },
+  styles: { global },
+  components: { Button, Modal },
 });
 
 export { theme };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@chakra-ui/react";
 import { useMoralis } from "react-moralis";
 
-import { DisconnectModal } from "components/drop/DisconnectModal";
+import { DisconnectModal } from "components/drop/disconnect-modal";
 
 import type { NextPage } from "next";
 

@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { type NextPage } from "next";
 import {
   Modal,
   ModalOverlay,
@@ -11,6 +10,8 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useMoralis } from "react-moralis";
+
+import type { NextPage } from "next";
 
 import metamaskIcon from "public/assets/metamask.png";
 import walletConnectIcon from "public/assets/walletconnect.svg";

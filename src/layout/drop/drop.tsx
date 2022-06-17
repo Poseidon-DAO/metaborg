@@ -9,9 +9,11 @@ interface IDropLayoutProps {
 
 const DropLayout: NextPage<IDropLayoutProps> = ({ children }) => {
   return (
-    <Box>
+    <Box position="relative">
       <PageContainer>
-        <Box minH="100vh">{children}</Box>
+        <Box minH="80vh" py={32}>
+          {children}
+        </Box>
       </PageContainer>
     </Box>
   );
