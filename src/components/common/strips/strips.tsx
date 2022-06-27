@@ -21,7 +21,7 @@ const bordersForPosition: Record<Position, { left: string; right: string }> = {
 
 const Strips: NextPage<IStripsProps> = ({ position = "top" }) => {
   return (
-    <Flex w="80%" justify="space-between" margin="0 auto">
+    <Flex w="85%" margin="0 auto">
       <Box
         borderWidth={bordersForPosition[position].left}
         borderStyle="dashed"

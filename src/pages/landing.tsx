@@ -1,16 +1,11 @@
 import { type NextPage } from "next";
 import { LandingLayout } from "layout/landing";
-import {
-  Hero,
-  Issue1Section,
-  JoinSection,
-  LandingHeader,
-} from "components/landing";
+import { Hero, Issue1Section, JoinSection, Header } from "components/landing";
 
 const Landing: NextPage = () => {
   return (
     <LandingLayout>
-      <LandingHeader
+      <Header
         renderHero={({ videoSound }) => <Hero videoSound={videoSound} />}
       />
       <JoinSection />

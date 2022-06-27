@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
 
 import { Header } from "components/drop/header";
-import { Footer } from "components/drop/footer";
 
 interface IHeaderProviderProps {
   children: ReactNode;
@@ -16,11 +15,11 @@ const navigationForRoute: Record<
 > = {
   "/": {
     header: <Header />,
-    footer: <Footer />,
+    footer: null,
   },
   "/landing": {
-    header: <div style={{ background: "red" }}>HEADER 2</div>,
-    footer: <div>FOOTER 2</div>,
+    header: null,
+    footer: null,
   },
 };
 

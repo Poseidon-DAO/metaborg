@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import { useMoralis } from "react-moralis";
-import { Flex, Box } from "@chakra-ui/react";
+import { Flex, Box, Spacer } from "@chakra-ui/react";
 
 import { AccountInfo } from "components/drop/account-info";
 import { Logo, PageContainer } from "components/common";

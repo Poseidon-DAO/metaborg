@@ -8,6 +8,11 @@ const Button = {
       fontSize: "3xl",
       px: "62px",
     },
+    lg: {
+      h: "76px",
+      fontSize: "2xl",
+      px: "42px",
+    },
   },
   variants: {
     outline: {

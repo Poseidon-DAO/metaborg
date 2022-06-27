@@ -6,47 +6,56 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  Flex,
   Box,
+  Center,
+  Grid,
+  GridItem,
+  Text,
+  useToast,
 } from "@chakra-ui/react";
 import { useMoralis } from "react-moralis";
+import { Image } from "components/common";
+import { getDefaultToastConfig } from "utils/toast-utils";
 
 import type { NextPage } from "next";
 
-import metamaskIcon from "public/assets/metamask.png";
-import walletConnectIcon from "public/assets/walletconnect.svg";
+import metamaskLogo from "../../../../public/assets/metamask-logo.png";
+import niftyLogo from "../../../../public/assets/nifty-logo.png";
 
 interface IConnectModalProps {
   onClose?: () => void;
 }
 
 const ConnectModal: NextPage<IConnectModalProps> = ({ onClose, ...props }) => {
-  const { query, push } = useRouter();
-  const { isAuthenticated, authenticate, logout } = useMoralis();
+  const toast = useToast();
+  const { isAuthenticated, authenticate, enableWeb3 } = useMoralis();
 
-  async function connectWallet({
-    type,
-  }: {
-    type: "metamask" | "walletconnect";
-  }) {
+  async function connectMetamask() {
     if (isAuthenticated) return;
 
+    if (typeof window.ethereum === "undefined") {
+      return toast(
+        getDefaultToastConfig({
+          icon: (
+            <Image
+              width={30}
+              height={30}
+              src={metamaskLogo}
+              alt="metamask logo"
+              priority
+            />
+          ),
+        })
+      );
+    }
+
     try {
-      const user = await authenticate({
-        provider: type,
+      await authenticate({
+        provider: "metamask",
         signingMessage: "Log in with Metaborg",
-        mobileLinks: [
-          "rainbow",
-          "metamask",
-          "argent",
-          "trust",
-          "imtoken",
-          "pillar",
-        ],
       });
 
-      console.log("logged in user:", user);
-      console.log(user!.get("ethAddress"));
+      enableWeb3();
     } catch (error) {
       console.log(error);
     }
@@ -56,7 +65,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose, ...props }) => {
     const niftyGatewayUrl = new URL("https://niftygateway.com/authorize");
 
     niftyGatewayUrl.searchParams.append("scope", "profile:read");
-    niftyGatewayUrl.searchParams.append("response_type", "code");
+    niftyGatewayUrl.searchParams.append("response_type", "token");
     niftyGatewayUrl.searchParams.append(
       "client_id",
       process.env.NEXT_PUBLIC_NG_CLIENT_ID as string
@@ -66,32 +75,60 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose, ...props }) => {
       process.env.NEXT_PUBLIC_NG_REDIRECT_URI as string
     );
 
-    window.open(niftyGatewayUrl.href, "_blank");
-  }
-
-  async function onLogout() {
-    await logout();
-    console.log("logged out");
+    window.location.replace(niftyGatewayUrl.href);
   }
 
   function onModalClose() {
     if (onClose) onClose();
   }
 
-  console.log("vigan query ", query);
-
   return (
-    <Modal isOpen size="2xl" onClose={onModalClose}>
+    <Modal isOpen onClose={onModalClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Connect a Wallet</ModalHeader>
         <ModalCloseButton borderRadius={50} />
 
-        <ModalBody>
-          <Flex justify="space-between" align="center" border={"1px solid red"}>
-            <Box flexGrow={1}>Nifty Gateway</Box>
-            <Box flexGrow={1}>MetaMask</Box>
-          </Flex>
+        <ModalBody pb={8}>
+          <Grid
+            templateColumns="1fr auto 1fr"
+            columnGap={2}
+            css={{ "& > div": { cursor: "pointer" } }}
+          >
+            <GridItem onClick={connectNiftyGateway}>
+              <Center py={4} px={2}>
+                <Image
+                  width={100}
+                  height={100}
+                  src={niftyLogo}
+                  alt="nifty gateway logo"
+                  priority
+                />
+              </Center>
+
+              <Text textAlign="center">
+                Connect with <br />
+                Nifty Gateway
+              </Text>
+            </GridItem>
+
+            <Box h="100%" w="1px" bg="brand.red"></Box>
+
+            <GridItem onClick={() => connectMetamask()}>
+              <Center py={4} px={2}>
+                <Image
+                  width={100}
+                  height={100}
+                  src={metamaskLogo}
+                  alt="metamask logo"
+                  priority
+                />
+              </Center>
+              <Text textAlign="center">
+                Connect with <br /> Metamask
+              </Text>
+            </GridItem>
+          </Grid>
         </ModalBody>
       </ModalContent>
     </Modal>
@@ -99,35 +136,3 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose, ...props }) => {
 };
 
 export { ConnectModal };
-
-{
-  /* <Center>
-<Text variant="h3">Connect a wallet</Text>
-</Center>
-
-<Stack>
-<Box>
-  <Button
-    color="green"
-    onClick={() => connectWallet({ type: "metamask" })}
-  >
-    Connect Metamask
-  </Button>
-</Box>
-
-<Box>
-  <Button
-    color="green"
-    onClick={() => connectWallet({ type: "walletconnect" })}
-  >
-    Connect WalletConnect
-  </Button>
-</Box>
-
-<Box>
-  <Button color="green" onClick={connectNiftyGateway}>
-    Connect Nifty Gateway
-  </Button>
-</Box>
-</Stack> */
-}

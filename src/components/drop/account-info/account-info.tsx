@@ -1,14 +1,22 @@
-import { useState } from "react";
-import { Button } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
+import { Box, Button, Flex } from "@chakra-ui/react";
+import { Icon } from "@chakra-ui/icons";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 import { DisconnectModal } from "components/drop/disconnect-modal";
+import { formatPublicKey } from "utils/account-utils";
 
 import type { NextPage } from "next";
 
 const AccountInfo: NextPage = () => {
   const [opened, setOpened] = useState(false);
-  const { user } = useMoralis();
+  const [balance, setBalance] = useState("0");
+  const { user, account, web3 } = useMoralis();
+
+  function onModalOpen() {
+    setOpened(true);
+  }
 
   function onModalClose() {
     setOpened(false);
@@ -16,15 +24,16 @@ const AccountInfo: NextPage = () => {
 
   return (
     <>
-      <Button
-        variant="outline"
-        onClick={() => setOpened(true)}
-        // leftIcon={<Wallet />}
-      >
-        Account Info: {user?.get("ethAddress")}
-      </Button>
+      <Flex justifyContent="flex-end">
+        <Button
+          rightIcon={<Icon as={MdKeyboardArrowDown} w={10} h={10} />}
+          onClick={onModalOpen}
+        >
+          {formatPublicKey(user?.get("ethAddress"))}
+        </Button>
 
-      {opened && <DisconnectModal onClose={onModalClose} />}
+        {opened && <DisconnectModal opened={opened} onClose={onModalClose} />}
+      </Flex>
     </>
   );
 };
