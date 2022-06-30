@@ -17,7 +17,7 @@ const ConnectWallet: NextPage = () => {
 
   return (
     <Box>
-      <Button onClick={onModalOpen} size="xl">
+      <Button onClick={onModalOpen} size={["lg", "xl"]}>
         Connect Wallet
       </Button>
 

@@ -3,15 +3,20 @@ const Button = {
     fontWeight: "bold",
   },
   sizes: {
-    xl: {
-      h: "96px",
-      fontSize: "3xl",
-      px: "62px",
+    sm: {
+      h: "40px",
+      fontSize: "sm",
+      px: "14px",
     },
     lg: {
       h: "76px",
       fontSize: "2xl",
       px: "42px",
+    },
+    xl: {
+      h: "96px",
+      fontSize: "3xl",
+      px: "62px",
     },
   },
   variants: {

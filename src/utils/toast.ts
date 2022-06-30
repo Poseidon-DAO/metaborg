@@ -7,7 +7,7 @@ function getDefaultToastConfig(params?: UseToastOptions): UseToastOptions {
     status: "error",
     duration: 2000,
     isClosable: true,
-    variant: "left-accent",
+    variant: "solid",
     ...params,
   };
 }

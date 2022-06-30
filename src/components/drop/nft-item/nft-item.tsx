@@ -67,29 +67,41 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
 
   return (
     <Box mb={20}>
-      <Flex justifyContent="space-between" mb={10}>
-        <Box w={"45%"} minH={400} pos="relative">
+      <Flex
+        direction={["column", "row"]}
+        justifyContent="space-between"
+        mb={10}
+      >
+        <Box w={["full", "45%"]} minH={[300, 400]} pos="relative">
           <img src={imageForEdition[name].src} alt={`${name} nft`} />
         </Box>
 
         <Flex
-          w="45%"
+          w={["full", "45%"]}
+          mt={[4]}
           flexDir="column"
           justifyContent="space-around"
           alignItems="center"
           textAlign="center"
         >
-          <Heading size="lg">
-            Congratulations <br />
-            You have collected <br /> &quot;{name}&quot;
-          </Heading>
+          <Box>
+            <Heading size={["md", "lg"]}>
+              Congratulations <br />
+              You have collected <br /> &quot;{name}&quot;
+            </Heading>
 
-          <Heading size="lg">
-            NOW <br /> you can mint your <br /> NFT Metaborg Manga <br /> Issue
-            #01
-          </Heading>
+            <Heading mt={[4]} size={["md", "lg"]}>
+              NOW <br /> you can mint your <br /> NFT Metaborg Manga <br />{" "}
+              Issue #01
+            </Heading>
+          </Box>
 
-          <Button size="lg" onClick={onMintClick} disabled={!availableMints}>
+          <Button
+            mt={[4]}
+            size={["md", "lg"]}
+            onClick={onMintClick}
+            disabled={!availableMints}
+          >
             MINT NOW
           </Button>
         </Flex>

@@ -21,8 +21,8 @@ const EditionItem: NextPage<IEditionItemProps> = ({
   cover,
 }) => {
   return (
-    <Box width="30%">
-      <Box textAlign="center">
+    <Box width={["100%", "30%"]} my={4}>
+      <Box textAlign={["left", "center"]} mb={[4]}>
         <Heading size="xs">
           {no} - {editionType}
         </Heading>
@@ -32,20 +32,20 @@ const EditionItem: NextPage<IEditionItemProps> = ({
         <Text>{format === "image" ? "Still image" : "Video loop"}</Text>
       </Box>
 
-      <Flex alignItems="center" minH={500}>
+      <Flex alignItems="center" minH={[300, 500]}>
         <Box
           w="100%"
           pos="relative"
           border="2px solid"
           borderColor="brand.red"
-          my={8}
+          my={[0, 8]}
         >
           <img src={cover} alt={`${name} edition image`} />
         </Box>
       </Flex>
 
       <Box fontWeight="bold">
-        <Box my={4}>
+        <Box my={[2, 4]}>
           <Heading size="sm" my={2}>
             BENEFITS
           </Heading>
@@ -76,6 +76,14 @@ const EditionItem: NextPage<IEditionItemProps> = ({
           })}
         </OrderedList>
       </Box>
+
+      <Box
+        display={["block", "none"]}
+        w="full"
+        h="2px"
+        bg="brand.red"
+        mt={4}
+      ></Box>
     </Box>
   );
 };

@@ -11,7 +11,7 @@ const DropLayout: NextPage<IDropLayoutProps> = ({ children }) => {
   return (
     <Box position="relative">
       <PageContainer>
-        <Box minH="80vh" py={32}>
+        <Box minH={["60vh", "80vh"]} py={[8, 32]}>
           {children}
         </Box>
       </PageContainer>

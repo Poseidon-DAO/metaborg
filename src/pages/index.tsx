@@ -54,12 +54,12 @@ const Drop: NextPage = () => {
       {!isAuthenticated && (
         <Container my={10} centerContent>
           <Box maxW="xl">
-            <Heading textAlign="center" size="2xl">
+            <Heading textAlign="center" size={["xl", "2xl"]}>
               Welcome fighter collector, let us verify your enrollment
             </Heading>
           </Box>
 
-          <Box my={8}>
+          <Box my={[4, 8]}>
             <Strips />
             <ConnectWallet />
           </Box>
@@ -72,7 +72,7 @@ const Drop: NextPage = () => {
         </Box>
       )}
 
-      <Box mt={40}>
+      <Box mt={[16, 40]}>
         <Editions />
       </Box>
     </DropLayout>

@@ -52,11 +52,11 @@ const DisconnectModal: NextPage<IDisconnectModalProps> = ({
     <Box>
       <Modal isOpen={opened} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent p={[0, 2]} w="85%">
           <ModalCloseButton borderRadius={50} />
           <ModalBody my={4}>
-            <Box textAlign="center" mb={4}>
-              <Avatar mb={2} size="xl" bg="brand.red" />
+            <Box textAlign="center" mb={[2, 4]}>
+              <Avatar mb={[2, 4]} size={["lg", "xl"]} bg="brand.red" />
 
               <Text size="lg" fontWeight="bold">
                 {formatPublicKey(account)}
@@ -64,12 +64,12 @@ const DisconnectModal: NextPage<IDisconnectModalProps> = ({
             </Box>
 
             <Flex justifyContent="space-between">
-              <Button w="48%" flexDir="column" onClick={onCopy}>
-                <Icon as={MdContentCopy} w={4} h={4} mb={1} />
+              <Button w="48%" h={"55px"} flexDir="column" onClick={onCopy}>
+                <Icon as={MdContentCopy} w={[3, 4]} h={[3, 4]} mb={1} />
                 <Text fontSize="md">Copy Address</Text>
               </Button>
 
-              <Button w="48%" flexDir="column" onClick={logout}>
+              <Button w="48%" h={"55px"} flexDir="column" onClick={logout}>
                 <Icon as={MdLogout} w={4} h={4} mb={1} />
                 <Text fontSize="md">Disconnect</Text>
               </Button>

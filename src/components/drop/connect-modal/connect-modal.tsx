@@ -11,6 +11,8 @@ import {
   GridItem,
   Text,
   useToast,
+  useMediaQuery,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { useMoralis } from "react-moralis";
 import { Image } from "components/common";
@@ -27,6 +29,7 @@ interface IConnectModalProps {
 }
 
 const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
+  const imageSize = useBreakpointValue({ base: 70, lg: 100 });
   const toast = useToast();
   const { isAuthenticated, authenticate } = useMoralis();
 
@@ -71,7 +74,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
   return (
     <Modal isOpen onClose={onModalClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent w="85%">
         <ModalHeader>Sign in</ModalHeader>
         <ModalCloseButton borderRadius={50} />
 
@@ -84,8 +87,8 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
             <GridItem onClick={onNiftyGatewayConnect}>
               <Center py={4} px={2}>
                 <Image
-                  width={100}
-                  height={100}
+                  width={imageSize}
+                  height={imageSize}
                   src={niftyLogo}
                   alt="nifty gateway logo"
                   priority
@@ -103,8 +106,8 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
             <GridItem onClick={onMetamaskConnect}>
               <Center py={4} px={2}>
                 <Image
-                  width={100}
-                  height={100}
+                  width={imageSize}
+                  height={imageSize}
                   src={metamaskLogo}
                   alt="metamask logo"
                   priority

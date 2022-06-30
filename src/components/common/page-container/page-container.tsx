@@ -7,7 +7,7 @@ interface IPageContainerProps {
 }
 
 const PageContainer: NextPage<IPageContainerProps> = ({ children }) => {
-  return <Container maxW="container.lg">{children}</Container>;
+  return <Container maxW={["90%", "container.lg"]}>{children}</Container>;
 };
 
 export { PageContainer };

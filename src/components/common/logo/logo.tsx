@@ -6,7 +6,7 @@ import logo from "../../../../public/assets/logo.png";
 
 const Logo: NextPage = () => {
   return (
-    <Box w={200} h={100} position={"relative"}>
+    <Box w={[100, 200]} h={[50, 100]} position={"relative"}>
       <Image src={logo} alt="logo" layout="fill" objectFit="contain" priority />
     </Box>
   );
