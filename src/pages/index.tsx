@@ -1,61 +1,53 @@
+import { useRouter } from "next/router";
 import { useMoralis } from "react-moralis";
-import { DropLayout } from "layout/drop";
 import { Box, Container, Heading } from "@chakra-ui/react";
+import { useQuery } from "react-query";
+
+import { DropLayout } from "layout/drop";
 import { Strips } from "components/common";
 import { ConnectWallet, NftsList, Editions } from "components/drop";
 
-import aloneEdition from "../../public/assets/editions/Alone.jpg";
-import alwaysEdition from "../../public/assets/editions/Always.jpg";
+import { fetchMyNiftyProfile, key as profileKey } from "lib/api/nifty-me";
+import { fetchNifties, key as niftiesKey } from "lib/api/nifty-nfts";
+import { NiftiesApiResponse, NiftyUser } from "lib/api/types";
 
 import { type NextPage } from "next";
-import { useRouter } from "next/router";
-
-const nftsMock = [
-  {
-    contractAddress: "0x8c167a1dbf8e19d18705382d6a457491589f9598",
-    tokenId: "33400030081",
-    name: "YOU RESPECTED ME #81/100",
-    image: aloneEdition.src,
-    creator: {
-      username: "billelis",
-      name: "Billelis",
-      profilePicUrl:
-        "https://res.cloudinary.com/nifty-gateway/image/upload/v1606249630/aekrzlaq22zxnyvairbo.jpg",
-    },
-    owner: {
-      username: "tommy",
-      name: "tommyk.eth",
-      profilePicUrl:
-        "https://res.cloudinary.com/nifty-gateway/image/upload/v1625617848/uiflc4iaky3k6hh8nrqh.png",
-    },
-  },
-  {
-    contractAddress: "0xc92ceddfb8dd984a89fb494c376f9a48b999aafc",
-    tokenId: "3152",
-    name: "Creature #3152",
-    image: alwaysEdition.src,
-    creator: {
-      username: "creatureworld",
-      name: "Creature World",
-      profilePicUrl:
-        "https://res.cloudinary.com/nifty-gateway/image/upload/v1630692687/wtalars9l78kggjfqeqt.jpg",
-    },
-    owner: {
-      username: "tommy",
-      name: "tommyk.eth",
-      profilePicUrl:
-        "https://res.cloudinary.com/nifty-gateway/image/upload/v1625617848/uiflc4iaky3k6hh8nrqh.png",
-    },
-  },
-];
+import { useEffect } from "react";
 
 const Drop: NextPage = () => {
-  const { query, push } = useRouter();
-  const { isAuthenticated } = useMoralis();
+  const { asPath } = useRouter();
+  const [, fragment] = asPath.split("#");
+  const token = !!fragment
+    ? new URLSearchParams(fragment).get("access_token")
+    : "";
 
-  console.log("vigan query", {
-    query,
-  });
+  const { isAuthenticated, enableWeb3 } = useMoralis();
+
+  const { data: userData } = useQuery<NiftyUser>(
+    profileKey,
+    () => fetchMyNiftyProfile({ token: token! }),
+    {
+      enabled: !!fragment && !!token,
+    }
+  );
+  const { data: nifties } = useQuery<NiftiesApiResponse>(
+    niftiesKey,
+    () =>
+      fetchNifties({
+        token: token!,
+        username: userData?.username!,
+        contractAddress: "123123",
+      }),
+    {
+      enabled: !!userData?.username,
+    }
+  );
+
+  useEffect(() => {
+    enableWeb3();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <DropLayout>
@@ -74,9 +66,9 @@ const Drop: NextPage = () => {
         </Container>
       )}
 
-      {isAuthenticated && (
+      {userData?.username && !!nifties?.results.length && (
         <Box mt={10} mb={20}>
-          <NftsList nfts={nftsMock} />
+          <NftsList nifties={nifties.results} />
         </Box>
       )}
 

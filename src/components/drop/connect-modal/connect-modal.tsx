@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import {
   Modal,
   ModalOverlay,
@@ -15,7 +14,8 @@ import {
 } from "@chakra-ui/react";
 import { useMoralis } from "react-moralis";
 import { Image } from "components/common";
-import { getDefaultToastConfig } from "utils/toast-utils";
+import { getDefaultToastConfig } from "utils/toast";
+import { getNiftyRedirectUrl } from "utils/url-query-params";
 
 import type { NextPage } from "next";
 
@@ -26,11 +26,11 @@ interface IConnectModalProps {
   onClose?: () => void;
 }
 
-const ConnectModal: NextPage<IConnectModalProps> = ({ onClose, ...props }) => {
+const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
   const toast = useToast();
-  const { isAuthenticated, authenticate, enableWeb3 } = useMoralis();
+  const { isAuthenticated, authenticate } = useMoralis();
 
-  async function connectMetamask() {
+  async function onMetamaskConnect() {
     if (isAuthenticated) return;
 
     if (typeof window.ethereum === "undefined") {
@@ -54,27 +54,13 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose, ...props }) => {
         provider: "metamask",
         signingMessage: "Log in with Metaborg",
       });
-
-      enableWeb3();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
-  async function connectNiftyGateway() {
-    const niftyGatewayUrl = new URL("https://niftygateway.com/authorize");
-
-    niftyGatewayUrl.searchParams.append("scope", "profile:read");
-    niftyGatewayUrl.searchParams.append("response_type", "token");
-    niftyGatewayUrl.searchParams.append(
-      "client_id",
-      process.env.NEXT_PUBLIC_NG_CLIENT_ID as string
-    );
-    niftyGatewayUrl.searchParams.append(
-      "redirect_uri",
-      process.env.NEXT_PUBLIC_NG_REDIRECT_URI as string
-    );
-
+  async function onNiftyGatewayConnect() {
+    const niftyGatewayUrl = getNiftyRedirectUrl();
     window.location.replace(niftyGatewayUrl.href);
   }
 
@@ -86,7 +72,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose, ...props }) => {
     <Modal isOpen onClose={onModalClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Connect a Wallet</ModalHeader>
+        <ModalHeader>Sign in</ModalHeader>
         <ModalCloseButton borderRadius={50} />
 
         <ModalBody pb={8}>
@@ -95,7 +81,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose, ...props }) => {
             columnGap={2}
             css={{ "& > div": { cursor: "pointer" } }}
           >
-            <GridItem onClick={connectNiftyGateway}>
+            <GridItem onClick={onNiftyGatewayConnect}>
               <Center py={4} px={2}>
                 <Image
                   width={100}
@@ -114,7 +100,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose, ...props }) => {
 
             <Box h="100%" w="1px" bg="brand.red"></Box>
 
-            <GridItem onClick={() => connectMetamask()}>
+            <GridItem onClick={onMetamaskConnect}>
               <Center py={4} px={2}>
                 <Image
                   width={100}

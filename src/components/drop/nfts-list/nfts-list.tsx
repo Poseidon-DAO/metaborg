@@ -1,18 +1,26 @@
 import { Box } from "@chakra-ui/react";
 import { NextPage } from "next";
 
-import { NftItem } from "../nft-item";
-import type { INftItemProps } from "../nft-item";
+import { useDistributionMetadata } from "lib/hooks";
+import { useStore } from "store/store";
+import { NftItem } from "components/drop/nft-item";
+
+import type { Nifty } from "lib/api/types";
 
 interface INftsListProps {
-  nfts: INftItemProps[];
+  nifties: Nifty[];
 }
 
-const NftsList: NextPage<INftsListProps> = ({ nfts }) => {
+const NftsList: NextPage<INftsListProps> = ({ nifties }) => {
+  const setPrice = useStore((state) => state.setDistributionPrice);
+  const { formatedPrice } = useDistributionMetadata({
+    onSuccess: () => setPrice(formatedPrice),
+  });
+
   return (
     <Box>
-      {nfts.map((nft) => (
-        <NftItem key={nft.tokenId} {...nft} />
+      {nifties.map((nifty) => (
+        <NftItem key={nifty.tokenId} {...nifty} />
       ))}
     </Box>
   );

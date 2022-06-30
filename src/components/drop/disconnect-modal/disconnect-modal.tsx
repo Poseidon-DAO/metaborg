@@ -17,8 +17,8 @@ import {
 } from "@chakra-ui/react";
 import { MdLogout, MdContentCopy } from "react-icons/md";
 
-import { getDefaultToastConfig } from "utils/toast-utils";
-import { formatPublicKey } from "utils/account-utils";
+import { getDefaultToastConfig } from "utils/toast";
+import { formatPublicKey } from "utils/account";
 
 import type { NextPage } from "next";
 interface IDisconnectModalProps {

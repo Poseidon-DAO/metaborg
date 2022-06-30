@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMoralis } from "react-moralis";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icons";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
 import { DisconnectModal } from "components/drop/disconnect-modal";
-import { formatPublicKey } from "utils/account-utils";
+import { formatPublicKey } from "utils/account";
 
 import type { NextPage } from "next";
 

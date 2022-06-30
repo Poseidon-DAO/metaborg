@@ -24,18 +24,18 @@ const navigationForRoute: Record<
 };
 
 const HeaderProvider: NextPage<IHeaderProviderProps> = ({ children }) => {
-  const { asPath } = useRouter();
+  const { pathname } = useRouter();
 
   return (
     <Box>
       {/* header */}
-      {navigationForRoute[asPath] && navigationForRoute[asPath].header}
+      {navigationForRoute[pathname] && navigationForRoute[pathname].header}
 
       {/* content */}
       {children}
 
       {/* footer */}
-      {navigationForRoute[asPath] && navigationForRoute[asPath].footer}
+      {navigationForRoute[pathname] && navigationForRoute[pathname].footer}
     </Box>
   );
 };

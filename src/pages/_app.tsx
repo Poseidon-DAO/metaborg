@@ -1,15 +1,31 @@
+import { useEffect, useState } from "react";
 import Head from "next/head";
-import { type AppProps } from "next/app";
 import { MoralisProvider } from "react-moralis";
 import { ChakraProvider } from "@chakra-ui/react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 
 import { HeaderProvider } from "layout/header-provider";
 import { theme } from "theme";
 
+import { type AppProps } from "next/app";
+
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  if (typeof window === "undefined") {
+    return <></>;
+  }
+
   return (
     <>
       <Head>
@@ -20,15 +36,17 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
       <MoralisProvider
-        appId={process.env.NEXT_PUBLIC_APP_ID as string}
-        serverUrl={process.env.NEXT_PUBLIC_SERVER_URL as string}
+        appId={process.env.NEXT_PUBLIC_APP_ID!}
+        serverUrl={process.env.NEXT_PUBLIC_SERVER_URL!}
       >
         <QueryClientProvider client={queryClient}>
-          <ChakraProvider theme={theme}>
-            <HeaderProvider>
-              <Component {...pageProps} />
-            </HeaderProvider>
-          </ChakraProvider>
+          <Hydrate state={pageProps.dehydratedState}>
+            <ChakraProvider theme={theme}>
+              <HeaderProvider>
+                <Component {...pageProps} />
+              </HeaderProvider>
+            </ChakraProvider>
+          </Hydrate>
         </QueryClientProvider>
       </MoralisProvider>
     </>
