@@ -1,5 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import { Box, Button, Flex, Heading, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Tooltip,
+  useToast,
+} from "@chakra-ui/react";
 import { Image, Line } from "components/common";
 import { Nifty, NiftyNames } from "lib/api/types";
 import { useStore } from "store/store";
@@ -33,6 +40,9 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
   });
   const { fetch } = useMint({ salePrice: distributionPrice });
   const toast = useToast();
+  const tooltipMessage =
+    (!isAuthenticated && "Connect Metamask to mint!") ||
+    (!availableMints && "No available mints for this account!");
 
   async function onMintClick() {
     if (!isAuthenticated)
@@ -96,14 +106,23 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
             </Heading>
           </Box>
 
-          <Button
-            mt={[4]}
-            size={["md", "lg"]}
-            onClick={onMintClick}
-            disabled={!availableMints}
+          <Tooltip
+            label={tooltipMessage}
+            isDisabled={isAuthenticated && !!availableMints}
+            placement="bottom"
+            shouldWrapChildren
+            hasArrow
+            top={2}
           >
-            MINT NOW
-          </Button>
+            <Button
+              mt={[4]}
+              size={["md", "lg"]}
+              onClick={onMintClick}
+              disabled={!isAuthenticated || !availableMints}
+            >
+              MINT NOW
+            </Button>
+          </Tooltip>
         </Flex>
       </Flex>
 

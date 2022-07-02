@@ -6,4 +6,3 @@ export * from "./join-section";
 export * from "./logo";
 export * from "./navbar";
 export * from "./roadmap";
-export * from "./social-links";

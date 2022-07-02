@@ -5,7 +5,12 @@ import { useQuery } from "react-query";
 
 import { DropLayout } from "layout/drop";
 import { Strips } from "components/common";
-import { ConnectWallet, NftsList, Editions } from "components/drop";
+import {
+  ConnectWallet,
+  NftsList,
+  Editions,
+  MintedNFTsList,
+} from "components/drop";
 
 import { fetchMyNiftyProfile, key as profileKey } from "lib/api/nifty-me";
 import { fetchNifties, key as niftiesKey } from "lib/api/nifty-nfts";
@@ -22,7 +27,6 @@ const Drop: NextPage = () => {
     : "";
 
   const { isAuthenticated, enableWeb3 } = useMoralis();
-
   const { data: userData } = useQuery<NiftyUser>(
     profileKey,
     () => fetchMyNiftyProfile({ token: token! }),
@@ -43,6 +47,8 @@ const Drop: NextPage = () => {
     }
   );
 
+  const showAuthButton = !isAuthenticated || !userData?.username;
+
   useEffect(() => {
     enableWeb3();
 
@@ -51,7 +57,7 @@ const Drop: NextPage = () => {
 
   return (
     <DropLayout>
-      {!isAuthenticated && (
+      {showAuthButton && (
         <Container my={10} centerContent>
           <Box maxW="xl">
             <Heading textAlign="center" size={["xl", "2xl"]}>
@@ -66,9 +72,15 @@ const Drop: NextPage = () => {
         </Container>
       )}
 
-      {userData?.username && !!nifties?.results.length && (
-        <Box mt={10} mb={20}>
+      {userData?.username && !!nifties?.results && (
+        <Box mt={40} mb={20}>
           <NftsList nifties={nifties.results} />
+        </Box>
+      )}
+
+      {isAuthenticated && (
+        <Box mt={40} mb={20}>
+          <MintedNFTsList nfts={[{ id: 1 }]} />
         </Box>
       )}
 

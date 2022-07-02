@@ -57,6 +57,8 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
         provider: "metamask",
         signingMessage: "Log in with Metaborg",
       });
+
+      onModalClose();
     } catch (error) {
       console.error(error);
     }
@@ -75,7 +77,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
     <Modal isOpen onClose={onModalClose}>
       <ModalOverlay />
       <ModalContent w="85%">
-        <ModalHeader>Sign in</ModalHeader>
+        <ModalHeader>Connect</ModalHeader>
         <ModalCloseButton borderRadius={50} />
 
         <ModalBody pb={8}>

@@ -1,7 +1,6 @@
 import { useWeb3ExecuteFunction } from "react-moralis";
 
 import MetaborgABI from "contracts/abis/Metaborg.json";
-import { metaborgAddress } from "contracts/addresses/metaborg";
 import { useEffect } from "react";
 
 interface IUseAvailableMintsProps {
@@ -15,19 +14,21 @@ function useAvailableMints({
 }: IUseAvailableMintsProps) {
   const { fetch, data, isFetching, isLoading, error } = useWeb3ExecuteFunction({
     abi: MetaborgABI,
-    contractAddress: metaborgAddress,
+    contractAddress: process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS,
     functionName: "getAvailableMints",
     params: { _mangaDistributionID, _address },
   });
 
   useEffect(() => {
-    fetch();
+    if (_mangaDistributionID && _address) {
+      fetch();
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [_mangaDistributionID, _address]);
 
   return {
-    availableMints: data ? (data as object).toString() : "",
+    availableMints: data ? Number((data as object).toString()) : "",
     isFetching,
     isLoading,
     error,

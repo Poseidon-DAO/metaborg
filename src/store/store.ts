@@ -1,12 +1,12 @@
 import create from "zustand";
 
 interface StateObject {
-  distributionPrice: number | string;
+  distributionPrice: number;
   setDistributionPrice: (distributionPrice: number) => void;
 }
 
 export const useStore = create<StateObject>((set) => ({
-  distributionPrice: "",
+  distributionPrice: 0,
   setDistributionPrice: (distributionPrice) => {
     set(() => ({ distributionPrice }));
   },
