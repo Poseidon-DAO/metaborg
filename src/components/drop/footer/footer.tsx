@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-import { type NextPage } from "next";
 import { Box, Flex, Text } from "@chakra-ui/react";
+
 import { Line, PageContainer, SocialLinks } from "components/common";
+
+import { type NextPage } from "next";
 
 import signature from "../../../../public/assets/signature.png";
 

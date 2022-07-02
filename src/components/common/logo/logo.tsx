@@ -1,6 +1,7 @@
-import { type NextPage } from "next";
-import { Image } from "components/common";
 import { Box } from "@chakra-ui/react";
+import { Image } from "components/common";
+
+import type { NextPage } from "next";
 
 import logo from "../../../../public/assets/logo.png";
 

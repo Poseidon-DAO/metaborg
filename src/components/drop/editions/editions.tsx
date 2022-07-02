@@ -1,6 +1,9 @@
 import { Flex } from "@chakra-ui/react";
-import { NextPage } from "next";
-import { EditionItem } from "../edition-item";
+
+import { EditionItem } from "components/drop/edition-item";
+
+import type { NextPage } from "next";
+
 import { EDITIONS_DATA } from "./data";
 
 const Editions: NextPage = () => {

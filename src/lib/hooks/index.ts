@@ -1,2 +1,3 @@
-export * from "./use-distribution-price";
+export * from "./use-available-mints";
+export * from "./use-distribution-meta-data";
 export * from "./use-mint";

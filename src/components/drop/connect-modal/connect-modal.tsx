@@ -1,3 +1,4 @@
+import { useMoralis } from "react-moralis";
 import {
   Modal,
   ModalOverlay,
@@ -11,10 +12,12 @@ import {
   GridItem,
   Text,
   useToast,
-  useMediaQuery,
   useBreakpointValue,
+  IconButton,
+  Tooltip,
 } from "@chakra-ui/react";
-import { useMoralis } from "react-moralis";
+
+import { useStore } from "store/store";
 import { Image } from "components/common";
 import { getDefaultToastConfig } from "utils/toast";
 import { getNiftyRedirectUrl } from "utils/url-query-params";
@@ -29,7 +32,9 @@ interface IConnectModalProps {
 }
 
 const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
-  const imageSize = useBreakpointValue({ base: 70, lg: 100 });
+  const token = useStore((state) => state.token);
+  const metamaskImageSize = useBreakpointValue({ base: 70, lg: 100 });
+  const niftyImageSize = useBreakpointValue({ base: 70, lg: 80 });
   const toast = useToast();
   const { isAuthenticated, authenticate } = useMoralis();
 
@@ -81,24 +86,37 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
         <ModalCloseButton borderRadius={50} />
 
         <ModalBody pb={8}>
-          <Grid
-            templateColumns="1fr auto 1fr"
-            columnGap={2}
-            css={{ "& > div": { cursor: "pointer" } }}
-          >
+          <Grid templateColumns="1fr auto 1fr" columnGap={2}>
             <GridItem onClick={onNiftyGatewayConnect}>
               <Center py={4} px={2}>
-                <Image
-                  width={imageSize}
-                  height={imageSize}
-                  src={niftyLogo}
-                  alt="nifty gateway logo"
-                  priority
-                />
+                <Tooltip
+                  label="Already signed in with Nifty Gateway"
+                  isDisabled={!token}
+                  placement="top-end"
+                  shouldWrapChildren
+                  hasArrow
+                >
+                  <IconButton
+                    w={120}
+                    h={120}
+                    variant="ghost"
+                    aria-label="Nifty gateway"
+                    disabled={!!token}
+                    icon={
+                      <Image
+                        width={niftyImageSize}
+                        height={niftyImageSize}
+                        src={niftyLogo}
+                        alt="nifty gateway logo"
+                        priority
+                      />
+                    }
+                  />
+                </Tooltip>
               </Center>
 
               <Text textAlign="center">
-                Connect with <br />
+                Sign in with <br />
                 Nifty Gateway
               </Text>
             </GridItem>
@@ -107,13 +125,30 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
 
             <GridItem onClick={onMetamaskConnect}>
               <Center py={4} px={2}>
-                <Image
-                  width={imageSize}
-                  height={imageSize}
-                  src={metamaskLogo}
-                  alt="metamask logo"
-                  priority
-                />
+                <Tooltip
+                  label="Already connected with Metamask"
+                  isDisabled={!isAuthenticated}
+                  placement="top-start"
+                  shouldWrapChildren
+                  hasArrow
+                >
+                  <IconButton
+                    w={120}
+                    h={120}
+                    variant="ghost"
+                    aria-label="Metamask"
+                    disabled={isAuthenticated}
+                    icon={
+                      <Image
+                        width={metamaskImageSize}
+                        height={metamaskImageSize}
+                        src={metamaskLogo}
+                        alt="metamask logo"
+                        priority
+                      />
+                    }
+                  />
+                </Tooltip>
               </Center>
               <Text textAlign="center">
                 Connect with <br /> Metamask

@@ -3,7 +3,7 @@ import { Box, Button, Flex, Text } from "@chakra-ui/react";
 
 import { Image, ImageLinks } from "components/common";
 
-import { type NextPage } from "next";
+import type { NextPage } from "next";
 
 const JoinSection: NextPage = () => {
   return (

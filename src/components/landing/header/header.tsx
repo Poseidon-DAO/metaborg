@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 
-import { AudioButton, Logo, Navbar, SocialLinks } from "components/landing";
+import { AudioButton, Logo, Navbar } from "components/landing";
+import { SocialLinks } from "components/common";
 
 import type { NextPage } from "next";
 

@@ -1,11 +1,11 @@
-import { type ReactNode } from "react";
-import { type NextPage } from "next";
 import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
 
 import { Header } from "components/drop/header";
 import { Footer } from "components/drop/footer";
 
+import { type ReactNode } from "react";
+import { type NextPage } from "next";
 interface IHeaderProviderProps {
   children: ReactNode;
 }

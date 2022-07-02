@@ -8,12 +8,13 @@ import {
   Text,
   UnorderedList,
 } from "@chakra-ui/react";
-import { Image } from "components/common";
-import { NextPage } from "next";
-import { EditionItem as IEditionItemProps } from "../editions/edition-utils";
+
+import { EditionItem as IEditionItemProps } from "components/drop/editions/edition-utils";
+
+import type { NextPage } from "next";
 
 const EditionItem: NextPage<IEditionItemProps> = ({
-  no,
+  editionNr,
   name,
   editionType,
   format,
@@ -24,7 +25,7 @@ const EditionItem: NextPage<IEditionItemProps> = ({
     <Box width={["100%", "30%"]} my={4}>
       <Box textAlign={["left", "center"]} mb={[4]}>
         <Heading size="xs">
-          {no} - {editionType}
+          {editionNr} - {editionType}
         </Heading>
         <Heading size="sm" mt={4}>
           &quot;{name}&quot;
@@ -56,18 +57,25 @@ const EditionItem: NextPage<IEditionItemProps> = ({
           </Text>
         </Box>
 
-        <OrderedList listStyleType="none" ml={0}>
+        <OrderedList>
           {Object.values(benefits || {}).map(({ main, subs }, index) => {
             return (
               <Box key={`${main}-${index}`}>
-                <ListItem fontSize="xs">
-                  {index + 1} - {main}
-                </ListItem>
+                <ListItem fontSize="xs">{main}</ListItem>
 
-                <UnorderedList listStyleType="none">
+                <UnorderedList
+                  listStyleType="none"
+                  css={{
+                    ">li:before": {
+                      content: '"-"',
+                      position: "absolute",
+                      marginLeft: -10,
+                    },
+                  }}
+                >
                   {subs.map((sub) => (
                     <ListItem key={sub} fontSize="xs">
-                      - {sub}
+                      {sub}
                     </ListItem>
                   ))}
                 </UnorderedList>

@@ -1,8 +1,9 @@
-import { type ReactNode } from "react";
-import { type NextPage } from "next";
 import { Box } from "@chakra-ui/react";
+
 import { PageContainer } from "components/common";
 
+import { type ReactNode } from "react";
+import { type NextPage } from "next";
 interface IDropLayoutProps {
   children?: ReactNode;
 }

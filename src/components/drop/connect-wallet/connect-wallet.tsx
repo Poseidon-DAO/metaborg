@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Box, Button } from "@chakra-ui/react";
+
 import { ConnectModal } from "components/drop/connect-modal";
 
 import type { NextPage } from "next";
@@ -18,7 +19,7 @@ const ConnectWallet: NextPage = () => {
   return (
     <Box>
       <Button onClick={onModalOpen} size={["lg", "xl"]}>
-        Get Started
+        Connect
       </Button>
 
       {opened && <ConnectModal onClose={onModalClose} />}

@@ -1,4 +1,5 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
+
 import { Image, ImageLinks } from "components/common";
 
 import type { NextPage } from "next";

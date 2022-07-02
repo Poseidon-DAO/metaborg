@@ -1,4 +1,5 @@
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+
 import { Line } from "components/common";
 
 const EmptyNifties = () => {

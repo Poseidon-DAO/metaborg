@@ -1,4 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
+import { StaticImageData } from "next/image";
+import { useMoralis } from "react-moralis";
 import {
   Box,
   Button,
@@ -7,21 +9,20 @@ import {
   Tooltip,
   useToast,
 } from "@chakra-ui/react";
+
+import { useStore } from "store/store";
 import { Image, Line } from "components/common";
 import { Nifty, NiftyNames } from "lib/api/types";
-import { useStore } from "store/store";
+import { useDistributionMetadata, useMint } from "lib/hooks";
+import { useAvailableMints } from "lib/hooks/use-available-mints";
+import { getDefaultToastConfig } from "utils/toast";
 
 import type { NextPage } from "next";
-import { StaticImageData } from "next/image";
-import { useMoralis } from "react-moralis";
-import { getDefaultToastConfig } from "utils/toast";
 
 import aloneImage from "../../../../public/assets/editions/Alone.jpg";
 import alwaysImage from "../../../../public/assets/editions/Always.jpg";
 import neverNextImage from "../../../../public/assets/editions/Never_Next.png";
 import metamaskLogo from "../../../../public/assets/metamask-logo.png";
-import { useMint } from "lib/hooks";
-import { useAvailableMints } from "lib/hooks/use-available-mints";
 
 export interface INftItemProps extends Nifty {}
 
@@ -32,13 +33,25 @@ const imageForEdition: Record<NiftyNames, StaticImageData> = {
 };
 
 const NftItem: NextPage<INftItemProps> = ({ name }) => {
-  const distributionPrice = useStore((state) => state.distributionPrice);
+  const distributionPrice = useStore(
+    (state) => state.distributionMetaData.formatedData.price
+  );
+  const setDistributionMetaData = useStore(
+    (state) => state.setDistributionMetaData
+  );
   const { isAuthenticated, user } = useMoralis();
   const { availableMints } = useAvailableMints({
     _mangaDistributionID: "1",
     _address: user?.get("ethAddress"),
   });
-  const { fetch } = useMint({ salePrice: distributionPrice });
+  const { fetch, data } = useMint({ salePrice: distributionPrice });
+
+  useDistributionMetadata({
+    onSuccess: (data) => setDistributionMetaData(data),
+    enabled: !!data,
+    deps: [data],
+  });
+
   const toast = useToast();
   const tooltipMessage =
     (!isAuthenticated && "Connect Metamask to mint!") ||
@@ -66,11 +79,18 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
         toast(
           getDefaultToastConfig({
             title: "You have successfully minted the NFT",
+            status: "success",
           })
         );
       },
       onError: (error) => {
-        console.error("Error", error);
+        console.error(error);
+        toast(
+          getDefaultToastConfig({
+            title: "There was an error with NFT minting",
+            status: "error",
+          })
+        );
       },
     });
   }

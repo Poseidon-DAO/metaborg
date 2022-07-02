@@ -1,7 +1,7 @@
 export type Edition = "NEVER NEXT" | "ALWAYS" | "ALONE";
 
 export interface EditionItem {
-  no: number;
+  editionNr: number;
   name: Edition;
   editionType: string;
   format: "video" | "image";

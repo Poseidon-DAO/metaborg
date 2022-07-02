@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useMoralis } from "react-moralis";
+import { MdKeyboardArrowDown } from "react-icons/md";
 import { Button, Flex } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icons";
-import { MdKeyboardArrowDown } from "react-icons/md";
 
 import { DisconnectModal } from "components/drop/disconnect-modal";
 import { formatPublicKey } from "utils/account";
@@ -11,8 +11,7 @@ import type { NextPage } from "next";
 
 const AccountInfo: NextPage = () => {
   const [opened, setOpened] = useState(false);
-  const [balance, setBalance] = useState("0");
-  const { user, account, web3 } = useMoralis();
+  const { user } = useMoralis();
 
   function onModalOpen() {
     setOpened(true);

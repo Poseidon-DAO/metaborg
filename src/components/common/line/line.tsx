@@ -12,7 +12,7 @@ interface ILineProps {
 }
 
 const Line: NextPage<ILineProps> = ({
-  width = "100vw",
+  width = "calc(100vw - 16px)",
   height = "2px",
   color = "red",
   top = "unset",

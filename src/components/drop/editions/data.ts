@@ -6,7 +6,7 @@ import neverNextEdition from "../../../../public/assets/editions/Never_Next.png"
 
 export const EDITIONS_DATA: EditionItem[] = [
   {
-    no: 1,
+    editionNr: 1,
     name: "NEVER NEXT",
     editionType: "Ranked Auction",
     format: "video",
@@ -27,7 +27,7 @@ export const EDITIONS_DATA: EditionItem[] = [
     },
   },
   {
-    no: 2,
+    editionNr: 2,
     name: "ALWAYS",
     editionType: "Limited Edition",
     format: "video",
@@ -40,7 +40,7 @@ export const EDITIONS_DATA: EditionItem[] = [
     },
   },
   {
-    no: 3,
+    editionNr: 3,
     name: "ALONE",
     editionType: "Open Edition",
     format: "image",

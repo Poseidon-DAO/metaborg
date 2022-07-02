@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMoralis } from "react-moralis";
 import { Box, Container, Heading } from "@chakra-ui/react";
 import { useQuery } from "react-query";
 
+import { useStore } from "store/store";
 import { DropLayout } from "layout/drop";
 import { Strips } from "components/common";
 import {
@@ -11,27 +13,39 @@ import {
   Editions,
   MintedNFTsList,
 } from "components/drop";
-
 import { fetchMyNiftyProfile, key as profileKey } from "lib/api/nifty-me";
 import { fetchNifties, key as niftiesKey } from "lib/api/nifty-nfts";
 import { NiftiesApiResponse, NiftyUser } from "lib/api/types";
+import { useDistributionMetadata } from "lib/hooks";
 
 import { type NextPage } from "next";
-import { useEffect } from "react";
 
 const Drop: NextPage = () => {
   const { asPath } = useRouter();
   const [, fragment] = asPath.split("#");
+  const setToken = useStore((state) => state.setToken);
+  const setDistributionMetaData = useStore(
+    (state) => state.setDistributionMetaData
+  );
+
   const token = !!fragment
     ? new URLSearchParams(fragment).get("access_token")
     : "";
 
-  const { isAuthenticated, enableWeb3 } = useMoralis();
+  const { isAuthenticated, enableWeb3, isWeb3Enabled } = useMoralis();
+
+  useEffect(() => {
+    enableWeb3();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const { data: userData } = useQuery<NiftyUser>(
     profileKey,
     () => fetchMyNiftyProfile({ token: token! }),
     {
       enabled: !!fragment && !!token,
+      onSuccess: () => setToken(token!),
     }
   );
   const { data: nifties } = useQuery<NiftiesApiResponse>(
@@ -47,13 +61,13 @@ const Drop: NextPage = () => {
     }
   );
 
+  useDistributionMetadata({
+    onSuccess: (data) => setDistributionMetaData(data),
+    enabled: isAuthenticated && isWeb3Enabled,
+    deps: [isAuthenticated, isWeb3Enabled],
+  });
+
   const showAuthButton = !isAuthenticated || !userData?.username;
-
-  useEffect(() => {
-    enableWeb3();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <DropLayout>
@@ -80,7 +94,10 @@ const Drop: NextPage = () => {
 
       {isAuthenticated && (
         <Box mt={40} mb={20}>
-          <MintedNFTsList nfts={[{ id: 1 }]} />
+          <MintedNFTsList
+            nfts={[{ id: 1 }]}
+            showTopLine={!nifties?.results.length}
+          />
         </Box>
       )}
 
