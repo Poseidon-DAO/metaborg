@@ -25,8 +25,8 @@ const AccountInfo: NextPage = () => {
     <>
       <Flex justifyContent="flex-end">
         <Button
-          size={["sm", "lg"]}
-          rightIcon={<Icon as={MdKeyboardArrowDown} w={[5, 10]} h={[5, 10]} />}
+          size={["sm", "md"]}
+          rightIcon={<Icon as={MdKeyboardArrowDown} w={[5, 7]} h={[5, 7]} />}
           onClick={onModalOpen}
         >
           {formatPublicKey(user?.get("ethAddress"))}

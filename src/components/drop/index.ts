@@ -1,4 +1,5 @@
 export * from "./account-info";
+export * from "./connect-metamask";
 export * from "./connect-modal";
 export * from "./connect-wallet";
 export * from "./disconnect-modal";
@@ -7,6 +8,6 @@ export * from "./editions";
 export * from "./empty-nifties";
 export * from "./footer";
 export * from "./header";
-export * from "./minted-nfts-list";
+export * from "./manga-list";
 export * from "./nft-item";
 export * from "./nfts-list";

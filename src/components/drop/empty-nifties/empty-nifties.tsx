@@ -5,11 +5,7 @@ import { Line } from "components/common";
 const EmptyNifties = () => {
   return (
     <Flex flexDir="column" alignItems="center">
-      <Box mb={60}>
-        <Line />
-      </Box>
-
-      <Heading size="lg" textAlign="center">
+      <Heading mt={20} size="lg" textAlign="center">
         You haven&apos;t collected any NFTs in the Nifty Drop! <br /> Visit
         Nifty Gateway and join the drop now.
       </Heading>

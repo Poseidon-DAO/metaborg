@@ -15,16 +15,26 @@ const NftsList: NextPage<INftsListProps> = ({ nifties }) => {
     return <EmptyNifties />;
   }
 
+  const tokenIds = nifties.map((nfts) => nfts.tokenId);
+  const filteredByTokenId = nifties.filter(
+    (nifty, index) => !tokenIds.includes(nifty.tokenId, index + 1)
+  );
+
+  const filteredByName = filteredByTokenId.filter((nft) =>
+    ["ALWAYS", "ALONE", "NEVER NEXT"].includes(nft.name)
+  );
+
   return (
     <Box>
       <Heading
-        mb={12}
+        mb={20}
         textDecoration="underline"
         textDecorationColor="brand.red"
       >
         Nifty Drop NFTs
       </Heading>
-      {nifties.map((nifty) => (
+
+      {filteredByName.map((nifty) => (
         <NftItem key={nifty.tokenId} {...nifty} />
       ))}
     </Box>

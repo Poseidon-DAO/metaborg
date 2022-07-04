@@ -5,6 +5,7 @@ import { AccountInfo } from "components/drop/account-info";
 import { Logo, PageContainer } from "components/common";
 
 import type { NextPage } from "next";
+import { ConnectMetamask } from "../connect-metamask";
 
 const Header: NextPage = () => {
   const { isAuthenticated } = useMoralis();
@@ -17,7 +18,7 @@ const Header: NextPage = () => {
             <Logo />
           </Box>
 
-          <Box>{isAuthenticated && <AccountInfo />}</Box>
+          <Box>{isAuthenticated ? <AccountInfo /> : <ConnectMetamask />}</Box>
         </Flex>
       </PageContainer>
     </Box>
