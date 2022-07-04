@@ -11,17 +11,19 @@ import { NftsList, Editions, MangaList } from "components/drop";
 import { fetchMyNiftyProfile, key as profileKey } from "lib/api/nifty-me";
 import { fetchNifties, key as niftiesKey } from "lib/api/nifty-nfts";
 import { NiftiesApiResponse, NiftyUser } from "lib/api/types";
-import { useDistributionMetadata } from "lib/hooks";
+import { useContractNFTs, useDistributionMetadata } from "lib/hooks";
 import { getNiftyRedirectUrl } from "utils/url-query-params";
+import { shapeNftsToNiftyApi } from "utils/nfts";
 
 import { type NextPage } from "next";
-import { useNFTs } from "lib/hooks/use-nfts";
-import { shapeNftsToNiftyApi } from "utils/nfts";
+
+const niftyContractAddress = process.env.NEXT_PUBLIC_NG_CONTRACT_ADDRESS;
+const metaborgContractAddress =
+  process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS;
 
 const Drop: NextPage = () => {
   const { asPath } = useRouter();
   const [, fragment] = asPath.split("#");
-  const niftyContractAddress = process.env.NEXT_PUBLIC_NG_CONTRACT_ADDRESS;
 
   const setToken = useStore((state) => state.setToken);
   const setDistributionMetaData = useStore(
@@ -32,7 +34,7 @@ const Drop: NextPage = () => {
     ? new URLSearchParams(fragment).get("access_token")
     : "";
 
-  const { isAuthenticated, enableWeb3, isWeb3Enabled } = useMoralis();
+  const { isAuthenticated, enableWeb3, isWeb3Enabled, user } = useMoralis();
 
   useEffect(() => {
     enableWeb3();
@@ -70,20 +72,18 @@ const Drop: NextPage = () => {
     deps: [isAuthenticated, isWeb3Enabled],
   });
 
-  // get nifty nfts
-  const { data } = useNFTs({
-    address: niftyContractAddress,
+  const { data: niftySmartContractNFTs } = useContractNFTs({
+    contractAddress: niftyContractAddress!,
     enabled: isLoggedInWithNifty,
     deps: [isLoggedInWithNifty],
   });
 
-  // get smart contract nfts
-  const { data: metamaskNfts } = useNFTs({
+  const { data: metaborgSmartContractNFTs } = useContractNFTs({
+    contractAddress: metaborgContractAddress!,
+    address: user?.get("ethAddress"),
     enabled: isAuthenticated && isWeb3Enabled,
     deps: [isAuthenticated, isWeb3Enabled],
   });
-
-  console.log("vigan metamask nfts", metamaskNfts);
 
   async function onNiftyGatewayConnect() {
     const niftyGatewayUrl = getNiftyRedirectUrl();
@@ -92,8 +92,12 @@ const Drop: NextPage = () => {
 
   const nftsToShow = [
     ...(nifties?.results || []),
-    ...(shapeNftsToNiftyApi(data?.result) || []),
+    ...(shapeNftsToNiftyApi(niftySmartContractNFTs?.result) || []),
   ];
+
+  const showPdfReader = !!(metaborgSmartContractNFTs?.result || []).filter(
+    (nft) => ["1", "2", "3"].includes(nft.token_id)
+  ).length;
 
   return (
     <DropLayout>
@@ -120,7 +124,7 @@ const Drop: NextPage = () => {
         </Box>
       )}
 
-      {isAuthenticated && !!metamaskNfts?.result?.length && (
+      {isAuthenticated && showPdfReader && (
         <Box mt={40} mb={20}>
           <MangaList showTopLine={!nftsToShow.length} />
         </Box>

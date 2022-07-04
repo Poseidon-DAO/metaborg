@@ -9,6 +9,7 @@ import {
   Tabs,
   Text,
   IconButton,
+  Heading,
 } from "@chakra-ui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -31,7 +32,7 @@ interface IMintedNFTsListProps {
 }
 
 const MangaList: NextPage<IMintedNFTsListProps> = ({ showTopLine }) => {
-  const [, setNumPages] = useState<number | null>(null);
+  const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
 
   const distributionMetaData = useStore((state) => state.distributionMetaData);
@@ -65,8 +66,6 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({ showTopLine }) => {
   }
 
   const currentTabIndex = tabs.findIndex((tab) => tab.supply > 0);
-
-  console.log({ currentTabIndex });
 
   return (
     <Flex flexDir="column">
@@ -119,7 +118,7 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({ showTopLine }) => {
                     icon={<ChevronLeftIcon w={14} h={14} />}
                     onClick={() => setPageNumber((prevPage) => prevPage - 1)}
                   />
-                  <Box height={800} margin="1em 0">
+                  <Box height={900} margin="1em 0">
                     <Document
                       options={options}
                       file={pdfFile}
@@ -135,6 +134,10 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({ showTopLine }) => {
                     onClick={() => setPageNumber((prevPage) => prevPage + 1)}
                   />
                 </Flex>
+
+                <Heading size="md" textAlign="center">
+                  {pageNumber} / {numPages}
+                </Heading>
               </TabPanel>
             );
           })}

@@ -5,24 +5,35 @@ import {
   useMoralisWeb3ApiCall,
 } from "react-moralis";
 
-interface IUseNFTsProps {
+interface IUseContractNFTsProps {
   address?: string;
+  contractAddress: string;
   deps?: any[];
   enabled?: boolean;
 }
 
-function useNFTs({ address, deps = undefined, enabled = true }: IUseNFTsProps) {
-  const { user, Moralis } = useMoralis();
+function useContractNFTs({
+  contractAddress,
+  address,
+  deps,
+  enabled,
+}: IUseContractNFTsProps) {
+  const { Moralis } = useMoralis();
+
   const chainId = {
     4: Moralis.Chains.ETH_RINKBEY,
     1: Moralis.Chains.ETH_MAINET,
   }[process.env.NEXT_PUBLIC_CHAIN_ID!];
 
   const Web3Api = useMoralisWeb3Api();
-  const { fetch, ...result } = useMoralisWeb3ApiCall(Web3Api.account.getNFTs, {
-    chain: chainId,
-    address: address || user?.get("ethAddress"),
-  });
+  const { fetch, ...result } = useMoralisWeb3ApiCall(
+    Web3Api.account.getNFTsForContract,
+    {
+      chain: chainId,
+      token_address: contractAddress,
+      address: address || "",
+    }
+  );
 
   const dependencies = [...(deps || []), enabled];
 
@@ -35,8 +46,6 @@ function useNFTs({ address, deps = undefined, enabled = true }: IUseNFTsProps) {
   }, dependencies);
 
   return result;
-
-  // 0xCD9B7C63f1C8318c2A510415fefd5d1c6eC71DBb
 }
 
-export { useNFTs };
+export { useContractNFTs };

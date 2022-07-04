@@ -47,7 +47,10 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
   const { fetch, data } = useMint({ salePrice: distributionPrice });
 
   useDistributionMetadata({
-    onSuccess: (data) => setDistributionMetaData(data),
+    onSuccess: (data) => {
+      console.log("success", data);
+      setDistributionMetaData(data);
+    },
     enabled: !!data,
     deps: [data],
   });

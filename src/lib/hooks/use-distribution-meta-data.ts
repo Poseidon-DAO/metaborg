@@ -27,7 +27,10 @@ function useDistributionMetadata({
     abi: MetaborgABI,
     contractAddress: process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS,
     functionName: "getDistributionMetaData",
-    params: { _mangaDistributionID: "1" },
+    params: {
+      _mangaDistributionID:
+        process.env.NEXT_PUBLIC_METABORG_MANGA_DISTRIBUTION_ID,
+    },
   });
 
   const dependencies = [...(deps || []), enabled];
