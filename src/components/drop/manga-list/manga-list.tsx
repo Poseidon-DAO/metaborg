@@ -31,7 +31,7 @@ interface IMintedNFTsListProps {
 }
 
 const MangaList: NextPage<IMintedNFTsListProps> = ({ showTopLine }) => {
-  const [numPages, setNumPages] = useState<number | null>(null);
+  const [, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
 
   const distributionMetaData = useStore((state) => state.distributionMetaData);
@@ -77,7 +77,7 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({ showTopLine }) => {
       )}
 
       <Tabs
-        defaultIndex={currentTabIndex}
+        index={currentTabIndex}
         isFitted
         variant="enclosed"
         borderColor="brand.transparent"
@@ -119,30 +119,7 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({ showTopLine }) => {
                     icon={<ChevronLeftIcon w={14} h={14} />}
                     onClick={() => setPageNumber((prevPage) => prevPage - 1)}
                   />
-                  <Box
-                    height={800}
-                    margin="1em 0"
-                    // css={{
-                    //   ".react-pdf__Document": {
-                    //     display: "flex",
-                    //     flexDirection: "column",
-                    //     alignItems: "center",
-                    //   },
-                    //   ".react-pdf__Page": {
-                    //     maxWidth: 'calc("100% - 2em")',
-                    //     boxShadow: "0 0 8px rgba(0, 0, 0, 0.5)",
-                    //     margin: "1em",
-                    //   },
-                    //   ".react-pdf__Page canvas": {
-                    //     maxWidth: "100%",
-                    //     height: " auto !important",
-                    //   },
-                    //   ".react-pdf__message": {
-                    //     padding: "20px",
-                    //     color: "white",
-                    //   },
-                    // }}
-                  >
+                  <Box height={800} margin="1em 0">
                     <Document
                       options={options}
                       file={pdfFile}
