@@ -64,12 +64,26 @@ const DisconnectModal: NextPage<IDisconnectModalProps> = ({
             </Box>
 
             <Flex justifyContent="space-between">
-              <Button w="48%" h={"55px"} flexDir="column" onClick={onCopy}>
+              <Button
+                w="48%"
+                h={"55px"}
+                flexDir="column"
+                onClick={onCopy}
+                variant="ghost"
+                isActive
+              >
                 <Icon as={MdContentCopy} w={[3, 4]} h={[3, 4]} mb={1} />
                 <Text fontSize="md">Copy Address</Text>
               </Button>
 
-              <Button w="48%" h={"55px"} flexDir="column" onClick={logout}>
+              <Button
+                w="48%"
+                h={"55px"}
+                flexDir="column"
+                onClick={logout}
+                variant="ghost"
+                isActive
+              >
                 <Icon as={MdLogout} w={4} h={4} mb={1} />
                 <Text fontSize="md">Disconnect</Text>
               </Button>
