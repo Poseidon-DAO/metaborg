@@ -9,5 +9,6 @@ export * from "./empty-nifties";
 export * from "./footer";
 export * from "./header";
 export * from "./manga-list";
+export * from "./mint-section";
 export * from "./nft-item";
 export * from "./nfts-list";

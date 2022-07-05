@@ -40,17 +40,11 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
     (state) => state.setDistributionMetaData
   );
   const { isAuthenticated, user } = useMoralis();
-  const { availableMints } = useAvailableMints({
-    _mangaDistributionID: "1",
-    _address: user?.get("ethAddress"),
-  });
+  const { availableMints } = useAvailableMints();
   const { fetch, data } = useMint({ salePrice: distributionPrice });
 
   useDistributionMetadata({
-    onSuccess: (data) => {
-      console.log("success", data);
-      setDistributionMetaData(data);
-    },
+    onSuccess: (data) => setDistributionMetaData(data),
     enabled: !!data,
     deps: [data],
   });

@@ -13,7 +13,7 @@ type FetchNiftiesFunction = ({
 const nftsMock = [
   {
     contractAddress: "0x8c167a1dbf8e19d18705382d6a457491589f9598",
-    tokenId: "33400030081",
+    tokenId: "NEVER NEXT",
     name: "NEVER NEXT",
     creator: {
       username: "billelis",
@@ -30,7 +30,7 @@ const nftsMock = [
   },
   {
     contractAddress: "0xc92ceddfb8dd984a89fb494c376f9a48b999aafc",
-    tokenId: "3152",
+    tokenId: "ALONE",
     name: "ALONE",
     creator: {
       username: "creatureworld",

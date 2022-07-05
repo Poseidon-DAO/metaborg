@@ -10,18 +10,22 @@ interface INftsListProps {
   nifties: Nifty[];
 }
 
+const neverNextTokenId = process.env.NEXT_PUBLIC_NG_NEVER_NEXT_TOKEN_ID;
+const alwaysTokenId = process.env.NEXT_PUBLIC_NG_ALWAYS_TOKEN_ID;
+const aloneTokenId = process.env.NEXT_PUBLIC_NG_ALONE_TOKEN_ID;
+
 const NftsList: NextPage<INftsListProps> = ({ nifties }) => {
   if (!nifties.length) {
     return <EmptyNifties />;
   }
 
   const tokenIds = nifties.map((nfts) => nfts.tokenId);
-  const filteredByTokenId = nifties.filter(
+  const nonDuplicates = nifties.filter(
     (nifty, index) => !tokenIds.includes(nifty.tokenId, index + 1)
   );
 
-  const filteredByName = filteredByTokenId.filter((nft) =>
-    ["ALWAYS", "ALONE", "NEVER NEXT"].includes(nft.name)
+  const filteredByTokenId = nonDuplicates.filter((nft) =>
+    [neverNextTokenId, alwaysTokenId, aloneTokenId].includes(nft.tokenId)
   );
 
   return (
@@ -34,7 +38,7 @@ const NftsList: NextPage<INftsListProps> = ({ nifties }) => {
         Nifty Drop NFTs
       </Heading>
 
-      {filteredByName.map((nifty) => (
+      {filteredByTokenId.map((nifty) => (
         <NftItem key={nifty.tokenId} {...nifty} />
       ))}
     </Box>

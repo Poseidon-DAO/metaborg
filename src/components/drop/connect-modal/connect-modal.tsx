@@ -15,6 +15,7 @@ import {
   useBreakpointValue,
   IconButton,
   Tooltip,
+  ModalFooter,
 } from "@chakra-ui/react";
 
 import { useStore } from "store/store";
@@ -156,6 +157,12 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
             </GridItem>
           </Grid>
         </ModalBody>
+
+        <ModalFooter fontSize="12px" textAlign="center">
+          Connect with Nifty. If you&apos;ve already joined the drop but
+          didn&apos;t move the NFTs from Nifty Gateway, please connect the
+          wallet in order to move them in your Metamask.
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
