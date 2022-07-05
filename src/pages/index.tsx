@@ -171,6 +171,10 @@ const Drop: NextPage = () => {
         </Box>
       )}
 
+      {!nifties.length && !availableMints && (
+        <Heading>You are not eligible to MINT!</Heading>
+      )}
+
       {(!nifties.length || nifties.length < availableMints) && (
         <MintSection availableMints={availableMints} />
       )}
