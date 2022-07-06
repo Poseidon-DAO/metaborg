@@ -35,7 +35,7 @@ interface IConnectModalProps {
 const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
   const token = useStore((state) => state.token);
   const metamaskImageSize = useBreakpointValue({ base: 70, lg: 100 });
-  const niftyImageSize = useBreakpointValue({ base: 70, lg: 80 });
+  const walletConnectImageSize = useBreakpointValue({ base: 70, lg: 80 });
   const toast = useToast();
   const { isAuthenticated, authenticate } = useMoralis();
 
@@ -93,42 +93,6 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
 
         <ModalBody pb={8}>
           <Grid templateColumns="1fr auto 1fr" columnGap={2}>
-            <GridItem onClick={onWalletConnectConnect}>
-              <Center py={4} px={2}>
-                <Tooltip
-                  label="Already signed in with Nifty Gateway"
-                  isDisabled={!token}
-                  placement="top-end"
-                  shouldWrapChildren
-                  hasArrow
-                >
-                  <IconButton
-                    w={120}
-                    h={120}
-                    variant="ghost"
-                    aria-label="Nifty gateway"
-                    disabled={!!token}
-                    icon={
-                      <Image
-                        width={niftyImageSize}
-                        height={niftyImageSize}
-                        src={walletConnectLogo}
-                        alt="nifty gateway logo"
-                        priority
-                      />
-                    }
-                  />
-                </Tooltip>
-              </Center>
-
-              <Text textAlign="center">
-                Sign in with <br />
-                Nifty Gateway
-              </Text>
-            </GridItem>
-
-            <Box h="100%" w="1px" bg="brand.red"></Box>
-
             <GridItem onClick={onMetamaskConnect}>
               <Center py={4} px={2}>
                 <Tooltip
@@ -158,6 +122,42 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
               </Center>
               <Text textAlign="center">
                 Connect with <br /> Metamask
+              </Text>
+            </GridItem>
+
+            <Box h="100%" w="1px" bg="brand.red"></Box>
+
+            <GridItem onClick={onWalletConnectConnect}>
+              <Center py={4} px={2}>
+                <Tooltip
+                  label="Already signed in with WalletConnect"
+                  isDisabled={!token}
+                  placement="top-end"
+                  shouldWrapChildren
+                  hasArrow
+                >
+                  <IconButton
+                    w={120}
+                    h={120}
+                    variant="ghost"
+                    aria-label="Wallet connect"
+                    disabled={!!token}
+                    icon={
+                      <Image
+                        width={walletConnectImageSize}
+                        height={walletConnectImageSize}
+                        src={walletConnectLogo}
+                        alt="wallet connect logo"
+                        priority
+                      />
+                    }
+                  />
+                </Tooltip>
+              </Center>
+
+              <Text textAlign="center">
+                Connect with <br />
+                Wallet Connect
               </Text>
             </GridItem>
           </Grid>
