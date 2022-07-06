@@ -130,7 +130,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
             <GridItem onClick={onWalletConnectConnect}>
               <Center py={4} px={2}>
                 <Tooltip
-                  label="Already signed in with WalletConnect"
+                  label="Already connected with WalletConnect"
                   isDisabled={!token}
                   placement="top-end"
                   shouldWrapChildren
