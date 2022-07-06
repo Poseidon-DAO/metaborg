@@ -8,7 +8,7 @@ import { useStore } from "store/store";
 import { DropLayout } from "layout/drop";
 import { Strips } from "components/common";
 import {
-  NftsList,
+  /*NftsList,*/
   Editions,
   MangaList,
   ConnectWallet,
@@ -29,6 +29,7 @@ import { type NextPage } from "next";
 const niftyContractAddress = process.env.NEXT_PUBLIC_NG_CONTRACT_ADDRESS;
 const metaborgContractAddress =
   process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS;
+const appIsEnabled = process.env.NEXT_PUBLIC_APP_AVAILABLE;
 
 const Drop: NextPage = () => {
   const { asPath } = useRouter();
@@ -38,13 +39,12 @@ const Drop: NextPage = () => {
   const setDistributionMetaData = useStore(
     (state) => state.setDistributionMetaData
   );
-  const toast = useToast();
-  const id = new Date().toString() + Math.random();
 
   const token = !!fragment
     ? new URLSearchParams(fragment).get("access_token")
     : "";
-
+  const toast = useToast();
+  const toastId = new Date().toString() + Math.random();
   const { isAuthenticated, enableWeb3, isWeb3Enabled, user, Moralis, logout } =
     useMoralis();
 
@@ -74,10 +74,10 @@ const Drop: NextPage = () => {
       )
         return;
 
-      if (toast.isActive(id)) return;
+      if (toast.isActive(toastId)) return;
 
       toast({
-        id: id,
+        id: toastId,
         position: "top-right",
         status: "warning",
         title: "Please connect to mainnet!",
@@ -90,29 +90,29 @@ const Drop: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { data: userData } = useQuery<NiftyUser>(
-    profileKey,
-    () => fetchMyNiftyProfile({ token: token! }),
-    {
-      enabled: !!fragment && !!token,
-      onSuccess: () => setToken(token!),
-    }
-  );
+  // const { data: userData } = useQuery<NiftyUser>(
+  //   profileKey,
+  //   () => fetchMyNiftyProfile({ token: token! }),
+  //   {
+  //     enabled: !!fragment && !!token && false,
+  //     onSuccess: () => setToken(token!),
+  //   }
+  // );
 
-  const isLoggedInWithNifty = !!userData?.username;
+  // const isLoggedInWithNifty = !!userData?.username;
 
-  const { data: apiNifties } = useQuery<NiftiesApiResponse>(
-    niftiesKey,
-    () =>
-      fetchNifties({
-        token: token!,
-        username: userData?.username!,
-        contractAddress: niftyContractAddress!,
-      }),
-    {
-      enabled: isLoggedInWithNifty,
-    }
-  );
+  // const { data: apiNifties } = useQuery<NiftiesApiResponse>(
+  //   niftiesKey,
+  //   () =>
+  //     fetchNifties({
+  //       token: token!,
+  //       username: userData?.username!,
+  //       contractAddress: niftyContractAddress!,
+  //     }),
+  //   {
+  //     enabled: isLoggedInWithNifty && false,
+  //   }
+  // );
 
   useDistributionMetadata({
     onSuccess: (data) => setDistributionMetaData(data),
@@ -125,11 +125,11 @@ const Drop: NextPage = () => {
     deps: [isAuthenticated, isWeb3Enabled],
   });
 
-  const { data: niftySmartContractNFTs } = useContractNFTs({
-    contractAddress: niftyContractAddress!,
-    enabled: isLoggedInWithNifty,
-    deps: [isLoggedInWithNifty],
-  });
+  // const { data: niftySmartContractNFTs } = useContractNFTs({
+  //   contractAddress: niftyContractAddress!,
+  //   enabled: isLoggedInWithNifty && false,
+  //   deps: [isLoggedInWithNifty],
+  // });
 
   const { data: metaborgSmartContractNFTs } = useContractNFTs({
     contractAddress: metaborgContractAddress!,
@@ -138,19 +138,34 @@ const Drop: NextPage = () => {
     deps: [isAuthenticated, isWeb3Enabled],
   });
 
-  const nifties = [
-    ...(apiNifties?.results || []),
-    ...(shapeNftsToNiftyApi(niftySmartContractNFTs?.result) || []),
-  ];
+  // const nifties = [
+  //   ...(apiNifties?.results || []),
+  //   ...(shapeNftsToNiftyApi(niftySmartContractNFTs?.result) || []),
+  // ];
   const showPdfReader = !!(metaborgSmartContractNFTs?.result || []).filter(
     (nft) => ["1", "2", "3"].includes(nft.token_id)
   ).length;
-  const showConnectButton = !isLoggedInWithNifty && !isAuthenticated;
-  const showNiftiesSection = isLoggedInWithNifty && !!nifties.length;
+
+  // const showNiftiesSection = isLoggedInWithNifty && !!nifties.length;
+
+  if (appIsEnabled === "false") {
+    return (
+      <DropLayout>
+        <Box my={20}>
+          <Heading fontSize="6xl" textAlign="center">
+            The minting has not started yet!
+          </Heading>
+        </Box>
+        <Box mt={[16, 40]}>
+          <Editions />
+        </Box>
+      </DropLayout>
+    );
+  }
 
   return (
     <DropLayout>
-      {showConnectButton && (
+      {!isAuthenticated && (
         <Container my={10} centerContent>
           <Box maxW="xl">
             <Heading textAlign="center" size={["xl", "2xl"]}>
@@ -165,22 +180,28 @@ const Drop: NextPage = () => {
         </Container>
       )}
 
-      {showNiftiesSection && (
+      {/* {showNiftiesSection && (
         <Box mb={20}>
           <NftsList nifties={nifties} />
         </Box>
-      )}
+      )} */}
 
-      {!nifties.length && !availableMints && (
+      {/* {!nifties.length && !availableMints && isAuthenticated && (
         <Heading textAlign="center">You are not eligible to MINT!</Heading>
+      )} */}
+
+      {isAuthenticated && !availableMints && (
+        <Box my={8} mb={40}>
+          <Heading textAlign="center">You are not eligible for MINT!</Heading>
+        </Box>
       )}
 
-      {nifties.length < availableMints && isAuthenticated && (
+      {isAuthenticated && !!availableMints && (
         <MintSection availableMints={availableMints} />
       )}
 
       {isAuthenticated && showPdfReader && (
-        <Box mt={showNiftiesSection ? 40 : 0} mb={20}>
+        <Box mt={0} mb={20}>
           <MangaList />
         </Box>
       )}

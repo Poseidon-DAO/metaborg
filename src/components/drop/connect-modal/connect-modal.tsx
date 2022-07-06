@@ -26,7 +26,7 @@ import { getNiftyRedirectUrl } from "utils/url-query-params";
 import type { NextPage } from "next";
 
 import metamaskLogo from "../../../../public/assets/metamask-logo.png";
-import niftyLogo from "../../../../public/assets/nifty-logo.png";
+import walletConnectLogo from "../../../../public/assets/wallet-connect.png";
 
 interface IConnectModalProps {
   onClose?: () => void;
@@ -70,9 +70,14 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
     }
   }
 
-  async function onNiftyGatewayConnect() {
-    const niftyGatewayUrl = getNiftyRedirectUrl();
-    window.location.replace(niftyGatewayUrl.href);
+  async function onWalletConnectConnect() {
+    if (isAuthenticated) return;
+
+    try {
+      await authenticate({ provider: "walletconnect" });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   function onModalClose() {
@@ -88,7 +93,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
 
         <ModalBody pb={8}>
           <Grid templateColumns="1fr auto 1fr" columnGap={2}>
-            <GridItem onClick={onNiftyGatewayConnect}>
+            <GridItem onClick={onWalletConnectConnect}>
               <Center py={4} px={2}>
                 <Tooltip
                   label="Already signed in with Nifty Gateway"
@@ -107,7 +112,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
                       <Image
                         width={niftyImageSize}
                         height={niftyImageSize}
-                        src={niftyLogo}
+                        src={walletConnectLogo}
                         alt="nifty gateway logo"
                         priority
                       />
@@ -158,11 +163,11 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
           </Grid>
         </ModalBody>
 
-        <ModalFooter fontSize="12px" textAlign="center">
+        {/* <ModalFooter fontSize="12px" textAlign="center">
           Connect with Nifty. If you&apos;ve already joined the drop but
           didn&apos;t move the NFTs from Nifty Gateway, please connect the
           wallet in order to move them in your Metamask.
-        </ModalFooter>
+        </ModalFooter> */}
       </ModalContent>
     </Modal>
   );
