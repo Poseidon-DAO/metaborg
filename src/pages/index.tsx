@@ -207,6 +207,14 @@ const Drop: NextPage = () => {
         </Container>
       )}
 
+      {!isAuthenticated && (
+        <Heading textAlign="center" size={["md", "lg"]}>
+          Don&apos;t forget to move your &quot;Never Next&quot;,
+          &quot;Always&quot; or &quot;Alone&quot; NFTs to your MetaMask wallet
+          in order to be verified for the Manga NFT minting.
+        </Heading>
+      )}
+
       {sectionsLoading && (
         <Box my={8} mb={40} textAlign="center">
           <Spinner color="brand.red" />
@@ -215,7 +223,15 @@ const Drop: NextPage = () => {
 
       {isAuthenticated && myAvailableMints == 0 && (
         <Box my={8} mb={40}>
-          <Heading textAlign="center">You are not eligible for MINT!</Heading>
+          <Heading textAlign="center">
+            You are not eligible for MINTING!
+          </Heading>
+
+          <Heading textAlign="center" size={["md", "lg"]}>
+            Don&apos;t forget to move your &quot;Never Next&quot;,
+            &quot;Always&quot; or &quot;Alone&quot; NFTs to your MetaMask wallet
+            in order to be verified for the Manga NFT minting.
+          </Heading>
         </Box>
       )}
 
