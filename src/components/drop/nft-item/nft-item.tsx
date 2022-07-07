@@ -13,7 +13,7 @@ import {
 import { useStore } from "store/store";
 import { Image, Line } from "components/common";
 import { Nifty, NiftyNames } from "lib/api/types";
-import { useDistributionMetadata, useMint } from "lib/hooks";
+import { useMint } from "lib/hooks";
 import { useAvailableMints } from "lib/hooks/use-available-mints";
 import { getDefaultToastConfig } from "utils/toast";
 
@@ -41,13 +41,13 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
   );
   const { isAuthenticated, user } = useMoralis();
   const { availableMints } = useAvailableMints();
-  const { fetch, data } = useMint({ salePrice: distributionPrice });
+  // const { fetch, data } = useMint({ salePrice: distributionPrice });
 
-  useDistributionMetadata({
-    onSuccess: (data) => setDistributionMetaData(data),
-    enabled: !!data,
-    deps: [data],
-  });
+  // useDistributionMetadata({
+  //   onSuccess: (data) => setDistributionMetaData(data),
+  //   enabled: !!data,
+  //   deps: [data],
+  // });
 
   const toast = useToast();
   const tooltipMessage =
@@ -71,25 +71,25 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
         })
       );
 
-    await fetch({
-      onSuccess: () => {
-        toast(
-          getDefaultToastConfig({
-            title: "You have successfully minted the NFT",
-            status: "success",
-          })
-        );
-      },
-      onError: (error) => {
-        console.error(error);
-        toast(
-          getDefaultToastConfig({
-            title: "There was an error with NFT minting",
-            status: "error",
-          })
-        );
-      },
-    });
+    // await fetch({
+    //   onSuccess: () => {
+    //     toast(
+    //       getDefaultToastConfig({
+    //         title: "You have successfully minted the NFT",
+    //         status: "success",
+    //       })
+    //     );
+    //   },
+    //   onError: (error) => {
+    //     console.error(error);
+    //     toast(
+    //       getDefaultToastConfig({
+    //         title: "There was an error with NFT minting",
+    //         status: "error",
+    //       })
+    //     );
+    //   },
+    // });
   }
 
   return (
