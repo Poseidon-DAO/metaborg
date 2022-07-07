@@ -15,9 +15,9 @@ import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import { Line } from "components/common";
-import { useStore } from "store/store";
 
 import type { NextPage } from "next";
+import { DistributionMetaData } from "store/types";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
@@ -29,16 +29,18 @@ const options = {
 
 interface IMintedNFTsListProps {
   showTopLine?: boolean;
+  distributionMetadata: DistributionMetaData;
 }
 
-const MangaList: NextPage<IMintedNFTsListProps> = ({ showTopLine }) => {
+const MangaList: NextPage<IMintedNFTsListProps> = ({
+  showTopLine,
+  distributionMetadata,
+}) => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
 
-  const distributionMetaData = useStore((state) => state.distributionMetaData);
-
   const { diamondSupply, goldSupply, originlSupply } =
-    distributionMetaData.formatedData;
+    distributionMetadata.formatedData;
 
   const tabs = [
     {
@@ -135,9 +137,11 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({ showTopLine }) => {
                   />
                 </Flex>
 
-                <Heading size="md" textAlign="center">
-                  {pageNumber} / {numPages}
-                </Heading>
+                {pageNumber && numPages && (
+                  <Heading size="md" textAlign="center">
+                    {pageNumber} / {numPages}
+                  </Heading>
+                )}
               </TabPanel>
             );
           })}

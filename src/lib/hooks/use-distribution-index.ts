@@ -1,30 +1,21 @@
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
+import { useWeb3ExecuteFunction } from "react-moralis";
 
 import MetaborgABI from "contracts/abis/Metaborg.json";
 import { useEffect } from "react";
 
-interface IUseAvailableMintsProps {
+interface IUseDistributionIndexProps {
   deps?: any[];
   enabled?: boolean;
-  _mangaDistributionID?: number | string;
-  _address?: string;
 }
 
-function useAvailableMints({
+function useDistributionIndex({
   deps = undefined,
   enabled = true,
-  _mangaDistributionID = "",
-  _address = "",
-}: IUseAvailableMintsProps = {}) {
-  const { user } = useMoralis();
+}: IUseDistributionIndexProps = {}) {
   const { fetch, data, isFetching, isLoading, error } = useWeb3ExecuteFunction({
     abi: MetaborgABI,
     contractAddress: process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS,
-    functionName: "getAvailableMints",
-    params: {
-      _mangaDistributionID: _mangaDistributionID,
-      _address: _address || user?.get("ethAddress"),
-    },
+    functionName: "mangaDistributionIndex",
   });
 
   const dependencies = [...(deps || []), enabled];
@@ -38,12 +29,11 @@ function useAvailableMints({
   }, dependencies);
 
   return {
-    fetch,
-    availableMints: data ? Number((data as object).toString()) : "",
+    index: data ? Number((data as object).toString()) - 1 : "",
     isFetching,
     isLoading,
     error,
   };
 }
 
-export { useAvailableMints };
+export { useDistributionIndex };

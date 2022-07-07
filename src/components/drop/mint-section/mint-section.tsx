@@ -2,39 +2,47 @@
 import { Box, Button, Flex, Heading, useToast } from "@chakra-ui/react";
 import { Image, Line } from "components/common";
 import { useDistributionMetadata, useMint } from "lib/hooks";
+import { useDistributionIndex } from "lib/hooks/use-distribution-index";
 import type { NextPage } from "next";
 import { useState } from "react";
 import { useMoralis } from "react-moralis";
 import { useStore } from "store/store";
+import { DistributionMetaData } from "store/types";
 import { getDefaultToastConfig } from "utils/toast";
 
 import metaborgMix from "../../../../public/assets/editions/METABORGMIX.jpg";
 import metamaskLogo from "../../../../public/assets/metamask-logo.png";
 
 interface IMintSectionProps {
+  distributionMetadata: DistributionMetaData;
   availableMints: string | number;
+  onMintSuccess?: () => void;
+  isLoading?: boolean;
 }
 
-const MintSection: NextPage<IMintSectionProps> = ({ availableMints }) => {
+const MintSection: NextPage<IMintSectionProps> = ({
+  availableMints,
+  distributionMetadata,
+  onMintSuccess,
+  isLoading = false,
+}) => {
   const [fetchMetaData, setFetchMetaData] = useState(false);
   const { isAuthenticated } = useMoralis();
   const toast = useToast();
 
-  const distributionPrice = useStore(
-    (state) => state.distributionMetaData.formatedData.price
-  );
-  const setDistributionMetaData = useStore(
-    (state) => state.setDistributionMetaData
-  );
+  const distributionPrice = distributionMetadata.formatedData.price;
 
-  const { fetch, isFetching, isLoading } = useMint({
-    salePrice: distributionPrice,
+  const { index } = useDistributionIndex({
+    enabled: true,
   });
 
-  useDistributionMetadata({
-    onSuccess: (data) => setDistributionMetaData(data),
-    enabled: !!fetchMetaData,
-    deps: [fetchMetaData],
+  const {
+    fetch,
+    isFetching,
+    isLoading: mintLoading,
+  } = useMint({
+    salePrice: distributionPrice,
+    mangaDistributionID: index,
   });
 
   async function onMintClick() {
@@ -57,18 +65,21 @@ const MintSection: NextPage<IMintSectionProps> = ({ availableMints }) => {
     await fetch({
       onSuccess: () => {
         setFetchMetaData(true);
+        onMintSuccess?.();
         toast(
           getDefaultToastConfig({
-            title: "You have successfully minted the NFT",
-            status: "success",
+            title: "Verifing Transaction...",
+            status: "info",
+            duration: 4000,
           })
         );
       },
       onError: (error) => {
-        console.error(error);
         toast(
           getDefaultToastConfig({
-            title: "There was an error with NFT minting",
+            title:
+              `${error.stack?.substring(0, 40)}...` ||
+              "There was a problem minting your NFT!",
             status: "error",
           })
         );
@@ -108,7 +119,7 @@ const MintSection: NextPage<IMintSectionProps> = ({ availableMints }) => {
             size={["md", "lg"]}
             onClick={onMintClick}
             disabled={!isAuthenticated || !availableMints}
-            isLoading={isLoading || isFetching}
+            isLoading={isLoading || isFetching || mintLoading}
           >
             MINT NOW
           </Button>

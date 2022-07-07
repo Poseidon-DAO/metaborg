@@ -7,7 +7,8 @@ import { DistributionMetaData } from "store/types";
 interface IUseDistributionMetaData {
   deps?: any[];
   enabled?: boolean;
-  onSuccess: (data: DistributionMetaData) => void;
+  mangaDistributionID: string | number;
+  onSuccess?: (data: DistributionMetaData) => void;
   onError?: (error: Error) => void;
 }
 
@@ -20,6 +21,7 @@ const getData = (data: any[], index: number, format: boolean = false) => {
 function useDistributionMetadata({
   deps = undefined,
   enabled = true,
+  mangaDistributionID,
   onSuccess,
   onError,
 }: IUseDistributionMetaData) {
@@ -28,8 +30,7 @@ function useDistributionMetadata({
     contractAddress: process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS,
     functionName: "getDistributionMetaData",
     params: {
-      _mangaDistributionID:
-        process.env.NEXT_PUBLIC_METABORG_MANGA_DISTRIBUTION_ID,
+      _mangaDistributionID: mangaDistributionID,
     },
   });
 

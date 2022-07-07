@@ -1,48 +1,31 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { Box, Container, Heading, useToast } from "@chakra-ui/react";
-import { useQuery } from "react-query";
 
-import { useStore } from "store/store";
 import { DropLayout } from "layout/drop";
 import { Strips } from "components/common";
 import {
-  /*NftsList,*/
   Editions,
   MangaList,
   ConnectWallet,
   MintSection,
 } from "components/drop";
-import { fetchMyNiftyProfile, key as profileKey } from "lib/api/nifty-me";
-import { fetchNifties, key as niftiesKey } from "lib/api/nifty-nfts";
-import { NiftiesApiResponse, NiftyUser } from "lib/api/types";
 import {
   useAvailableMints,
   useContractNFTs,
   useDistributionMetadata,
+  useTokenTransferEvent,
 } from "lib/hooks";
-import { shapeNftsToNiftyApi } from "utils/nfts";
 
 import { type NextPage } from "next";
+import { useDistributionIndex } from "lib/hooks/use-distribution-index";
+import { getDefaultToastConfig } from "utils/toast";
 
-const niftyContractAddress = process.env.NEXT_PUBLIC_NG_CONTRACT_ADDRESS;
 const metaborgContractAddress =
   process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS;
 const appIsEnabled = process.env.NEXT_PUBLIC_APP_AVAILABLE;
 
 const Drop: NextPage = () => {
-  const { asPath } = useRouter();
-  const [, fragment] = asPath.split("#");
-
-  const setToken = useStore((state) => state.setToken);
-  const setDistributionMetaData = useStore(
-    (state) => state.setDistributionMetaData
-  );
-
-  const token = !!fragment
-    ? new URLSearchParams(fragment).get("access_token")
-    : "";
   const toast = useToast();
   const toastId = new Date().toString() + Math.random();
   const { isAuthenticated, enableWeb3, isWeb3Enabled, user, Moralis, logout } =
@@ -90,46 +73,37 @@ const Drop: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const { data: userData } = useQuery<NiftyUser>(
-  //   profileKey,
-  //   () => fetchMyNiftyProfile({ token: token! }),
-  //   {
-  //     enabled: !!fragment && !!token && false,
-  //     onSuccess: () => setToken(token!),
-  //   }
-  // );
-
-  // const isLoggedInWithNifty = !!userData?.username;
-
-  // const { data: apiNifties } = useQuery<NiftiesApiResponse>(
-  //   niftiesKey,
-  //   () =>
-  //     fetchNifties({
-  //       token: token!,
-  //       username: userData?.username!,
-  //       contractAddress: niftyContractAddress!,
-  //     }),
-  //   {
-  //     enabled: isLoggedInWithNifty && false,
-  //   }
-  // );
-
-  useDistributionMetadata({
-    onSuccess: (data) => setDistributionMetaData(data),
+  const { index } = useDistributionIndex({
     enabled: isAuthenticated && isWeb3Enabled,
     deps: [isAuthenticated, isWeb3Enabled],
+  });
+
+  const { data: distributionMetadata } = useDistributionMetadata({
+    mangaDistributionID: index,
+    enabled: isAuthenticated && isWeb3Enabled && !!index,
+    deps: [isAuthenticated, isWeb3Enabled, index],
   });
 
   const { availableMints } = useAvailableMints({
     enabled: isAuthenticated && isWeb3Enabled,
-    deps: [isAuthenticated, isWeb3Enabled],
+    deps: [isAuthenticated, isWeb3Enabled, index],
+    _mangaDistributionID: index,
   });
 
-  // const { data: niftySmartContractNFTs } = useContractNFTs({
-  //   contractAddress: niftyContractAddress!,
-  //   enabled: isLoggedInWithNifty && false,
-  //   deps: [isLoggedInWithNifty],
-  // });
+  const [myAvailableMints, setMyAvailableMints] = useState(availableMints);
+
+  useEffect(() => {
+    setMyAvailableMints(availableMints);
+  }, [availableMints]);
+
+  const {
+    fetch: fetchTokenTransferEvent,
+    isFetching,
+    isLoading,
+  } = useTokenTransferEvent({
+    address: metaborgContractAddress!,
+    eventName: "TransferSingle",
+  });
 
   const { data: metaborgSmartContractNFTs } = useContractNFTs({
     contractAddress: metaborgContractAddress!,
@@ -138,15 +112,26 @@ const Drop: NextPage = () => {
     deps: [isAuthenticated, isWeb3Enabled],
   });
 
-  // const nifties = [
-  //   ...(apiNifties?.results || []),
-  //   ...(shapeNftsToNiftyApi(niftySmartContractNFTs?.result) || []),
-  // ];
+  async function onMintSuccess() {
+    fetchTokenTransferEvent({
+      onSuccess: (data) => {
+        setMyAvailableMints((prevState) => +prevState - 1);
+        toast(
+          getDefaultToastConfig({
+            title: "You have successfully minted the NFT",
+            status: "success",
+          })
+        );
+      },
+      onError: (err) => console.log("error", err),
+    });
+  }
+
   const showPdfReader = !!(metaborgSmartContractNFTs?.result || []).filter(
     (nft) => ["1", "2", "3"].includes(nft.token_id)
   ).length;
 
-  // const showNiftiesSection = isLoggedInWithNifty && !!nifties.length;
+  console.log({ availableMints, myAvailableMints });
 
   if (appIsEnabled === "false") {
     return (
@@ -180,29 +165,24 @@ const Drop: NextPage = () => {
         </Container>
       )}
 
-      {/* {showNiftiesSection && (
-        <Box mb={20}>
-          <NftsList nifties={nifties} />
-        </Box>
-      )} */}
-
-      {/* {!nifties.length && !availableMints && isAuthenticated && (
-        <Heading textAlign="center">You are not eligible to MINT!</Heading>
-      )} */}
-
-      {isAuthenticated && !availableMints && (
+      {isAuthenticated && myAvailableMints === 0 && (
         <Box my={8} mb={40}>
           <Heading textAlign="center">You are not eligible for MINT!</Heading>
         </Box>
       )}
 
-      {isAuthenticated && !!availableMints && (
-        <MintSection availableMints={availableMints} />
+      {isAuthenticated && !!myAvailableMints && (
+        <MintSection
+          availableMints={myAvailableMints}
+          distributionMetadata={distributionMetadata}
+          onMintSuccess={onMintSuccess}
+          isLoading={isFetching || isLoading}
+        />
       )}
 
       {isAuthenticated && showPdfReader && (
         <Box mt={0} mb={20}>
-          <MangaList />
+          <MangaList distributionMetadata={distributionMetadata} />
         </Box>
       )}
 

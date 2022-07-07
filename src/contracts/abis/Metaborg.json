@@ -189,46 +189,9 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "IDDistribution",
-        "type": "uint256"
-      },
-      {
         "indexed": true,
         "internalType": "address",
-        "name": "creator",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "diamondExtension",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "goldExtension",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "originalExtension",
-        "type": "uint256"
-      }
-    ],
-    "name": "extendDistributionEvent",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
+        "name": "to",
         "type": "address"
       },
       {
@@ -332,6 +295,11 @@
         "internalType": "uint256",
         "name": "_ERC1155OriginalID",
         "type": "uint256"
+      },
+      {
+        "internalType": "string[]",
+        "name": "IPFSOverrideConnectionList",
+        "type": "string[]"
       }
     ],
     "name": "createMangaDistribution",
@@ -348,44 +316,6 @@
       }
     ],
     "name": "deleteListOfDistribution",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_mangaDistributionID",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_diamondExtension",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_goldExtension",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_originalExtension",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address[]",
-        "name": "_allowedAddressToMint",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_quantityList",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "extendDistribution",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -440,7 +370,7 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "string", "name": "_uri", "type": "string" }],
+    "inputs": [],
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -453,6 +383,13 @@
     ],
     "name": "isApprovedForAll",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "mangaDistributionIndex",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -471,15 +408,15 @@
   },
   {
     "inputs": [],
-    "name": "owner",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "name",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "ownerBalance",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -529,7 +466,9 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "inputs": [
+      { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }
+    ],
     "name": "uri",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
