@@ -17,6 +17,7 @@ interface IMintSectionProps {
   availableMints: string | number;
   onMintSuccess?: (data: any) => void;
   isLoading?: boolean;
+  disabled?: boolean;
   distIndex?: string;
 }
 
@@ -26,6 +27,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
   onMintSuccess,
   isLoading = false,
   distIndex,
+  disabled = false,
 }) => {
   const [fetchMetaData, setFetchMetaData] = useState(false);
   const { isAuthenticated } = useMoralis();
@@ -125,7 +127,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
             mt={[4]}
             size={["md", "lg"]}
             onClick={onMintClick}
-            disabled={!isAuthenticated || !availableMints}
+            disabled={disabled || !isAuthenticated || !availableMints}
             isLoading={isLoading || isFetching || mintLoading}
           >
             MINT NOW

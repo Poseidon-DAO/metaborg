@@ -136,17 +136,20 @@ const Drop: NextPage = () => {
     deps: [isAuthenticated, isWeb3Enabled && myAvailableMints],
   });
 
+  const [disableMintButton, setDisableMintButton] = useState(false);
+
   let timerId: ReturnType<typeof setTimeout>;
   async function onMintSuccess(mintData: any) {
     fetchTokenTransferEvent({
       onSuccess: () => {
         setMyAvailableMints((prevState) => Number(prevState) - 1);
 
+        setDisableMintButton(true);
         timerId = setTimeout(() => {
           fetchDistributionMetadata({
             onSuccess: () => {
               clearTimeout(timerId);
-
+              setDisableMintButton(false);
               toast(
                 getDefaultToastConfig({
                   title: "You have successfully minted the NFT",
@@ -223,6 +226,7 @@ const Drop: NextPage = () => {
           onMintSuccess={onMintSuccess}
           isLoading={isFetching || isLoading}
           distIndex={distIndex as string}
+          disabled={disableMintButton}
         />
       )}
 
