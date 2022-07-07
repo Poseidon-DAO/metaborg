@@ -180,7 +180,7 @@ const Drop: NextPage = () => {
         </Box>
       )}
 
-      {isAuthenticated && myAvailableMints === 0 && (
+      {isAuthenticated && myAvailableMints == 0 && (
         <Box my={8} mb={40}>
           <Heading textAlign="center">You are not eligible for MINT!</Heading>
         </Box>
