@@ -1,12 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { Box, Button, Flex, Heading, useToast } from "@chakra-ui/react";
 import { Image, Line } from "components/common";
-import { useDistributionMetadata, useMint } from "lib/hooks";
+import { useMint } from "lib/hooks";
 import { useDistributionIndex } from "lib/hooks/use-distribution-index";
 import type { NextPage } from "next";
 import { useState } from "react";
 import { useMoralis } from "react-moralis";
-import { useStore } from "store/store";
 import { DistributionMetaData } from "store/types";
 import { getDefaultToastConfig } from "utils/toast";
 
@@ -70,7 +69,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
           getDefaultToastConfig({
             title: "Verifing Transaction...",
             status: "info",
-            duration: 4000,
+            duration: 2000,
           })
         );
       },

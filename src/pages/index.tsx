@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
-import { Box, Container, Heading, useToast } from "@chakra-ui/react";
+import { Box, Container, Heading, Spinner, useToast } from "@chakra-ui/react";
 
 import { DropLayout } from "layout/drop";
 import { Strips } from "components/common";
@@ -84,17 +84,23 @@ const Drop: NextPage = () => {
     deps: [isAuthenticated, isWeb3Enabled, index],
   });
 
-  const { availableMints } = useAvailableMints({
+  const {
+    availableMints,
+    allAvailableMints,
+    isFetching: isFetchingAvbMints,
+    isLoading: isLoadingAvbMints,
+  } = useAvailableMints({
+    promiseAll: true,
     enabled: isAuthenticated && isWeb3Enabled,
     deps: [isAuthenticated, isWeb3Enabled, index],
     _mangaDistributionID: index,
   });
 
-  const [myAvailableMints, setMyAvailableMints] = useState(availableMints);
+  const [myAvailableMints, setMyAvailableMints] = useState(allAvailableMints);
 
   useEffect(() => {
-    setMyAvailableMints(availableMints);
-  }, [availableMints]);
+    setMyAvailableMints(allAvailableMints);
+  }, [allAvailableMints]);
 
   const {
     fetch: fetchTokenTransferEvent,
@@ -105,7 +111,11 @@ const Drop: NextPage = () => {
     eventName: "TransferSingle",
   });
 
-  const { data: metaborgSmartContractNFTs } = useContractNFTs({
+  const {
+    data: metaborgSmartContractNFTs,
+    isFetching: isFetchingNFTs,
+    isLoading: isLoadingNFTs,
+  } = useContractNFTs({
     contractAddress: metaborgContractAddress!,
     address: user?.get("ethAddress"),
     enabled: isAuthenticated && isWeb3Enabled,
@@ -114,8 +124,8 @@ const Drop: NextPage = () => {
 
   async function onMintSuccess() {
     fetchTokenTransferEvent({
-      onSuccess: (data) => {
-        setMyAvailableMints((prevState) => +prevState - 1);
+      onSuccess: () => {
+        setMyAvailableMints((prevState) => Number(prevState) - 1);
         toast(
           getDefaultToastConfig({
             title: "You have successfully minted the NFT",
@@ -130,8 +140,7 @@ const Drop: NextPage = () => {
   const showPdfReader = !!(metaborgSmartContractNFTs?.result || []).filter(
     (nft) => ["1", "2", "3"].includes(nft.token_id)
   ).length;
-
-  console.log({ availableMints, myAvailableMints });
+  const sectionsLoading = isFetchingAvbMints || isLoadingAvbMints;
 
   if (appIsEnabled === "false") {
     return (
@@ -163,6 +172,12 @@ const Drop: NextPage = () => {
             <ConnectWallet />
           </Box>
         </Container>
+      )}
+
+      {sectionsLoading && (
+        <Box my={8} mb={40} textAlign="center">
+          <Spinner color="brand.red" />
+        </Box>
       )}
 
       {isAuthenticated && myAvailableMints === 0 && (

@@ -1,13 +1,14 @@
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 
 import MetaborgABI from "contracts/abis/Metaborg.json";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface IUseAvailableMintsProps {
   deps?: any[];
   enabled?: boolean;
   _mangaDistributionID?: number | string;
   _address?: string;
+  promiseAll?: boolean;
 }
 
 function useAvailableMints({
@@ -15,9 +16,14 @@ function useAvailableMints({
   enabled = true,
   _mangaDistributionID = "",
   _address = "",
+  promiseAll = false,
 }: IUseAvailableMintsProps = {}) {
   const { user } = useMoralis();
-  const { fetch, data, isFetching, isLoading, error } = useWeb3ExecuteFunction({
+  const [allAvailableMints, setAllAvailableMints] = useState<string | number>(
+    ""
+  );
+
+  const options = {
     abi: MetaborgABI,
     contractAddress: process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS,
     functionName: "getAvailableMints",
@@ -25,13 +31,42 @@ function useAvailableMints({
       _mangaDistributionID: _mangaDistributionID,
       _address: _address || user?.get("ethAddress"),
     },
-  });
+  };
+
+  const { fetch, data, isFetching, isLoading, error } =
+    useWeb3ExecuteFunction(options);
 
   const dependencies = [...(deps || []), enabled];
 
+  async function fetchAll() {
+    if (!enabled) return;
+
+    const ids = Array.from({ length: +_mangaDistributionID }, (_, i) => i + 1);
+    const promises = ids.map((id) => {
+      let updatedOptions = {
+        ...options,
+        params: { ...options.params, _mangaDistributionID: +id },
+      };
+
+      return fetch({ params: updatedOptions });
+    });
+
+    return Promise.allSettled(promises);
+  }
+
   useEffect(() => {
-    if (enabled) {
+    if (!enabled) return;
+
+    if (!promiseAll) {
       fetch();
+    } else {
+      fetchAll().then((data) => {
+        data?.forEach((mints: any) => {
+          setAllAvailableMints(
+            (prevState) => Number(prevState) + Number(mints?.value)
+          );
+        });
+      });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +74,9 @@ function useAvailableMints({
 
   return {
     fetch,
+    fetchAll,
     availableMints: data ? Number((data as object).toString()) : "",
+    allAvailableMints: promiseAll ? allAvailableMints : null,
     isFetching,
     isLoading,
     error,
