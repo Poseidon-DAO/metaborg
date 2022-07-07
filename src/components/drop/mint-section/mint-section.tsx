@@ -15,8 +15,9 @@ import metamaskLogo from "../../../../public/assets/metamask-logo.png";
 interface IMintSectionProps {
   distributionMetadata: DistributionMetaData;
   availableMints: string | number;
-  onMintSuccess?: () => void;
+  onMintSuccess?: (data: any) => void;
   isLoading?: boolean;
+  distIndex?: string;
 }
 
 const MintSection: NextPage<IMintSectionProps> = ({
@@ -24,6 +25,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
   distributionMetadata,
   onMintSuccess,
   isLoading = false,
+  distIndex,
 }) => {
   const [fetchMetaData, setFetchMetaData] = useState(false);
   const { isAuthenticated } = useMoralis();
@@ -41,7 +43,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
     isLoading: mintLoading,
   } = useMint({
     salePrice: distributionPrice,
-    mangaDistributionID: index,
+    mangaDistributionID: distIndex || index,
   });
 
   async function onMintClick() {
@@ -62,14 +64,14 @@ const MintSection: NextPage<IMintSectionProps> = ({
       );
 
     await fetch({
-      onSuccess: () => {
+      onSuccess: (data) => {
         setFetchMetaData(true);
-        onMintSuccess?.();
+        onMintSuccess?.(data);
         toast(
           getDefaultToastConfig({
             title: "Verifing Transaction...",
             status: "info",
-            duration: 2000,
+            duration: 15000,
           })
         );
       },
@@ -93,7 +95,13 @@ const MintSection: NextPage<IMintSectionProps> = ({
         justifyContent="space-between"
         mb={10}
       >
-        <Box w={["full", "45%"]} minH={[300, 400]} pos="relative">
+        <Box
+          w={["full", "45%"]}
+          minH={[300, 400]}
+          pos="relative"
+          border="1px solid"
+          borderColor="brand.red"
+        >
           <img src={metaborgMix.src} alt="Metaborg mix" />
         </Box>
 

@@ -11,6 +11,7 @@ import {
   MintSection,
 } from "components/drop";
 import {
+  getFormatedData,
   useAvailableMints,
   useContractNFTs,
   useDistributionMetadata,
@@ -20,6 +21,7 @@ import {
 import { type NextPage } from "next";
 import { useDistributionIndex } from "lib/hooks/use-distribution-index";
 import { getDefaultToastConfig } from "utils/toast";
+import { useContractCall } from "lib/hooks/use-contract-call";
 
 const metaborgContractAddress =
   process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS;
@@ -78,25 +80,41 @@ const Drop: NextPage = () => {
     deps: [isAuthenticated, isWeb3Enabled],
   });
 
-  const { data: distributionMetadata } = useDistributionMetadata({
-    mangaDistributionID: index,
-    enabled: isAuthenticated && isWeb3Enabled && !!index,
-    deps: [isAuthenticated, isWeb3Enabled, index],
-  });
+  const [distIndex, setDistIndex] = useState(index);
+
+  useEffect(() => {
+    setDistIndex(index);
+  }, [index]);
 
   const {
-    availableMints,
     allAvailableMints,
     isFetching: isFetchingAvbMints,
     isLoading: isLoadingAvbMints,
+    mintsObj,
   } = useAvailableMints({
     promiseAll: true,
     enabled: isAuthenticated && isWeb3Enabled,
-    deps: [isAuthenticated, isWeb3Enabled, index],
-    _mangaDistributionID: index,
+    deps: [isAuthenticated, isWeb3Enabled, distIndex],
+    _mangaDistributionID: distIndex,
   });
 
+  useEffect(() => {
+    const nonIndexDistId = Object.keys(mintsObj).find(
+      (distId) => mintsObj[distId] > 0
+    );
+    setDistIndex(nonIndexDistId || "");
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allAvailableMints]);
+
   const [myAvailableMints, setMyAvailableMints] = useState(allAvailableMints);
+
+  const { data: distributionMetadata, fetch: fetchDistributionMetadata } =
+    useDistributionMetadata({
+      mangaDistributionID: distIndex,
+      enabled: isAuthenticated && isWeb3Enabled && !!distIndex,
+      deps: [isAuthenticated, isWeb3Enabled, distIndex, myAvailableMints],
+    });
 
   useEffect(() => {
     setMyAvailableMints(allAvailableMints);
@@ -111,27 +129,38 @@ const Drop: NextPage = () => {
     eventName: "TransferSingle",
   });
 
-  const {
-    data: metaborgSmartContractNFTs,
-    isFetching: isFetchingNFTs,
-    isLoading: isLoadingNFTs,
-  } = useContractNFTs({
+  const { data: metaborgSmartContractNFTs } = useContractNFTs({
     contractAddress: metaborgContractAddress!,
     address: user?.get("ethAddress"),
     enabled: isAuthenticated && isWeb3Enabled,
-    deps: [isAuthenticated, isWeb3Enabled],
+    deps: [isAuthenticated, isWeb3Enabled && myAvailableMints],
   });
 
-  async function onMintSuccess() {
+  let timerId: ReturnType<typeof setTimeout>;
+  async function onMintSuccess(mintData: any) {
     fetchTokenTransferEvent({
       onSuccess: () => {
         setMyAvailableMints((prevState) => Number(prevState) - 1);
-        toast(
-          getDefaultToastConfig({
-            title: "You have successfully minted the NFT",
-            status: "success",
-          })
-        );
+
+        timerId = setTimeout(() => {
+          fetchDistributionMetadata({
+            onSuccess: () => {
+              clearTimeout(timerId);
+
+              toast(
+                getDefaultToastConfig({
+                  title: "You have successfully minted the NFT",
+                  status: "success",
+                })
+              );
+            },
+            params: {
+              params: {
+                _mangaDistributionID: distIndex,
+              },
+            },
+          });
+        }, 15000);
       },
       onError: (err) => console.log("error", err),
     });
@@ -140,6 +169,7 @@ const Drop: NextPage = () => {
   const showPdfReader = !!(metaborgSmartContractNFTs?.result || []).filter(
     (nft) => ["1", "2", "3"].includes(nft.token_id)
   ).length;
+
   const sectionsLoading = isFetchingAvbMints || isLoadingAvbMints;
 
   if (appIsEnabled === "false") {
@@ -192,6 +222,7 @@ const Drop: NextPage = () => {
           distributionMetadata={distributionMetadata}
           onMintSuccess={onMintSuccess}
           isLoading={isFetching || isLoading}
+          distIndex={distIndex as string}
         />
       )}
 

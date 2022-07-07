@@ -19,6 +19,7 @@ function useAvailableMints({
   promiseAll = false,
 }: IUseAvailableMintsProps = {}) {
   const { user } = useMoralis();
+  const [mintsObj, setMintsObj] = useState<Record<string, number>>({});
   const [allAvailableMints, setAllAvailableMints] = useState<string | number>(
     ""
   );
@@ -61,7 +62,11 @@ function useAvailableMints({
       fetch();
     } else {
       fetchAll().then((data) => {
-        data?.forEach((mints: any) => {
+        data?.forEach((mints: any, index) => {
+          setMintsObj((prev) => ({
+            ...prev,
+            [index + 1]: Number(mints?.value),
+          }));
           setAllAvailableMints(
             (prevState) => Number(prevState) + Number(mints?.value)
           );
@@ -75,6 +80,7 @@ function useAvailableMints({
   return {
     fetch,
     fetchAll,
+    mintsObj,
     availableMints: data ? Number((data as object).toString()) : "",
     allAvailableMints: promiseAll ? allAvailableMints : null,
     isFetching,

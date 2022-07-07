@@ -12,10 +12,31 @@ interface IUseDistributionMetaData {
   onError?: (error: Error) => void;
 }
 
-const getData = (data: any[], index: number, format: boolean = false) => {
+export const getData = (
+  data: any[],
+  index: number,
+  format: boolean = false
+) => {
   if (!data) return format ? 0 : "";
 
   return format ? Number(data[index].toString()) : data[index];
+};
+
+export const getFormatedData = (data: any): DistributionMetaData => {
+  return {
+    originalData: {
+      price: getData(data, 0),
+      diamondSupply: getData(data, 4),
+      goldSupply: getData(data, 5),
+      originlSupply: getData(data, 6),
+    },
+    formatedData: {
+      price: getData(data, 0, true),
+      diamondSupply: getData(data, 4, true),
+      goldSupply: getData(data, 5, true),
+      originlSupply: getData(data, 6, true),
+    },
+  };
 };
 
 function useDistributionMetadata({
@@ -36,23 +57,6 @@ function useDistributionMetadata({
 
   const dependencies = [...(deps || []), enabled];
 
-  const getFormatedData = (data: any): DistributionMetaData => {
-    return {
-      originalData: {
-        price: getData(data, 0),
-        diamondSupply: getData(data, 4),
-        goldSupply: getData(data, 5),
-        originlSupply: getData(data, 6),
-      },
-      formatedData: {
-        price: getData(data, 0, true),
-        diamondSupply: getData(data, 4, true),
-        goldSupply: getData(data, 5, true),
-        originlSupply: getData(data, 6, true),
-      },
-    };
-  };
-
   useEffect(() => {
     if (enabled) {
       fetch({
@@ -65,6 +69,7 @@ function useDistributionMetadata({
   }, dependencies);
 
   return {
+    fetch,
     data: getFormatedData(data),
     isLoading,
     isFetching,
