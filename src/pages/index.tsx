@@ -130,7 +130,7 @@ const Drop: NextPage = () => {
     eventName: "TransferSingle",
   });
 
-  const { data: metaborgSmartContractNFTs } = useContractNFTs({
+  const { filteredResult } = useContractNFTs({
     contractAddress: metaborgContractAddress!,
     address: user?.get("ethAddress"),
     enabled: isAuthenticated && isWeb3Enabled,
@@ -170,8 +170,8 @@ const Drop: NextPage = () => {
     });
   }
 
-  const showPdfReader = !!(metaborgSmartContractNFTs?.result || []).filter(
-    (nft) => ["1", "2", "3"].includes(nft.token_id)
+  const showPdfReader = !!(filteredResult || []).filter((nft) =>
+    ["1", "2", "3"].includes(nft.token_id)
   ).length;
 
   const sectionsLoading = isFetchingAvbMints || isLoadingAvbMints;

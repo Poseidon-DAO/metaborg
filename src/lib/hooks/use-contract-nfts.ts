@@ -26,14 +26,11 @@ function useContractNFTs({
   }[process.env.NEXT_PUBLIC_CHAIN_ID!];
 
   const Web3Api = useMoralisWeb3Api();
-  const { fetch, ...result } = useMoralisWeb3ApiCall(
-    Web3Api.account.getNFTsForContract,
-    {
-      chain: chainId,
-      token_address: contractAddress,
-      address: address || "",
-    }
-  );
+  const { fetch, ...data } = useMoralisWeb3ApiCall(Web3Api.account.getNFTs, {
+    chain: chainId,
+    // token_address: contractAddress,
+    address: address || "",
+  });
 
   const dependencies = [...(deps || []), enabled];
 
@@ -45,7 +42,13 @@ function useContractNFTs({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 
-  return result;
+  return {
+    ...data,
+    result: data?.data?.result,
+    filteredResult: data?.data?.result?.filter(
+      (nft) => nft.token_address.toLowerCase() === contractAddress.toLowerCase()
+    ),
+  };
 }
 
 export { useContractNFTs };
