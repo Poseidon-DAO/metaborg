@@ -176,23 +176,16 @@ const Drop: NextPage = () => {
 
   const sectionsLoading = isFetchingAvbMints || isLoadingAvbMints;
 
-  if (appIsEnabled === "false") {
-    return (
-      <DropLayout>
+  return (
+    <DropLayout>
+      {appEnabledMessage != "" && (
         <Box my={20}>
           <Heading fontSize="6xl" textAlign="center">
             {appEnabledMessage}
           </Heading>
         </Box>
-        <Box mt={[16, 40]}>
-          <Editions />
-        </Box>
-      </DropLayout>
-    );
-  }
+      )}
 
-  return (
-    <DropLayout>
       {!isAuthenticated && (
         <Container my={10} centerContent>
           <Box maxW="xl">
