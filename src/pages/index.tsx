@@ -26,6 +26,7 @@ import { useContractCall } from "lib/hooks/use-contract-call";
 const metaborgContractAddress =
   process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS;
 const appIsEnabled = process.env.NEXT_PUBLIC_APP_AVAILABLE;
+const appEnabledMessage = process.env.NEXT_PUBLIC_APP_AVAILABLE_MESSAGE;
 
 const Drop: NextPage = () => {
   const toast = useToast();
@@ -180,7 +181,7 @@ const Drop: NextPage = () => {
       <DropLayout>
         <Box my={20}>
           <Heading fontSize="6xl" textAlign="center">
-            The minting has not started yet!
+            {appEnabledMessage}
           </Heading>
         </Box>
         <Box mt={[16, 40]}>
