@@ -27,7 +27,6 @@ const metaborgContractAddress =
 const appIsEnabled = process.env.NEXT_PUBLIC_APP_AVAILABLE;
 const appEnabledMessage = process.env.NEXT_PUBLIC_APP_AVAILABLE_MESSAGE;
 
-let timerId: ReturnType<typeof setTimeout>;
 const Drop: NextPage = () => {
   const toast = useToast();
   const toastId = new Date().toString() + Math.random();
@@ -112,17 +111,16 @@ const Drop: NextPage = () => {
 
   const [myAvailableMints, setMyAvailableMints] = useState(allAvailableMints);
 
-  const { data: distributionMetadata, fetch: fetchDistributionMetadata } =
-    useDistributionMetadata({
-      mangaDistributionID: indexOrNonZeroIndex,
-      enabled: isAuthenticated && isWeb3Enabled && !!indexOrNonZeroIndex,
-      deps: [
-        isAuthenticated,
-        isWeb3Enabled,
-        indexOrNonZeroIndex,
-        myAvailableMints,
-      ],
-    });
+  const { data: distributionMetadata } = useDistributionMetadata({
+    mangaDistributionID: indexOrNonZeroIndex,
+    enabled: isAuthenticated && isWeb3Enabled && !!indexOrNonZeroIndex,
+    deps: [
+      isAuthenticated,
+      isWeb3Enabled,
+      indexOrNonZeroIndex,
+      myAvailableMints,
+    ],
+  });
 
   useEffect(() => {
     setMyAvailableMints(allAvailableMints);
@@ -147,21 +145,62 @@ const Drop: NextPage = () => {
   const [disableMintButton, setDisableMintButton] = useState<boolean | null>(
     null
   );
+  const [refetchData, setRefetchData] = useState(false);
 
-  async function onMintSuccess(mintData: any) {
+  useEffect(() => {
+    let timerId: ReturnType<typeof setTimeout>;
+
+    let max = 5;
+    let count = 0;
+
+    if (refetchData && count < max) {
+      let intervalId: ReturnType<typeof setInterval>;
+
+      timerId = setTimeout(() => {
+        intervalId = setInterval(() => {
+          console.log("Fetching...");
+          fetchNFTs();
+
+          if (count === max) {
+            clearInterval(intervalId);
+            clearTimeout(timerId);
+          }
+          count++;
+        }, 30000);
+      }, 30000);
+    }
+
+    return () => clearTimeout(timerId);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refetchData]);
+
+  useEffect(() => {
+    let timerId: ReturnType<typeof setTimeout>;
+
+    if (refetchData) {
+      timerId = setTimeout(() => {
+        setRefetchData(false);
+      }, 6 * 30000);
+    }
+
+    return () => clearTimeout(timerId);
+  }, [refetchData]);
+
+  async function onMintSuccess() {
+    let timerId: ReturnType<typeof setTimeout>;
     fetchTokenTransferEvent({
+      onComplete: () => {
+        timerId = setTimeout(() => {
+          setDisableMintButton(false);
+        }, 10000);
+      },
       onSuccess: () => {
         setMyAvailableMints((prevState) => Number(prevState) - 1);
-
         setDisableMintButton(true);
+        setRefetchData(true);
 
-        fetchNFTs({
-          onSuccess: () => {
-            clearTimeout(timerId);
-            setDisableMintButton(false);
-          },
-          onError: (err) => console.error(err),
-        });
+        clearTimeout(timerId);
       },
       onError: (err) => console.log("error", err),
     });
