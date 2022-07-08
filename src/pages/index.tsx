@@ -21,7 +21,6 @@ import {
 import { type NextPage } from "next";
 import { useDistributionIndex } from "lib/hooks/use-distribution-index";
 import { getDefaultToastConfig } from "utils/toast";
-import { useContractCall } from "lib/hooks/use-contract-call";
 
 const metaborgContractAddress =
   process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS;
@@ -95,8 +94,8 @@ const Drop: NextPage = () => {
   } = useAvailableMints({
     promiseAll: true,
     enabled: isAuthenticated && isWeb3Enabled,
-    deps: [isAuthenticated, isWeb3Enabled, distIndex],
-    _mangaDistributionID: distIndex,
+    deps: [isAuthenticated, isWeb3Enabled, index],
+    _mangaDistributionID: index,
   });
 
   useEffect(() => {
@@ -108,13 +107,20 @@ const Drop: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allAvailableMints]);
 
+  const indexOrNonZeroIndex = mintsObj[index] > 0 ? index : distIndex;
+
   const [myAvailableMints, setMyAvailableMints] = useState(allAvailableMints);
 
   const { data: distributionMetadata, fetch: fetchDistributionMetadata } =
     useDistributionMetadata({
-      mangaDistributionID: distIndex,
-      enabled: isAuthenticated && isWeb3Enabled && !!distIndex,
-      deps: [isAuthenticated, isWeb3Enabled, distIndex, myAvailableMints],
+      mangaDistributionID: indexOrNonZeroIndex,
+      enabled: isAuthenticated && isWeb3Enabled && !!indexOrNonZeroIndex,
+      deps: [
+        isAuthenticated,
+        isWeb3Enabled,
+        indexOrNonZeroIndex,
+        myAvailableMints,
+      ],
     });
 
   useEffect(() => {
@@ -160,7 +166,7 @@ const Drop: NextPage = () => {
             },
             params: {
               params: {
-                _mangaDistributionID: distIndex,
+                _mangaDistributionID: indexOrNonZeroIndex,
               },
             },
           });
@@ -235,7 +241,7 @@ const Drop: NextPage = () => {
           distributionMetadata={distributionMetadata}
           onMintSuccess={onMintSuccess}
           isLoading={isFetching || isLoading}
-          distIndex={distIndex as string}
+          distIndex={indexOrNonZeroIndex as string}
           disabled={disableMintButton}
         />
       )}
