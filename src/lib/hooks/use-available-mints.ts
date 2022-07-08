@@ -68,7 +68,7 @@ function useAvailableMints({
             [index + 1]: Number(mints?.value),
           }));
           setAllAvailableMints((prevState) => {
-            return Number(prevState) + Number(mints?.value.toString());
+            return Number(prevState) + Number(mints?.value);
           });
         });
       });

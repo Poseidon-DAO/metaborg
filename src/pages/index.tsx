@@ -27,6 +27,7 @@ const metaborgContractAddress =
 const appIsEnabled = process.env.NEXT_PUBLIC_APP_AVAILABLE;
 const appEnabledMessage = process.env.NEXT_PUBLIC_APP_AVAILABLE_MESSAGE;
 
+let timerId: ReturnType<typeof setTimeout>;
 const Drop: NextPage = () => {
   const toast = useToast();
   const toastId = new Date().toString() + Math.random();
@@ -136,41 +137,31 @@ const Drop: NextPage = () => {
     eventName: "TransferSingle",
   });
 
-  const { filteredResult } = useContractNFTs({
+  const { filteredResult, fetch: fetchNFTs } = useContractNFTs({
     contractAddress: metaborgContractAddress!,
     address: user?.get("ethAddress"),
     enabled: isAuthenticated && isWeb3Enabled,
     deps: [isAuthenticated, isWeb3Enabled && myAvailableMints],
   });
 
-  const [disableMintButton, setDisableMintButton] = useState(false);
+  const [disableMintButton, setDisableMintButton] = useState<boolean | null>(
+    null
+  );
 
-  let timerId: ReturnType<typeof setTimeout>;
   async function onMintSuccess(mintData: any) {
     fetchTokenTransferEvent({
       onSuccess: () => {
         setMyAvailableMints((prevState) => Number(prevState) - 1);
 
         setDisableMintButton(true);
-        timerId = setTimeout(() => {
-          fetchDistributionMetadata({
-            onSuccess: () => {
-              clearTimeout(timerId);
-              setDisableMintButton(false);
-              toast(
-                getDefaultToastConfig({
-                  title: "You have successfully minted the NFT",
-                  status: "success",
-                })
-              );
-            },
-            params: {
-              params: {
-                _mangaDistributionID: indexOrNonZeroIndex,
-              },
-            },
-          });
-        }, 15000);
+
+        fetchNFTs({
+          onSuccess: () => {
+            clearTimeout(timerId);
+            setDisableMintButton(false);
+          },
+          onError: (err) => console.error(err),
+        });
       },
       onError: (err) => console.log("error", err),
     });
@@ -179,6 +170,15 @@ const Drop: NextPage = () => {
   const showPdfReader = !!(filteredResult || []).filter((nft) =>
     ["1", "2", "3"].includes(nft.token_id)
   ).length;
+  const diamondSupply = Number(
+    filteredResult?.find((manga) => manga.token_id === "1")?.amount
+  );
+  const goldSupply = Number(
+    filteredResult?.find((manga) => manga.token_id === "2")?.amount
+  );
+  const originalSupply = Number(
+    filteredResult?.find((manga) => manga.token_id === "3")?.amount
+  );
 
   const sectionsLoading = isFetchingAvbMints || isLoadingAvbMints;
 
@@ -242,13 +242,17 @@ const Drop: NextPage = () => {
           onMintSuccess={onMintSuccess}
           isLoading={isFetching || isLoading}
           distIndex={indexOrNonZeroIndex as string}
-          disabled={disableMintButton}
+          disabled={!!disableMintButton}
         />
       )}
 
       {isAuthenticated && showPdfReader && (
         <Box mt={0} mb={20}>
-          <MangaList distributionMetadata={distributionMetadata} />
+          <MangaList
+            diamondSupply={diamondSupply}
+            goldSupply={goldSupply}
+            originalSupply={originalSupply}
+          />
         </Box>
       )}
 

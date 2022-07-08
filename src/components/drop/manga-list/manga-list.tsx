@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -17,7 +17,6 @@ import { Document, Page, pdfjs } from "react-pdf";
 import { Line } from "components/common";
 
 import type { NextPage } from "next";
-import { DistributionMetaData } from "store/types";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
@@ -29,18 +28,19 @@ const options = {
 
 interface IMintedNFTsListProps {
   showTopLine?: boolean;
-  distributionMetadata: DistributionMetaData;
+  diamondSupply?: number;
+  goldSupply?: number;
+  originalSupply?: number;
 }
 
 const MangaList: NextPage<IMintedNFTsListProps> = ({
   showTopLine,
-  distributionMetadata,
+  diamondSupply,
+  goldSupply,
+  originalSupply,
 }) => {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
-
-  const { diamondSupply, goldSupply, originlSupply } =
-    distributionMetadata.formatedData;
 
   const tabs = [
     {
@@ -58,7 +58,7 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({
     {
       tabId: 3,
       name: "Original",
-      supply: originlSupply,
+      supply: originalSupply,
       pdfFile: process.env.NEXT_PUBLIC_ORIGINAL_PDF,
     },
   ];
@@ -67,7 +67,13 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({
     setNumPages(numPages);
   }
 
-  const currentTabIndex = tabs.findIndex((tab) => tab.supply > 0);
+  const currentTabIndex = tabs.findIndex((tab) => Number(tab.supply)! > 0);
+  const [tabIndex, setTabIndex] = useState(currentTabIndex);
+
+  useEffect(() => {
+    setTabIndex(tabIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTabIndex]);
 
   return (
     <Flex flexDir="column">
@@ -78,7 +84,8 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({
       )}
 
       <Tabs
-        index={currentTabIndex}
+        index={tabIndex}
+        onChange={(index) => setTabIndex(index)}
         isFitted
         variant="enclosed"
         borderColor="brand.transparent"
@@ -101,7 +108,7 @@ const MangaList: NextPage<IMintedNFTsListProps> = ({
                 }}
               >
                 <Text>{name}</Text>
-                <Text fontSize="sm">You own: {supply}</Text>
+                <Text fontSize="sm">You own: {!!supply ? supply : 0}</Text>
               </Tab>
             );
           })}

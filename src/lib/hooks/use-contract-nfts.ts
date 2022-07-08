@@ -44,6 +44,7 @@ function useContractNFTs({
 
   return {
     ...data,
+    fetch,
     result: data?.data?.result,
     filteredResult: data?.data?.result?.filter(
       (nft) => nft.token_address.toLowerCase() === contractAddress.toLowerCase()
