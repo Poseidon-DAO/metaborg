@@ -3,7 +3,7 @@ import {
   useMoralisWeb3Api,
   useMoralisWeb3ApiCall,
 } from "react-moralis";
-import MetaborgABI from "contracts/abis/Metaborg.json";
+import MetaborgABI from "contracts/abis/Issue1.json";
 
 interface IUseTokenTransferEventProps {
   address: string;

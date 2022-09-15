@@ -1,6 +1,6 @@
 import { useWeb3ExecuteFunction } from "react-moralis";
 
-import MetaborgABI from "contracts/abis/Metaborg.json";
+import MetaborgABI from "contracts/abis/Issue1.json";
 
 interface IUseContractCallProps {
   functionName: string;
@@ -15,7 +15,7 @@ function useContractCall({
 }: IUseContractCallProps) {
   const result = useWeb3ExecuteFunction({
     abi: MetaborgABI,
-    contractAddress: process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS,
+    contractAddress: process.env.NEXT_PUBLIC_ISSUE1_CONTRACT_ADDRESS,
     functionName,
     params: {
       ...params,

@@ -10,9 +10,9 @@ interface INftsListProps {
   nifties: Nifty[];
 }
 
-const neverNextTokenId = process.env.NEXT_PUBLIC_NG_NEVER_NEXT_TOKEN_ID;
-const alwaysTokenId = process.env.NEXT_PUBLIC_NG_ALWAYS_TOKEN_ID;
-const aloneTokenId = process.env.NEXT_PUBLIC_NG_ALONE_TOKEN_ID;
+const neverNextTokenId = process.env.NEXT_PUBLIC_NEVER_NEXT_TOKEN_ID;
+const alwaysTokenId = process.env.NEXT_PUBLIC_ALWAYS_TOKEN_ID;
+const aloneTokenId = process.env.NEXT_PUBLIC_ALONE_TOKEN_ID;
 
 const NftsList: NextPage<INftsListProps> = ({ nifties }) => {
   if (!nifties.length) {

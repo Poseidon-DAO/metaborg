@@ -20,8 +20,7 @@ import { type NextPage } from "next";
 import { useDistributionIndex } from "lib/hooks/use-distribution-index";
 import { ConnectSection } from "components/common/connect-section/connect-section";
 
-const metaborgContractAddress =
-  process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS;
+const metaborgContractAddress = process.env.NEXT_PUBLIC_ISSUE1_CONTRACT_ADDRESS;
 const appIsEnabled = process.env.NEXT_PUBLIC_APP_AVAILABLE;
 const appEnabledMessage = process.env.NEXT_PUBLIC_APP_AVAILABLE_MESSAGE;
 

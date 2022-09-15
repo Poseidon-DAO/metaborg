@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useWeb3ExecuteFunction } from "react-moralis";
 
-import MetaborgABI from "contracts/abis/Metaborg.json";
+import MetaborgABI from "contracts/abis/Issue1.json";
 import { DistributionMetaData } from "store/types";
 
 interface IUseDistributionMetaData {
@@ -48,7 +48,7 @@ function useDistributionMetadata({
 }: IUseDistributionMetaData) {
   const { fetch, data, isLoading, isFetching, error } = useWeb3ExecuteFunction({
     abi: MetaborgABI,
-    contractAddress: process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS,
+    contractAddress: process.env.NEXT_PUBLIC_ISSUE1_CONTRACT_ADDRESS,
     functionName: "getDistributionMetaData",
     params: {
       _mangaDistributionID: mangaDistributionID,
