@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { Box, Container, Heading, Spinner, useToast } from "@chakra-ui/react";
 
-import { DropLayout } from "layout/drop";
 import { Strips } from "components/common";
 import {
   Editions,
@@ -19,6 +18,7 @@ import {
 
 import { type NextPage } from "next";
 import { useDistributionIndex } from "lib/hooks/use-distribution-index";
+import { ConnectSection } from "components/common/connect-section/connect-section";
 
 const metaborgContractAddress =
   process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS;
@@ -220,7 +220,7 @@ const Issue1: NextPage = () => {
   const sectionsLoading = isFetchingAvbMints || isLoadingAvbMints;
 
   return (
-    <DropLayout>
+    <Box>
       {appEnabledMessage != "" && (
         <Box my={20}>
           <Heading fontSize="6xl" textAlign="center">
@@ -230,18 +230,9 @@ const Issue1: NextPage = () => {
       )}
 
       {!isAuthenticated && (
-        <Container my={10} centerContent>
-          <Box maxW="xl">
-            <Heading textAlign="center" size={["xl", "2xl"]}>
-              Welcome fighter collector, let us verify your enrollment
-            </Heading>
-          </Box>
-
-          <Box my={[4, 8]}>
-            <Strips />
-            <ConnectWallet />
-          </Box>
-        </Container>
+        <Box my={10}>
+          <ConnectSection title="Welcome fighter collector, let us verify your enrollment" />
+        </Box>
       )}
 
       {!isAuthenticated && (
@@ -296,7 +287,7 @@ const Issue1: NextPage = () => {
       <Box mt={[16, 40]}>
         <Editions />
       </Box>
-    </DropLayout>
+    </Box>
   );
 };
 

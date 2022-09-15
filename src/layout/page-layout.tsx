@@ -6,6 +6,7 @@ import { Footer } from "components/drop/footer";
 
 import { type ReactNode } from "react";
 import { type NextPage } from "next";
+import { PageContainer } from "components/common";
 
 interface IPageLayoutProps {
   children: ReactNode;
@@ -21,7 +22,7 @@ const navigationForRoute: Record<
   },
   "/five-stars": {
     header: null,
-    footer: null,
+    footer: <Footer />,
   },
 };
 
@@ -29,10 +30,12 @@ const PageLayout: NextPage<IPageLayoutProps> = ({ children }) => {
   const { pathname } = useRouter();
 
   return (
-    <Box>
+    <Box position="relative">
       {navigationForRoute[pathname] && navigationForRoute[pathname].header}
 
-      {children}
+      <PageContainer>
+        <Box minH={["60vh", "100vh"]}>{children}</Box>
+      </PageContainer>
 
       {navigationForRoute[pathname] && navigationForRoute[pathname].footer}
     </Box>

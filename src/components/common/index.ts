@@ -1,3 +1,4 @@
+export * from "./connect-section";
 export * from "./full-page-loader";
 export * from "./image";
 export * from "./line";
