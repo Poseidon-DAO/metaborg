@@ -11,7 +11,6 @@ import {
   MintSection,
 } from "components/drop";
 import {
-  getFormatedData,
   useAvailableMints,
   useContractNFTs,
   useDistributionMetadata,
@@ -20,7 +19,6 @@ import {
 
 import { type NextPage } from "next";
 import { useDistributionIndex } from "lib/hooks/use-distribution-index";
-import { getDefaultToastConfig } from "utils/toast";
 
 const metaborgContractAddress =
   process.env.NEXT_PUBLIC_METABORG_CONTRACT_ADDRESS;
