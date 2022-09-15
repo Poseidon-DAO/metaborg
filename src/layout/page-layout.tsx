@@ -6,7 +6,8 @@ import { Footer } from "components/drop/footer";
 
 import { type ReactNode } from "react";
 import { type NextPage } from "next";
-interface IHeaderProviderProps {
+
+interface IPageLayoutProps {
   children: ReactNode;
 }
 
@@ -14,17 +15,17 @@ const navigationForRoute: Record<
   string,
   { header: ReactNode; footer: ReactNode }
 > = {
-  "/": {
+  "/issue1": {
     header: <Header />,
     footer: <Footer />,
   },
-  "/landing": {
+  "/five-stars": {
     header: null,
     footer: null,
   },
 };
 
-const HeaderProvider: NextPage<IHeaderProviderProps> = ({ children }) => {
+const PageLayout: NextPage<IPageLayoutProps> = ({ children }) => {
   const { pathname } = useRouter();
 
   return (
@@ -38,4 +39,4 @@ const HeaderProvider: NextPage<IHeaderProviderProps> = ({ children }) => {
   );
 };
 
-export { HeaderProvider };
+export { PageLayout };

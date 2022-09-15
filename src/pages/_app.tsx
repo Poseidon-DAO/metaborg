@@ -3,7 +3,7 @@ import { MoralisProvider } from "react-moralis";
 import Head from "next/head";
 import { ChakraProvider } from "@chakra-ui/react";
 
-import { HeaderProvider } from "layout/header-provider";
+import { PageLayout } from "layout/page-layout";
 import { theme } from "theme";
 
 import type { AppProps } from "next/app";
@@ -37,9 +37,9 @@ function App({ Component, pageProps }: AppProps) {
         serverUrl={process.env.NEXT_PUBLIC_SERVER_URL!}
       >
         <ChakraProvider theme={theme}>
-          <HeaderProvider>
+          <PageLayout>
             <Component {...pageProps} />
-          </HeaderProvider>
+          </PageLayout>
         </ChakraProvider>
       </MoralisProvider>
     </>
