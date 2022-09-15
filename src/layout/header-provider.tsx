@@ -29,13 +29,10 @@ const HeaderProvider: NextPage<IHeaderProviderProps> = ({ children }) => {
 
   return (
     <Box>
-      {/* header */}
       {navigationForRoute[pathname] && navigationForRoute[pathname].header}
 
-      {/* content */}
       {children}
 
-      {/* footer */}
       {navigationForRoute[pathname] && navigationForRoute[pathname].footer}
     </Box>
   );
