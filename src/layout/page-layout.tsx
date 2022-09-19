@@ -1,13 +1,16 @@
+import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
-
-import { Header } from "components/common";
-import { Footer } from "components/common";
-
-import { useEffect, type ReactNode } from "react";
-import { type NextPage } from "next";
-import { PageContainer } from "components/common";
 import { useMoralis } from "react-moralis";
+
+import {
+  FullPageLoader,
+  Header,
+  Footer,
+  PageContainer,
+} from "components/common";
+
+import { type NextPage } from "next";
 
 interface IPageLayoutProps {
   children: ReactNode;
@@ -29,7 +32,8 @@ const navigationForRoute: Record<
 
 const PageLayout: NextPage<IPageLayoutProps> = ({ children }) => {
   const { pathname } = useRouter();
-  const { isAuthenticated, isWeb3Enabled, enableWeb3 } = useMoralis();
+  const { isAuthenticated, isWeb3Enabled, enableWeb3, isWeb3EnableLoading } =
+    useMoralis();
 
   useEffect(() => {
     if (isAuthenticated && !isWeb3Enabled) {
@@ -38,6 +42,10 @@ const PageLayout: NextPage<IPageLayoutProps> = ({ children }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, isWeb3Enabled]);
+
+  if (!isWeb3Enabled || isWeb3EnableLoading) {
+    return <FullPageLoader />;
+  }
 
   return (
     <Box position="relative">

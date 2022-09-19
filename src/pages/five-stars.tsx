@@ -1,12 +1,21 @@
+import { useEffect } from "react";
 import { useMoralis } from "react-moralis";
 import { NextPage } from "next";
 import { Box, Image } from "@chakra-ui/react";
 
+import { useAvailablePages } from "lib/hooks/five-stars";
 import { ConnectSection, AccountInfo } from "components/common";
 import { Benefits, MintSection, Packages } from "components/five-stars";
 
 const FiveStars: NextPage = () => {
   const { isAuthenticated } = useMoralis();
+  const { fetchAvailablePages } = useAvailablePages();
+
+  useEffect(() => {
+    fetchAvailablePages();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box>
