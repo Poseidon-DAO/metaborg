@@ -4,7 +4,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { Button, Flex } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/icons";
 
-import { DisconnectModal } from "components/drop/disconnect-modal";
+import { DisconnectModal } from "components/common";
 import { formatPublicKey } from "utils/account";
 
 import type { NextPage } from "next";

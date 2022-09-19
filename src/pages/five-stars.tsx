@@ -1,9 +1,9 @@
+import { useMoralis } from "react-moralis";
 import { NextPage } from "next";
 import { Box, Image } from "@chakra-ui/react";
-import { ConnectSection } from "components/common";
-import { Benefits, MintSection } from "components/five-stars";
-import { Packages } from "components/five-stars";
-import { useMoralis } from "react-moralis";
+
+import { ConnectSection, AccountInfo } from "components/common";
+import { Benefits, MintSection, Packages } from "components/five-stars";
 
 const FiveStars: NextPage = () => {
   const { isAuthenticated } = useMoralis();
@@ -14,11 +14,17 @@ const FiveStars: NextPage = () => {
         <Image src="assets/five-stars-cover.jpg" alt="cover" />
       </Box>
 
-      <Box pt={80}>
-        {!isAuthenticated && (
+      {!isAuthenticated && (
+        <Box pt={80}>
           <ConnectSection title="Welcome fighter collector, collect your wallet" />
-        )}
-      </Box>
+        </Box>
+      )}
+
+      {isAuthenticated && (
+        <Box pt={60} mb={40}>
+          <AccountInfo />
+        </Box>
+      )}
 
       <Box my={4}>
         <Packages />

@@ -1,5 +1,5 @@
 import { Box, Container, Heading } from "@chakra-ui/react";
-import { ConnectWallet } from "components/drop";
+import { ConnectWallet } from "components/common";
 import { NextPage } from "next";
 
 import { Strips } from "../strips";

@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { Box, Button, Flex, Heading, useToast } from "@chakra-ui/react";
 import { Image, Line } from "components/common";
-import { useMint } from "lib/hooks";
-import { useDistributionIndex } from "lib/hooks/use-distribution-index";
+import { useMint } from "lib/hooks/issue1";
+import { useDistributionIndex } from "lib/hooks/issue1";
 import type { NextPage } from "next";
 import { useState } from "react";
 import { useMoralis } from "react-moralis";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Button } from "@chakra-ui/react";
 
-import { ConnectModal } from "components/drop/connect-modal";
+import { ConnectModal } from "components/common";
 
 import type { NextPage } from "next";
 

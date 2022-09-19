@@ -13,8 +13,8 @@ import {
 import { useStore } from "store/store";
 import { Image, Line } from "components/common";
 import { Nifty, NiftyNames } from "lib/api/types";
-import { useMint } from "lib/hooks";
-import { useAvailableMints } from "lib/hooks/use-available-mints";
+import { useMint } from "lib/hooks/issue1";
+import { useAvailableMints } from "lib/hooks/issue1";
 import { getDefaultToastConfig } from "utils/toast";
 
 import type { NextPage } from "next";

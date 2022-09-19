@@ -1,24 +1,18 @@
 import { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
-import { Box, Container, Heading, Spinner, useToast } from "@chakra-ui/react";
+import { Box, Heading, Spinner, useToast } from "@chakra-ui/react";
 
-import { Strips } from "components/common";
-import {
-  Editions,
-  MangaList,
-  ConnectWallet,
-  MintSection,
-} from "components/drop";
+import { Editions, MangaList, MintSection } from "components/drop";
 import {
   useAvailableMints,
   useContractNFTs,
   useDistributionMetadata,
   useTokenTransferEvent,
-} from "lib/hooks";
+} from "lib/hooks/issue1";
 
 import { type NextPage } from "next";
-import { useDistributionIndex } from "lib/hooks/use-distribution-index";
-import { ConnectSection } from "components/common/connect-section/connect-section";
+import { useDistributionIndex } from "lib/hooks/issue1";
+import { ConnectSection } from "components/common";
 
 const metaborgContractAddress = process.env.NEXT_PUBLIC_ISSUE1_CONTRACT_ADDRESS;
 const appIsEnabled = process.env.NEXT_PUBLIC_APP_AVAILABLE;
@@ -27,14 +21,7 @@ const appEnabledMessage = process.env.NEXT_PUBLIC_APP_AVAILABLE_MESSAGE;
 const Issue1: NextPage = () => {
   const toast = useToast();
   const toastId = new Date().toString() + Math.random();
-  const { isAuthenticated, enableWeb3, isWeb3Enabled, user, Moralis, logout } =
-    useMoralis();
-
-  useEffect(() => {
-    enableWeb3();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { isAuthenticated, user, Moralis, logout } = useMoralis();
 
   useEffect(() => {
     const unsubscribeAccountChangeHandler = Moralis.onAccountChanged(() => {
@@ -73,8 +60,8 @@ const Issue1: NextPage = () => {
   }, []);
 
   const { index } = useDistributionIndex({
-    enabled: isAuthenticated && isWeb3Enabled,
-    deps: [isAuthenticated, isWeb3Enabled],
+    enabled: !!isAuthenticated,
+    deps: [isAuthenticated],
   });
 
   const [distIndex, setDistIndex] = useState(index);
@@ -90,8 +77,8 @@ const Issue1: NextPage = () => {
     mintsObj,
   } = useAvailableMints({
     promiseAll: true,
-    enabled: isAuthenticated && isWeb3Enabled,
-    deps: [isAuthenticated, isWeb3Enabled, index],
+    enabled: !!isAuthenticated,
+    deps: [isAuthenticated, index],
     _mangaDistributionID: index,
   });
 
@@ -110,13 +97,8 @@ const Issue1: NextPage = () => {
 
   const { data: distributionMetadata } = useDistributionMetadata({
     mangaDistributionID: indexOrNonZeroIndex,
-    enabled: isAuthenticated && isWeb3Enabled && !!indexOrNonZeroIndex,
-    deps: [
-      isAuthenticated,
-      isWeb3Enabled,
-      indexOrNonZeroIndex,
-      myAvailableMints,
-    ],
+    enabled: !!isAuthenticated && !!indexOrNonZeroIndex,
+    deps: [isAuthenticated, indexOrNonZeroIndex, myAvailableMints],
   });
 
   useEffect(() => {
@@ -135,8 +117,8 @@ const Issue1: NextPage = () => {
   const { filteredResult, fetch: fetchNFTs } = useContractNFTs({
     contractAddress: metaborgContractAddress!,
     address: user?.get("ethAddress"),
-    enabled: isAuthenticated && isWeb3Enabled,
-    deps: [isAuthenticated, isWeb3Enabled && myAvailableMints],
+    enabled: isAuthenticated,
+    deps: [isAuthenticated && myAvailableMints],
   });
 
   const [disableMintButton, setDisableMintButton] = useState<boolean | null>(
@@ -155,7 +137,6 @@ const Issue1: NextPage = () => {
 
       timerId = setTimeout(() => {
         intervalId = setInterval(() => {
-          console.log("Fetching...");
           fetchNFTs();
 
           if (count === max) {
