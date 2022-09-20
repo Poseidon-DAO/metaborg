@@ -11,7 +11,7 @@ function useAvailablePages() {
 
   return {
     ...result,
-    availablePages: !!result.data ? Number(result.data) : null,
+    availablePages: !!result.data ? Number(result.data) : undefined,
     fetchAvailablePages: result.fetch,
   };
 }

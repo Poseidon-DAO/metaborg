@@ -22,8 +22,8 @@ interface IMintItem {
 }
 
 const MintItem: NextPage<IMintItem> = ({ amount, imageUrl, price }) => {
-  const { isAuthenticated } = useMoralis();
-  const { buyMetaborgStar, isLoading, isFetching } = useBuyMetaborgStars({
+  const { isAuthenticated, isWeb3Enabled } = useMoralis();
+  const { buyMetaborgStar, data, isLoading, isFetching } = useBuyMetaborgStars({
     salePrice: price,
   });
   const [isVerifing, setVerifing] = useState(false);

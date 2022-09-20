@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { useMoralis } from "react-moralis";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -9,15 +7,10 @@ const initialPage = process.env.NEXT_PUBLIC_INITIAL_PAGE;
 
 const Index: NextPage = () => {
   const { replace } = useRouter();
-  const { isWeb3Enabled } = useMoralis();
 
-  useEffect(() => {
-    if (!!initialPage && isWeb3Enabled) {
-      replace(initialPage!);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWeb3Enabled]);
+  if (!!initialPage) {
+    replace(initialPage!);
+  }
 
   return <FullPageLoader />;
 };

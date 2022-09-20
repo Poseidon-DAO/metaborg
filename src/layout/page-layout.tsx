@@ -32,8 +32,7 @@ const navigationForRoute: Record<
 
 const PageLayout: NextPage<IPageLayoutProps> = ({ children }) => {
   const { pathname } = useRouter();
-  const { isAuthenticated, isWeb3Enabled, enableWeb3, isWeb3EnableLoading } =
-    useMoralis();
+  const { isAuthenticated, isWeb3Enabled, enableWeb3, user } = useMoralis();
 
   useEffect(() => {
     if (isAuthenticated && !isWeb3Enabled) {
@@ -42,10 +41,6 @@ const PageLayout: NextPage<IPageLayoutProps> = ({ children }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, isWeb3Enabled]);
-
-  if (!isWeb3Enabled || isWeb3EnableLoading) {
-    return <FullPageLoader />;
-  }
 
   return (
     <Box position="relative">
