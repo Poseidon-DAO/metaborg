@@ -3,30 +3,21 @@ import { useMoralis } from "react-moralis";
 import { NextPage } from "next";
 import { Box, Image } from "@chakra-ui/react";
 
-import { useAvailablePages, useBalanceOf } from "lib/hooks/five-stars";
+import { useAvailablePages } from "lib/hooks/five-stars";
 import { ConnectSection, AccountInfo } from "components/common";
 import { Benefits, MintSection, Packages } from "components/five-stars";
-import { useContractNFTs } from "lib/hooks/common";
 
 const FiveStars: NextPage = () => {
   const { isAuthenticated, isWeb3Enabled } = useMoralis();
   const { fetchAvailablePages, availablePages } = useAvailablePages();
-  const { fetchBalance, balance } = useBalanceOf();
-  const { fetchContractNfts, contractNfts } = useContractNFTs({
-    contractAddress: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS,
-  });
 
   useEffect(() => {
     if (isWeb3Enabled) {
       fetchAvailablePages();
-      fetchBalance();
-      fetchContractNfts();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWeb3Enabled]);
-
-  console.log({ balance, contractNfts });
 
   return (
     <Box>

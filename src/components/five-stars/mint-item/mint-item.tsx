@@ -15,19 +15,38 @@ import { useBuyMetaborgStars } from "lib/hooks/five-stars";
 import { getDefaultToastConfig } from "utils/toast";
 
 interface IMintItem {
-  id: string;
-  amount: number;
-  imageUrl: string;
-  price: string;
+  item: {
+    id: string;
+    amount: number;
+    imageUrl: string;
+    price: string;
+  };
+  disableButton?: boolean;
 }
 
-const MintItem: NextPage<IMintItem> = ({ amount, imageUrl, price }) => {
+const MintItem: NextPage<IMintItem> = ({
+  item: { amount, imageUrl, price },
+  disableButton,
+}) => {
   const { isAuthenticated, isWeb3Enabled } = useMoralis();
   const { buyMetaborgStar, data, isLoading, isFetching } = useBuyMetaborgStars({
     salePrice: price,
   });
   const [isVerifing, setVerifing] = useState(false);
   const toast = useToast();
+
+  function getToolTipMessage() {
+    const key = !isAuthenticated
+      ? "auth"
+      : disableButton
+      ? "sufficentPages"
+      : "";
+
+    return {
+      auth: "Please connect Metamask to mint!",
+      sufficentPages: "No more pages available!",
+    }[key as string];
+  }
 
   async function handleTransactionSuccess(transaction: any) {
     toast(
@@ -67,6 +86,11 @@ const MintItem: NextPage<IMintItem> = ({ amount, imageUrl, price }) => {
     });
   }
 
+  const isButtonDisabled =
+    disableButton || !isAuthenticated || isLoading || isFetching || isVerifing;
+  const isButtonLoading = isLoading || isFetching || isVerifing;
+  const isTooltipDisabled = (isAuthenticated && !disableButton) || false;
+
   return (
     <Flex my={14} justifyContent="space-between" alignItems="center">
       <Box w={800}>
@@ -77,9 +101,9 @@ const MintItem: NextPage<IMintItem> = ({ amount, imageUrl, price }) => {
 
       <Box textAlign="right">
         <Tooltip
-          isDisabled={isAuthenticated}
+          isDisabled={isTooltipDisabled}
           hasArrow
-          label="Please connect Metamask to mint!"
+          label={getToolTipMessage()}
         >
           <div>
             <Button
@@ -87,10 +111,8 @@ const MintItem: NextPage<IMintItem> = ({ amount, imageUrl, price }) => {
               size="xl"
               flexDir="column"
               onClick={handleMintClick}
-              isLoading={isLoading || isFetching || isVerifing}
-              disabled={
-                !isAuthenticated || isLoading || isFetching || isVerifing
-              }
+              isLoading={isButtonLoading}
+              disabled={isButtonDisabled}
             >
               <Heading color="brand.red">MINT</Heading>
               <Text>
@@ -102,6 +124,10 @@ const MintItem: NextPage<IMintItem> = ({ amount, imageUrl, price }) => {
       </Box>
     </Flex>
   );
+};
+
+MintItem.defaultProps = {
+  disableButton: false,
 };
 
 export { MintItem };

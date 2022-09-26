@@ -3,26 +3,7 @@ import { NextPage } from "next";
 
 import { MintItem } from "../mint-item";
 
-const data = [
-  {
-    id: "1",
-    amount: 1,
-    imageUrl: "/assets/five-stars/FS_NFTS_3.jpg",
-    price: "0.001",
-  },
-  {
-    id: "2",
-    amount: 3,
-    imageUrl: "/assets/five-stars/FS_NFTS_3.jpg",
-    price: "0.002",
-  },
-  {
-    id: "3",
-    amount: 5,
-    imageUrl: "/assets/five-stars/FS_NFTS_5.jpg",
-    price: "0.003",
-  },
-];
+import data from "./section-data";
 
 interface IMintSectionProps {
   maxPages?: number;
@@ -36,7 +17,7 @@ const MintSection: NextPage<IMintSectionProps> = ({ maxPages }) => {
   return (
     <Box py={4}>
       {filteredData.map((item) => (
-        <MintItem key={item.id} {...item} />
+        <MintItem key={item.id} item={item} disableButton={maxPages === 0} />
       ))}
     </Box>
   );
