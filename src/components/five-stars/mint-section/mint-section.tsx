@@ -15,7 +15,7 @@ const MintSection: NextPage<IMintSectionProps> = ({ maxPages }) => {
     : data;
 
   return (
-    <Box py={4}>
+    <Box py={[0, 4]}>
       {filteredData.map((item) => (
         <MintItem key={item.id} item={item} disableButton={maxPages === 0} />
       ))}

@@ -7,7 +7,7 @@ const Benefits = () => {
         BENEFITS
       </Heading>
 
-      <Box lineHeight="3.5">
+      <Box lineHeight={[1.5, 3.5]} fontSize={["sm", "lg"]}>
         <Text> - Genesis drop fighter collectors will have a discount.</Text>
         <Text whiteSpace="pre-line" lineHeight="1.3">
           {" "}

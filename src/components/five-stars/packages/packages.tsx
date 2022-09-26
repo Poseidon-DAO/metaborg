@@ -2,7 +2,12 @@ import { Box, Text } from "@chakra-ui/react";
 
 const Packages = () => {
   return (
-    <Box textAlign="center" fontWeight="extrabold" fontSize="large">
+    <Box
+      textAlign="center"
+      fontWeight="extrabold"
+      fontSize={["medium", "large"]}
+      px={[3, "initial"]}
+    >
       <Box mb={8}>
         <Text>You can choose from 3 different NFTs packages</Text>
       </Box>

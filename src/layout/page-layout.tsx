@@ -3,12 +3,7 @@ import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
 import { useMoralis } from "react-moralis";
 
-import {
-  FullPageLoader,
-  Header,
-  Footer,
-  PageContainer,
-} from "components/common";
+import { Header, Footer, PageContainer } from "components/common";
 
 import { type NextPage } from "next";
 

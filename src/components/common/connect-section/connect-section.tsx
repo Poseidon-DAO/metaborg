@@ -12,7 +12,7 @@ const ConnectSection: NextPage<IConnectSection> = ({ title }) => {
   return (
     <Container centerContent>
       <Box maxW="xl">
-        <Heading textAlign="center" size={["xl", "2xl"]}>
+        <Heading textAlign="center" size={["lg", "2xl"]}>
           {title}
         </Heading>
       </Box>

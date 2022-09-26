@@ -28,8 +28,8 @@ const MintItem: NextPage<IMintItem> = ({
   item: { amount, imageUrl, price },
   disableButton,
 }) => {
-  const { isAuthenticated, isWeb3Enabled } = useMoralis();
-  const { buyMetaborgStar, data, isLoading, isFetching } = useBuyMetaborgStars({
+  const { isAuthenticated } = useMoralis();
+  const { buyMetaborgStar, isLoading, isFetching } = useBuyMetaborgStars({
     salePrice: price,
   });
   const [isVerifing, setVerifing] = useState(false);
@@ -92,12 +92,22 @@ const MintItem: NextPage<IMintItem> = ({
   const isTooltipDisabled = (isAuthenticated && !disableButton) || false;
 
   return (
-    <Flex my={14} justifyContent="space-between" alignItems="center">
-      <Box w={800}>
+    <Flex
+      my={[28, 14]}
+      direction={["column", "row"]}
+      justifyContent="space-between"
+      alignItems="center"
+    >
+      <Box w={["initial", 800]}>
         <Image src={imageUrl} alt="nft to mint" />
       </Box>
 
-      <Box border="1px dotted" borderColor="brand.red" w="100%" h="1px" />
+      <Box
+        border="1px dotted"
+        borderColor="brand.red"
+        w={["1px", "100%"]}
+        h={["120px", "1px"]}
+      />
 
       <Box textAlign="right">
         <Tooltip
@@ -115,9 +125,10 @@ const MintItem: NextPage<IMintItem> = ({
               disabled={isButtonDisabled}
             >
               <Heading color="brand.red">MINT</Heading>
-              <Text>
+              <Text fontSize="lg">
                 {amount} NFT{amount > 1 ? "S" : ""}
               </Text>
+              <Text fontSize="sm">{price} ETH</Text>
             </Button>
           </div>
         </Tooltip>
