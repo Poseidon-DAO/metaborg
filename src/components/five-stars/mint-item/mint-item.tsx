@@ -11,16 +11,13 @@ import {
   Tooltip,
   useToast,
 } from "@chakra-ui/react";
+
 import { useBuyMetaborgStars } from "lib/hooks/five-stars";
 import { getDefaultToastConfig } from "utils/toast";
+import { type IDataItem } from "components/five-stars/mint-section/section-data-utils";
 
 interface IMintItem {
-  item: {
-    id: string;
-    amount: number;
-    imageUrl: string;
-    price: string;
-  };
+  item: IDataItem;
   disableButton?: boolean;
 }
 
@@ -28,9 +25,9 @@ const MintItem: NextPage<IMintItem> = ({
   item: { amount, imageUrl, price },
   disableButton,
 }) => {
-  const { isAuthenticated } = useMoralis();
+  const { isAuthenticated, Moralis } = useMoralis();
   const { buyMetaborgStar, isLoading, isFetching } = useBuyMetaborgStars({
-    salePrice: price,
+    salePrice: Moralis.Units.FromWei(price),
   });
   const [isVerifing, setVerifing] = useState(false);
   const toast = useToast();
@@ -95,10 +92,10 @@ const MintItem: NextPage<IMintItem> = ({
     <Flex
       my={[28, 14]}
       direction={["column", "row"]}
-      justifyContent="space-between"
       alignItems="center"
+      px={["initial", 20]}
     >
-      <Box w={["initial", 800]}>
+      <Box w={["initial", 1100]}>
         <Image src={imageUrl} alt="nft to mint" />
       </Box>
 
@@ -109,7 +106,7 @@ const MintItem: NextPage<IMintItem> = ({
         h={["120px", "1px"]}
       />
 
-      <Box textAlign="right">
+      <Box textAlign="left">
         <Tooltip
           isDisabled={isTooltipDisabled}
           hasArrow
@@ -128,7 +125,9 @@ const MintItem: NextPage<IMintItem> = ({
               <Text fontSize="lg">
                 {amount} NFT{amount > 1 ? "S" : ""}
               </Text>
-              <Text fontSize="sm">{price} ETH</Text>
+              {isAuthenticated && (
+                <Text fontSize="sm">{Moralis.Units.FromWei(price)} ETH</Text>
+              )}
             </Button>
           </div>
         </Tooltip>

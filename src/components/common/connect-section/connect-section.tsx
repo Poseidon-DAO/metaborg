@@ -1,9 +1,8 @@
 import { Box, Container, Heading } from "@chakra-ui/react";
-import { ConnectWallet } from "components/common";
-import { NextPage } from "next";
 
-import { Strips } from "../strips";
+import { ConnectWallet, Strips } from "components/common";
 
+import { type NextPage } from "next";
 interface IConnectSection {
   title: string;
 }

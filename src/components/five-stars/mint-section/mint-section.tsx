@@ -1,15 +1,22 @@
 import { Box } from "@chakra-ui/react";
 import { NextPage } from "next";
 
-import { MintItem } from "../mint-item";
+import { MintItem } from "components/five-stars";
+import { IFormatedAddressMetadata } from "lib/hooks/five-stars";
 
-import data from "./section-data";
+import { makeSectionData } from "./section-data-utils";
 
 interface IMintSectionProps {
   maxPages?: number;
+  addressMetadata?: IFormatedAddressMetadata;
 }
 
-const MintSection: NextPage<IMintSectionProps> = ({ maxPages }) => {
+const MintSection: NextPage<IMintSectionProps> = ({
+  maxPages,
+  addressMetadata,
+}) => {
+  const data = makeSectionData(addressMetadata);
+
   const filteredData = maxPages
     ? data.filter((item) => item.amount <= maxPages)
     : data;

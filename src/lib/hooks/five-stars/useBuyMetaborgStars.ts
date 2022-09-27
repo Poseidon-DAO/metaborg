@@ -1,7 +1,6 @@
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 
 import FiveStarsABI from "contracts/abis/FiveStars.json";
-
 interface IUseBuyMetaborgStarsProps {
   salePrice: number | string;
 }

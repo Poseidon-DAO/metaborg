@@ -1,9 +1,10 @@
 import { useEffect, type ReactNode } from "react";
 import { useRouter } from "next/router";
-import { Box } from "@chakra-ui/react";
 import { useMoralis } from "react-moralis";
+import { Box } from "@chakra-ui/react";
 
 import { Header, Footer, PageContainer } from "components/common";
+import { Header as FiveStarsHeader } from "components/five-stars";
 
 import { type NextPage } from "next";
 
@@ -20,7 +21,7 @@ const navigationForRoute: Record<
     footer: <Footer />,
   },
   "/five-stars": {
-    header: null,
+    header: <FiveStarsHeader />,
     footer: <Footer />,
   },
 };

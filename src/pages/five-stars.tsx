@@ -1,9 +1,14 @@
-import { ReactNode, useEffect } from "react";
+import { useEffect } from "react";
 import { useMoralis } from "react-moralis";
-import { Box, Heading, Image } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 
-import { useAvailablePages } from "lib/hooks/five-stars";
-import { ConnectSection, AccountInfo } from "components/common";
+import { useAddressMetadata, useAvailablePages } from "lib/hooks/five-stars";
+import {
+  ConnectSection,
+  AccountInfo,
+  FullPageLoader,
+  ErrorPage,
+} from "components/common";
 import { Benefits, MintSection, Packages } from "components/five-stars";
 
 import { type NextPage } from "next";
@@ -13,36 +18,41 @@ const APP_DISABLED_MESSAGE = process.env.NEXT_PUBLIC_APP_NOT_AVAILABLE_MESSAGE;
 
 const FiveStars: NextPage = () => {
   const { isAuthenticated, isWeb3Enabled } = useMoralis();
-  const { fetchAvailablePages, availablePages } = useAvailablePages();
+  const {
+    fetchAvailablePages,
+    availablePages,
+    isLoading: isLoadingAvailablePages,
+    error: availablePagesError,
+  } = useAvailablePages();
+  const {
+    fetchAddressMetadata,
+    addressMetadata,
+    isLoading: isLoadingMetadata,
+    error: addressMetadataError,
+  } = useAddressMetadata();
 
   useEffect(() => {
     if (isWeb3Enabled) {
       fetchAvailablePages();
+      fetchAddressMetadata();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWeb3Enabled]);
 
-  function renderWithHeader(children: ReactNode) {
-    return (
-      <Box>
-        <Box position="absolute" left={0} top={0}>
-          <Image
-            height={["140px", "initial"]}
-            objectFit="cover"
-            objectPosition={["-120px 0px", "initial"]}
-            src="assets/five-stars-cover.jpg"
-            alt="cover"
-          />
-        </Box>
+  const showSpinner = isLoadingAvailablePages || isLoadingMetadata;
+  const hasError = availablePagesError || addressMetadataError;
 
-        {children}
-      </Box>
-    );
+  if (showSpinner) {
+    return <FullPageLoader />;
+  }
+
+  if (hasError) {
+    return <ErrorPage />;
   }
 
   if (!IS_APP_ENABLED) {
-    return renderWithHeader(
+    return (
       <Box pt={[14, 64]} textAlign="center">
         <Heading mt={60} size={["lg", "2xl"]}>
           {APP_DISABLED_MESSAGE || "The MINT haven't started yet!"}
@@ -51,7 +61,7 @@ const FiveStars: NextPage = () => {
     );
   }
 
-  return renderWithHeader(
+  return (
     <>
       {!isAuthenticated && (
         <Box pt={[40, 80]}>
@@ -67,7 +77,10 @@ const FiveStars: NextPage = () => {
         <Packages />
       </Box>
       <Box my={20}>
-        <MintSection maxPages={availablePages} />
+        <MintSection
+          maxPages={availablePages}
+          addressMetadata={addressMetadata}
+        />
       </Box>
       <Box my={16}>
         <Benefits />

@@ -1,6 +1,6 @@
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import { MoralisProvider } from "react-moralis";
-import Head from "next/head";
 import { ChakraProvider } from "@chakra-ui/react";
 
 import { PageLayout } from "layout/page-layout";
