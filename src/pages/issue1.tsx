@@ -39,7 +39,7 @@ const Issue1: NextPage = () => {
     const unsubscribeChainChangeHandler = Moralis.onChainChanged((chain) => {
       if (
         chain === Moralis.Chains.ETH_MAINET ||
-        chain === Moralis.Chains.ETH_RINKBEY
+        chain === Moralis.Chains.ETH_GOERLI
       )
         return;
 

@@ -23,6 +23,7 @@ function useContractNFTs({
   const chainId = {
     4: Moralis.Chains.ETH_RINKBEY,
     1: Moralis.Chains.ETH_MAINET,
+    420: Moralis.Chains.ETH_GOERLI,
   }[process.env.NEXT_PUBLIC_CHAIN_ID!];
 
   const Web3Api = useMoralisWeb3Api();
