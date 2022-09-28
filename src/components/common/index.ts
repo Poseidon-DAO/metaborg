@@ -14,3 +14,4 @@ export * from "./logo";
 export * from "./page-container";
 export * from "./social-links";
 export * from "./strips";
+export * from "./transaction-link";
