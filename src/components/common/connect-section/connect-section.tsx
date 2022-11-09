@@ -1,8 +1,10 @@
-import { Box, Container, Heading } from "@chakra-ui/react";
+import { Box, Button, Container, Heading } from "@chakra-ui/react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-import { ConnectWallet, Strips } from "components/common";
+import { Strips } from "components/common";
 
 import { type NextPage } from "next";
+import { useAccount, useConnect } from "wagmi";
 interface IConnectSection {
   title: string;
 }
@@ -18,7 +20,7 @@ const ConnectSection: NextPage<IConnectSection> = ({ title }) => {
 
       <Box my={[4, 8]}>
         <Strips />
-        <ConnectWallet />
+        <ConnectButton />
       </Box>
     </Container>
   );

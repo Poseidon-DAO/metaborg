@@ -1,7 +1,13 @@
+import "@rainbow-me/rainbowkit/styles.css";
+
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import {
+  darkTheme,
+  getDefaultWallets,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 
@@ -53,7 +59,11 @@ function App({ Component, pageProps }: AppProps) {
 
       <ChakraProvider theme={theme}>
         <WagmiConfig client={wagmiClient}>
-          <RainbowKitProvider chains={chains} modalSize="compact">
+          <RainbowKitProvider
+            chains={chains}
+            modalSize="compact"
+            theme={darkTheme({ borderRadius: "none" })}
+          >
             <PageLayout>
               <Component {...pageProps} />
             </PageLayout>

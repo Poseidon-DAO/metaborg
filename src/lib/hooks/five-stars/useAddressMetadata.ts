@@ -26,7 +26,8 @@ const useAddressMetadata = () => {
     abi: FiveStarsABI,
     functionName: "getAddressMetadata",
     address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
-    args: [address],
+    args: [address || ""],
+    enabled: !!address,
   });
 
   return {
