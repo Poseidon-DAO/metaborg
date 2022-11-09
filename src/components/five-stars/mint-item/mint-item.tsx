@@ -14,6 +14,8 @@ import {
 
 import { useBuyMetaborgStars } from "lib/hooks/five-stars";
 import { getDefaultToastConfig } from "utils/toast";
+import { TransactionLink } from "components/common";
+
 import { type IDataItem } from "components/five-stars/mint-section/section-data-utils";
 
 interface IMintItem {
@@ -48,7 +50,12 @@ const MintItem: NextPage<IMintItem> = ({
   async function handleTransactionSuccess(transaction: any) {
     toast(
       getDefaultToastConfig({
-        title: "Verifying Transaction...",
+        title: (
+          <TransactionLink
+            text="Verifying transaction"
+            transactionHash={transaction?.hash}
+          />
+        ),
         status: "info",
         duration: null,
       })
@@ -59,7 +66,12 @@ const MintItem: NextPage<IMintItem> = ({
     setVerifing(false);
     toast(
       getDefaultToastConfig({
-        title: "Transaction has been verified successfully",
+        title: (
+          <TransactionLink
+            text="Transaction has been verified successfully"
+            transactionHash={transaction?.hash}
+          />
+        ),
         status: "success",
       })
     );
