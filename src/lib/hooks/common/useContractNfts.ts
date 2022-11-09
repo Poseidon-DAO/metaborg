@@ -1,37 +1,39 @@
-import {
-  useMoralis,
-  useMoralisWeb3Api,
-  useMoralisWeb3ApiCall,
-} from "react-moralis";
+import { useQuery } from "wagmi";
 
-interface IUseContractNFTsProps {
-  address?: string;
+export const ERC20Address = process.env.NEXT_PUBLIC_ERC20PDN;
+export const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+
+interface IUseNftsForContract {
   contractAddress?: string;
 }
 
-function useContractNFTs({ contractAddress, address }: IUseContractNFTsProps) {
-  const { Moralis, user } = useMoralis();
+async function getNftsForContract({
+  contractAddress,
+}: {
+  contractAddress: string;
+}) {
+  const response = await fetch(
+    `https://eth-mainnet.g.alchemy.com/nft/v2/${apiKey}/getNFTsForCollection?` +
+      new URLSearchParams({ contractAddress })
+  );
 
-  const chainId = {
-    4: Moralis.Chains.ETH_RINKBEY,
-    1: Moralis.Chains.ETH_MAINET,
-    420: Moralis.Chains.ETH_GOERLI,
-  }[process.env.NEXT_PUBLIC_CHAIN_ID!];
+  return response.json();
+}
 
-  const Web3Api = useMoralisWeb3Api();
-
-  const result = useMoralisWeb3ApiCall(Web3Api.account.getNFTsForContract, {
-    chain: chainId,
-    token_address:
-      contractAddress || process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
-    address: address || user?.get("ethAddress"),
+const useContractNFTs = (props: IUseNftsForContract = {}) => {
+  const query = useQuery(["nftsForContract"], {
+    queryFn: () =>
+      getNftsForContract({
+        contractAddress: props?.contractAddress || ERC20Address!,
+      }),
   });
 
   return {
-    ...result,
-    fetchContractNfts: result.fetch,
-    contractNfts: result.data,
+    ...query,
+    contractNfts: query.data ? query.data.nfts : query.data,
+    areContractNftsLoading: query.isLoading,
+    areContractNftsFetching: query.isFetching,
   };
-}
+};
 
 export { useContractNFTs };

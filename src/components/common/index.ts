@@ -3,7 +3,6 @@ export * from "./connect-metamask";
 export * from "./connect-modal";
 export * from "./connect-section";
 export * from "./connect-wallet";
-export * from "./disconnect-modal";
 export * from "./error-page";
 export * from "./footer";
 export * from "./full-page-loader";

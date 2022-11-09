@@ -4,8 +4,11 @@ import { Box, Button } from "@chakra-ui/react";
 import { ConnectModal } from "components/common";
 
 import type { NextPage } from "next";
+import { useAccount, useConnect } from "wagmi";
 
 const ConnectWallet: NextPage = () => {
+  const { connector } = useAccount();
+  const { connect } = useConnect();
   const [opened, setOpened] = useState(false);
 
   function onModalOpen() {
@@ -16,9 +19,13 @@ const ConnectWallet: NextPage = () => {
     setOpened(false);
   }
 
+  function handleConnect() {
+    connect({ connector });
+  }
+
   return (
     <Box>
-      <Button onClick={onModalOpen} size={["lg", "xl"]}>
+      <Button onClick={handleConnect} size={["lg", "xl"]}>
         Connect
       </Button>
 

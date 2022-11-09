@@ -1,19 +1,21 @@
-import { useWeb3ExecuteFunction } from "react-moralis";
+import { useContractRead } from "wagmi";
 
 import FiveStarsABI from "contracts/abis/FiveStars.json";
 
-function useAvailablePages() {
-  const result = useWeb3ExecuteFunction({
+const useAvailablePages = () => {
+  const query = useContractRead({
     abi: FiveStarsABI,
-    contractAddress: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS,
     functionName: "pagesAvailable",
+    address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
   });
 
   return {
-    ...result,
-    availablePages: !!result.data ? Number(result.data) : undefined,
-    fetchAvailablePages: result.fetch,
+    ...query,
+    availablePages: query.data ? Number(query.data) : (query.data as undefined),
+    areAvailablePagesLoading: query.isLoading,
+    areAvailablePagesFetching: query.isFetching,
+    availablePagesError: query.error,
   };
-}
+};
 
 export { useAvailablePages };

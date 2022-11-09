@@ -1,26 +1,59 @@
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
+import {
+  useAccount,
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 
-import FiveStarsABI from "contracts/abis/FiveStars.json";
-interface IUseBuyMetaborgStarsProps {
-  salePrice: number | string;
+import { ethers } from "ethers";
+
+interface IUseBuyMetaborgStars {
+  args: { salePrice: string };
+  onSuccess?: (data: any) => void;
+  onError?: (data: any) => void;
 }
 
-function useBuyMetaborgStars({ salePrice }: IUseBuyMetaborgStarsProps) {
-  const { Moralis } = useMoralis();
-
-  const makeOptions = (salePrice: number | string) => ({
-    abi: FiveStarsABI,
-    contractAddress: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS,
+const useBuyMetaborgStars = ({
+  args,
+  onSuccess,
+  onError,
+}: IUseBuyMetaborgStars) => {
+  const { address } = useAccount();
+  const { config } = usePrepareContractWrite({
+    abi: [
+      {
+        inputs: [],
+        name: "buyMetaborgStars",
+        outputs: [{ internalType: "uint8[]", name: "", type: "uint8[]" }],
+        stateMutability: "payable",
+        type: "function",
+      },
+    ],
+    address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
     functionName: "buyMetaborgStars",
-    msgValue: Moralis.Units.ETH(salePrice || 0),
+    enabled: !!args?.salePrice,
+    overrides: {
+      from: address,
+      value: ethers.utils.parseEther(args?.salePrice),
+    },
   });
 
-  const result = useWeb3ExecuteFunction(makeOptions(salePrice));
+  const { data, write } = useContractWrite(config);
+
+  const { isLoading, isFetching, isSuccess, error } = useWaitForTransaction({
+    hash: data?.hash,
+    onSuccess,
+    onError,
+  });
 
   return {
-    ...result,
-    buyMetaborgStar: result.fetch,
+    buy: write,
+    buyData: data,
+    isBuying: isLoading,
+    isBuyFetching: isFetching,
+    isBuyingSuccess: isSuccess,
+    error,
   };
-}
+};
 
 export { useBuyMetaborgStars };

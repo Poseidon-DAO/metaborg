@@ -1,6 +1,5 @@
-import { useEffect } from "react";
-import { useMoralis } from "react-moralis";
 import { Box, Heading } from "@chakra-ui/react";
+import { useAccount } from "wagmi";
 
 import { useAddressMetadata, useAvailablePages } from "lib/hooks/five-stars";
 import {
@@ -17,30 +16,14 @@ const IS_APP_ENABLED = process.env.NEXT_PUBLIC_APP_AVAILABLE === "true";
 const APP_DISABLED_MESSAGE = process.env.NEXT_PUBLIC_APP_NOT_AVAILABLE_MESSAGE;
 
 const FiveStars: NextPage = () => {
-  const { isAuthenticated, isWeb3Enabled } = useMoralis();
-  const {
-    fetchAvailablePages,
-    availablePages,
-    isLoading: isLoadingAvailablePages,
-    error: availablePagesError,
-  } = useAvailablePages();
-  const {
-    fetchAddressMetadata,
-    addressMetadata,
-    isLoading: isLoadingMetadata,
-    error: addressMetadataError,
-  } = useAddressMetadata();
+  const { isConnected } = useAccount();
 
-  useEffect(() => {
-    if (isWeb3Enabled) {
-      fetchAvailablePages();
-      fetchAddressMetadata();
-    }
+  const { availablePages, areAvailablePagesLoading, availablePagesError } =
+    useAvailablePages();
+  const { addressMetadata, areAddressMetadataLoading, addressMetadataError } =
+    useAddressMetadata();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWeb3Enabled]);
-
-  const showSpinner = isLoadingAvailablePages || isLoadingMetadata;
+  const showSpinner = areAvailablePagesLoading || areAddressMetadataLoading;
   const hasError = availablePagesError || addressMetadataError;
 
   if (showSpinner) {
@@ -63,12 +46,12 @@ const FiveStars: NextPage = () => {
 
   return (
     <>
-      {!isAuthenticated && (
+      {!isConnected && (
         <Box pt={[40, 80]}>
           <ConnectSection title="Welcome fighter collector, collect your wallet" />
         </Box>
       )}
-      {isAuthenticated && (
+      {isConnected && (
         <Box pt={[40, 60]} mb={[20, 40]}>
           <AccountInfo />
         </Box>

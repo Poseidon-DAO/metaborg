@@ -5,9 +5,9 @@ import { useMint } from "lib/hooks/issue1";
 import { useDistributionIndex } from "lib/hooks/issue1";
 import type { NextPage } from "next";
 import { useState } from "react";
-import { useMoralis } from "react-moralis";
 import { DistributionMetaData } from "store/types";
 import { getDefaultToastConfig } from "utils/toast";
+import { useAccount } from "wagmi";
 
 import metaborgMix from "../../../../public/assets/editions/METABORGMIX.jpg";
 import metamaskLogo from "../../../../public/assets/metamask-logo.png";
@@ -30,7 +30,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
   disabled = false,
 }) => {
   const [fetchMetaData, setFetchMetaData] = useState(false);
-  const { isAuthenticated } = useMoralis();
+  const { isConnected } = useAccount();
   const toast = useToast();
 
   const distributionPrice = distributionMetadata.formatedData.price;
@@ -49,7 +49,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
   });
 
   async function onMintClick() {
-    if (!isAuthenticated)
+    if (!isConnected)
       return toast(
         getDefaultToastConfig({
           title: "Please connect Metamsk in order to mint NFT-s",
@@ -66,7 +66,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
       );
 
     await fetch({
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         setFetchMetaData(true);
         onMintSuccess?.(data);
         toast(
@@ -77,7 +77,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
           })
         );
       },
-      onError: (error) => {
+      onError: (error: Error) => {
         toast(
           getDefaultToastConfig({
             title:
@@ -127,7 +127,7 @@ const MintSection: NextPage<IMintSectionProps> = ({
             mt={[4]}
             size={["md", "lg"]}
             onClick={onMintClick}
-            disabled={disabled || !isAuthenticated || !availableMints}
+            disabled={disabled || !isConnected || !availableMints}
             isLoading={isLoading || isFetching || mintLoading}
           >
             MINT NOW

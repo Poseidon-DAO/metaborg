@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { NextPage } from "next";
-import { useMoralis } from "react-moralis";
 import {
   Box,
   Button,
@@ -17,6 +16,8 @@ import { getDefaultToastConfig } from "utils/toast";
 import { TransactionLink } from "components/common";
 
 import { type IDataItem } from "components/five-stars/mint-section/section-data-utils";
+import { useAccount } from "wagmi";
+import { ethers } from "ethers";
 
 interface IMintItem {
   item: IDataItem;
@@ -27,19 +28,15 @@ const MintItem: NextPage<IMintItem> = ({
   item: { amount, imageUrl, price },
   disableButton,
 }) => {
-  const { isAuthenticated, Moralis } = useMoralis();
-  const { buyMetaborgStar, isLoading, isFetching } = useBuyMetaborgStars({
-    salePrice: Moralis.Units.FromWei(price),
-  });
-  const [isVerifing, setVerifing] = useState(false);
   const toast = useToast();
+  const { isConnected } = useAccount();
+  const { buy, buyData, isBuying, isBuyFetching, isBuyingSuccess, error } =
+    useBuyMetaborgStars({
+      args: { salePrice: ethers.utils.formatEther(price) },
+    });
 
   function getToolTipMessage() {
-    const key = !isAuthenticated
-      ? "auth"
-      : disableButton
-      ? "sufficentPages"
-      : "";
+    const key = !isConnected ? "auth" : disableButton ? "sufficentPages" : "";
 
     return {
       auth: "Please connect Metamask to mint!",
@@ -47,58 +44,63 @@ const MintItem: NextPage<IMintItem> = ({
     }[key as string];
   }
 
-  async function handleTransactionSuccess(transaction: any) {
-    toast(
-      getDefaultToastConfig({
-        title: (
-          <TransactionLink
-            text="Verifying transaction"
-            transactionHash={transaction?.hash}
-          />
-        ),
-        status: "info",
-        duration: null,
-      })
-    );
-    setVerifing(true);
-    await transaction.wait();
-    toast.closeAll();
-    setVerifing(false);
-    toast(
-      getDefaultToastConfig({
-        title: (
-          <TransactionLink
-            text="Transaction has been verified successfully"
-            transactionHash={transaction?.hash}
-          />
-        ),
-        status: "success",
-      })
-    );
-  }
+  useEffect(() => {
+    if (isBuyingSuccess) {
+      toast(
+        getDefaultToastConfig({
+          title: (
+            <TransactionLink
+              text="Transaction has been verified successfully"
+              transactionHash={buyData?.hash as string}
+            />
+          ),
+          status: "success",
+        })
+      );
+    }
 
-  function handleTransactionError(error: Error) {
-    toast.closeAll();
-    console.error(error);
-    toast(
-      getDefaultToastConfig({
-        title: error?.message || "There was a problem minting your NFT!",
-        status: "error",
-      })
-    );
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isBuyingSuccess, buyData?.hash]);
+
+  useEffect(() => {
+    if (isBuying) {
+      toast(
+        getDefaultToastConfig({
+          title: (
+            <TransactionLink
+              text="Verifying transaction"
+              transactionHash={buyData?.hash as string}
+            />
+          ),
+          status: "info",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isBuying, buyData?.hash]);
+
+  useEffect(() => {
+    if (error) {
+      toast(
+        getDefaultToastConfig({
+          title: error?.message || "There was a problem minting your NFT!",
+          status: "error",
+        })
+      );
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!error]);
 
   function handleMintClick() {
-    buyMetaborgStar({
-      onSuccess: handleTransactionSuccess,
-      onError: handleTransactionError,
-    });
+    buy?.();
   }
 
   const isButtonDisabled =
-    disableButton || !isAuthenticated || isLoading || isFetching || isVerifing;
-  const isButtonLoading = isLoading || isFetching || isVerifing;
-  const isTooltipDisabled = (isAuthenticated && !disableButton) || false;
+    disableButton || !isConnected || isBuying || isBuyFetching;
+  const isButtonLoading = isBuying || isBuyFetching;
+  const isTooltipDisabled = (isConnected && !disableButton) || false;
 
   return (
     <Flex
@@ -137,8 +139,8 @@ const MintItem: NextPage<IMintItem> = ({
               <Text fontSize="lg">
                 {amount} NFT{amount > 1 ? "S" : ""}
               </Text>
-              {isAuthenticated && (
-                <Text fontSize="sm">{Moralis.Units.FromWei(price)} ETH</Text>
+              {isConnected && (
+                <Text fontSize="sm">{ethers.utils.formatUnits(price)} ETH</Text>
               )}
             </Button>
           </div>

@@ -1,12 +1,30 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { MoralisProvider } from "react-moralis";
 import { ChakraProvider } from "@chakra-ui/react";
+import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 
 import { PageLayout } from "layout/page-layout";
 import { theme } from "theme";
 
 import type { AppProps } from "next/app";
+
+const { chains, provider } = configureChains(
+  [chain.goerli],
+  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID })]
+);
+
+const { connectors } = getDefaultWallets({
+  appName: "Poseidon DAO",
+  chains,
+});
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+});
 
 function App({ Component, pageProps }: AppProps) {
   const [isMounted, setIsMounted] = useState(false);
@@ -32,16 +50,16 @@ function App({ Component, pageProps }: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-      <MoralisProvider
-        appId={process.env.NEXT_PUBLIC_APP_ID!}
-        serverUrl={process.env.NEXT_PUBLIC_SERVER_URL!}
-      >
-        <ChakraProvider theme={theme}>
-          <PageLayout>
-            <Component {...pageProps} />
-          </PageLayout>
-        </ChakraProvider>
-      </MoralisProvider>
+
+      <ChakraProvider theme={theme}>
+        <WagmiConfig client={wagmiClient}>
+          <RainbowKitProvider chains={chains} modalSize="compact">
+            <PageLayout>
+              <Component {...pageProps} />
+            </PageLayout>
+          </RainbowKitProvider>
+        </WagmiConfig>
+      </ChakraProvider>
     </>
   );
 }

@@ -1,13 +1,13 @@
 import { Box, Button, useBreakpointValue, useToast } from "@chakra-ui/react";
 import { Image } from "components/common";
 import { NextPage } from "next";
-import { useMoralis } from "react-moralis";
 import { getDefaultToastConfig } from "utils/toast";
+import { useAccount } from "wagmi";
 
 import metamaskLogo from "../../../../public/assets/metamask-logo.png";
 
 const ConnectMetamask: NextPage = () => {
-  const { isAuthenticated, authenticate } = useMoralis();
+  const { isConnected, connector } = useAccount();
   const toast = useToast();
   const metamaskImageSize = useBreakpointValue({ base: 20, lg: 25 });
 
@@ -24,7 +24,7 @@ const ConnectMetamask: NextPage = () => {
   };
 
   async function onMetamaskConnect() {
-    if (isAuthenticated) return;
+    if (isConnected) return;
 
     if (typeof window.ethereum === "undefined") {
       return toast(
@@ -34,14 +34,14 @@ const ConnectMetamask: NextPage = () => {
       );
     }
 
-    try {
-      await authenticate({
-        provider: "metamask",
-        signingMessage: "Connect with Metaborg",
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    // try {
+    //   await authenticate({
+    //     provider: "metamask",
+    //     signingMessage: "Connect with Metaborg",
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    // }
   }
 
   return (

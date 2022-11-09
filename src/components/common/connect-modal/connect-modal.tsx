@@ -1,4 +1,3 @@
-import { useMoralis } from "react-moralis";
 import {
   Modal,
   ModalOverlay,
@@ -25,6 +24,7 @@ import type { NextPage } from "next";
 
 import metamaskLogo from "../../../../public/assets/metamask-logo.png";
 import walletConnectLogo from "../../../../public/assets/wallet-connect.png";
+import { useAccount } from "wagmi";
 
 interface IConnectModalProps {
   onClose?: () => void;
@@ -35,10 +35,11 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
   const metamaskImageSize = useBreakpointValue({ base: 70, lg: 100 });
   const walletConnectImageSize = useBreakpointValue({ base: 70, lg: 80 });
   const toast = useToast();
-  const { isAuthenticated, authenticate } = useMoralis();
+
+  const { isConnected } = useAccount();
 
   async function onMetamaskConnect() {
-    if (isAuthenticated) return;
+    if (isConnected) return;
 
     if (typeof window.ethereum === "undefined") {
       return toast(
@@ -57,10 +58,10 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
     }
 
     try {
-      await authenticate({
-        provider: "metamask",
-        signingMessage: "Log in with Metaborg",
-      });
+      // await authenticate({
+      //   provider: "metamask",
+      //   signingMessage: "Log in with Metaborg",
+      // });
 
       onModalClose();
     } catch (error) {
@@ -69,10 +70,10 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
   }
 
   async function onWalletConnectConnect() {
-    if (isAuthenticated) return;
+    // if (isAuthenticated) return;
 
     try {
-      await authenticate({ provider: "walletconnect" });
+      // await authenticate({ provider: "walletconnect" });
     } catch (error) {
       console.error(error);
     }
@@ -95,7 +96,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
               <Center py={4} px={2}>
                 <Tooltip
                   label="Already connected with Metamask"
-                  isDisabled={!isAuthenticated}
+                  isDisabled={!isConnected}
                   placement="top-start"
                   shouldWrapChildren
                   hasArrow
@@ -105,7 +106,7 @@ const ConnectModal: NextPage<IConnectModalProps> = ({ onClose }) => {
                     h={120}
                     variant="ghost"
                     aria-label="Metamask"
-                    disabled={isAuthenticated}
+                    disabled={isConnected}
                     icon={
                       <Image
                         width={metamaskImageSize}

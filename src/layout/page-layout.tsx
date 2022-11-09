@@ -1,6 +1,5 @@
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { useRouter } from "next/router";
-import { useMoralis } from "react-moralis";
 import { Box } from "@chakra-ui/react";
 
 import { Header, Footer, PageContainer } from "components/common";
@@ -28,15 +27,6 @@ const navigationForRoute: Record<
 
 const PageLayout: NextPage<IPageLayoutProps> = ({ children }) => {
   const { pathname } = useRouter();
-  const { isAuthenticated, isWeb3Enabled, enableWeb3, user } = useMoralis();
-
-  useEffect(() => {
-    if (isAuthenticated && !isWeb3Enabled) {
-      enableWeb3();
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated, isWeb3Enabled]);
 
   return (
     <Box position="relative">

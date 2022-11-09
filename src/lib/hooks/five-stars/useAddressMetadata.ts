@@ -1,12 +1,7 @@
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
-import { BigNumber } from "ethers";
+import { useAccount, useContractRead } from "wagmi";
 
 import FiveStarsABI from "contracts/abis/FiveStars.json";
-
-interface IUseAddressMetadata {
-  address?: string;
-  autoFetch?: boolean;
-}
+import { BigNumber } from "ethers";
 
 export interface IFormatedAddressMetadata {
   amounts: number[];
@@ -24,28 +19,25 @@ function formatResult(data: BigNumber[]) {
   };
 }
 
-function useAddressMetadata({ address, autoFetch }: IUseAddressMetadata = {}) {
-  const { user } = useMoralis();
+const useAddressMetadata = () => {
+  const { address } = useAccount();
 
-  const result = useWeb3ExecuteFunction(
-    {
-      contractAddress: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS,
-      abi: FiveStarsABI,
-      functionName: "getAddressMetadata",
-      params: {
-        _address: address || user?.get("ethAddress"),
-      },
-    },
-    { autoFetch }
-  );
+  const query = useContractRead({
+    abi: FiveStarsABI,
+    functionName: "getAddressMetadata",
+    address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
+    args: [address],
+  });
 
   return {
-    ...result,
-    fetchAddressMetadata: result.fetch,
-    addressMetadata: !!result.data
-      ? formatResult(result.data as BigNumber[])
+    ...query,
+    addressMetadata: !!query.data
+      ? formatResult(query.data as BigNumber[])
       : undefined,
+    areAddressMetadataLoading: query.isLoading,
+    areAddressMetadataFetching: query.isFetching,
+    addressMetadataError: query.error,
   };
-}
+};
 
 export { useAddressMetadata };

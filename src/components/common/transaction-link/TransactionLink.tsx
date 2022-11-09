@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { Text, Link } from "@chakra-ui/react";
-import { useMoralis } from "react-moralis";
 import NextLink from "next/link";
 
 import { getTransactionLink } from "utils/transactionLink";
+import { useConnect } from "wagmi";
 
 interface ITransactionLinkProps {
   text: string;
@@ -14,8 +14,11 @@ const TransactionLink: FC<ITransactionLinkProps> = ({
   text,
   transactionHash,
 }) => {
-  const { chainId } = useMoralis();
-  const transactionLink = getTransactionLink(transactionHash, chainId);
+  const { data } = useConnect();
+  const transactionLink = getTransactionLink(
+    transactionHash,
+    `${data?.chain.id}`
+  );
 
   return (
     <Text>

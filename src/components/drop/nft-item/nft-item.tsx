@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { StaticImageData } from "next/image";
-import { useMoralis } from "react-moralis";
 import {
   Box,
   Button,
@@ -23,6 +22,7 @@ import aloneImage from "../../../../public/assets/editions/Alone.jpg";
 import alwaysImage from "../../../../public/assets/editions/Always.jpg";
 import neverNextImage from "../../../../public/assets/editions/Never_Next.png";
 import metamaskLogo from "../../../../public/assets/metamask-logo.png";
+import { useAccount } from "wagmi";
 
 export interface INftItemProps extends Nifty {}
 
@@ -39,7 +39,8 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
   const setDistributionMetaData = useStore(
     (state) => state.setDistributionMetaData
   );
-  const { isAuthenticated, user } = useMoralis();
+
+  const { isConnected } = useAccount();
   const { availableMints } = useAvailableMints();
   // const { fetch, data } = useMint({ salePrice: distributionPrice });
 
@@ -51,11 +52,11 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
 
   const toast = useToast();
   const tooltipMessage =
-    (!isAuthenticated && "Connect Metamask to mint!") ||
+    (!isConnected && "Connect Metamask to mint!") ||
     (!availableMints && "No available mints for this account!");
 
   async function onMintClick() {
-    if (!isAuthenticated)
+    if (!isConnected)
       return toast(
         getDefaultToastConfig({
           title: "Please connect Metamsk in order to mint NFT-s",
@@ -125,7 +126,7 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
 
           <Tooltip
             label={tooltipMessage}
-            isDisabled={isAuthenticated && !!availableMints}
+            isDisabled={isConnected && !!availableMints}
             placement="bottom"
             shouldWrapChildren
             hasArrow
@@ -135,7 +136,7 @@ const NftItem: NextPage<INftItemProps> = ({ name }) => {
               mt={[4]}
               size={["md", "lg"]}
               onClick={onMintClick}
-              disabled={!isAuthenticated || !availableMints}
+              disabled={!isConnected || !availableMints}
             >
               MINT NOW
             </Button>

@@ -1,6 +1,6 @@
-import { useMoralis } from "react-moralis";
 import { Flex, Box } from "@chakra-ui/react";
 
+import { useAccount } from "wagmi";
 import { useStore } from "store/store";
 import { AccountInfo } from "components/common/account-info";
 import { Logo, PageContainer, ConnectMetamask } from "components/common";
@@ -8,10 +8,10 @@ import { Logo, PageContainer, ConnectMetamask } from "components/common";
 import type { NextPage } from "next";
 
 const Header: NextPage = () => {
-  const { isAuthenticated } = useMoralis();
+  const { isConnected } = useAccount();
   const token = useStore((state) => state.token);
 
-  const showConnectMetamask = !!token || isAuthenticated;
+  const showConnectMetamask = !!token || isConnected;
 
   return (
     <Box py={4} borderBottom="2px solid" borderColor="brand.red">
@@ -22,7 +22,7 @@ const Header: NextPage = () => {
           </Box>
 
           {showConnectMetamask && (
-            <Box>{isAuthenticated ? <AccountInfo /> : <ConnectMetamask />}</Box>
+            <Box>{isConnected ? <AccountInfo /> : <ConnectMetamask />}</Box>
           )}
         </Flex>
       </PageContainer>
