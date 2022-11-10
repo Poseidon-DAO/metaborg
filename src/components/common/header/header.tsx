@@ -9,9 +9,6 @@ import type { NextPage } from "next";
 
 const Header: NextPage = () => {
   const { isConnected } = useAccount();
-  const token = useStore((state) => state.token);
-
-  const showConnectMetamask = !!token || isConnected;
 
   return (
     <Box py={4} borderBottom="2px solid" borderColor="brand.red">
@@ -21,9 +18,7 @@ const Header: NextPage = () => {
             <Logo />
           </Box>
 
-          {showConnectMetamask && (
-            <Box>{isConnected ? <AccountInfo /> : <ConnectMetamask />}</Box>
-          )}
+          <Box>{isConnected ? <AccountInfo /> : <ConnectMetamask />}</Box>
         </Flex>
       </PageContainer>
     </Box>

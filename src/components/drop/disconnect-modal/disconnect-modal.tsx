@@ -30,7 +30,6 @@ const DisconnectModal: NextPage<IDisconnectModalProps> = ({
   opened,
   onClose,
 }) => {
-  //   const { user, logout } = useMoralis();
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
   const toast = useToast();
