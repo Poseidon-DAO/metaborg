@@ -1,18 +1,25 @@
-import { useEffect, useState } from "react";
-import { MoralisProvider } from "react-moralis";
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import { ReactQueryDevtools } from "react-query/devtools";
+import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 
-import { HeaderProvider } from "layout/header-provider";
+import { PageLayout } from "layout/page-layout";
 import { theme } from "theme";
 
 import type { AppProps } from "next/app";
 
-const queryClient = new QueryClient();
+const { provider } = configureChains(
+  [chain.goerli, chain.mainnet],
+  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID! })]
+);
 
-function MyApp({ Component, pageProps }: AppProps) {
+const wagmiClient = createClient({
+  autoConnect: true,
+  provider,
+});
+
+function App({ Component, pageProps }: AppProps) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -36,23 +43,16 @@ function MyApp({ Component, pageProps }: AppProps) {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-      <MoralisProvider
-        appId={process.env.NEXT_PUBLIC_APP_ID!}
-        serverUrl={process.env.NEXT_PUBLIC_SERVER_URL!}
-      >
-        <QueryClientProvider client={queryClient}>
-          <ReactQueryDevtools position="top-right" />
-          <Hydrate state={pageProps.dehydratedState}>
-            <ChakraProvider theme={theme}>
-              <HeaderProvider>
-                <Component {...pageProps} />
-              </HeaderProvider>
-            </ChakraProvider>
-          </Hydrate>
-        </QueryClientProvider>
-      </MoralisProvider>
+
+      <ChakraProvider theme={theme}>
+        <WagmiConfig client={wagmiClient}>
+          <PageLayout>
+            <Component {...pageProps} />
+          </PageLayout>
+        </WagmiConfig>
+      </ChakraProvider>
     </>
   );
 }
 
-export default MyApp;
+export default App;

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useMoralis } from "react-moralis";
 import {
   Box,
   Button,
@@ -21,6 +20,7 @@ import { getDefaultToastConfig } from "utils/toast";
 import { formatPublicKey } from "utils/account";
 
 import type { NextPage } from "next";
+import { useAccount, useDisconnect } from "wagmi";
 interface IDisconnectModalProps {
   opened: boolean;
   onClose: () => void;
@@ -30,10 +30,10 @@ const DisconnectModal: NextPage<IDisconnectModalProps> = ({
   opened,
   onClose,
 }) => {
-  const { user, logout } = useMoralis();
+  const { address } = useAccount();
+  const { disconnect } = useDisconnect();
   const toast = useToast();
-  const account = user?.get("ethAddress");
-  const { hasCopied, onCopy } = useClipboard(account || "");
+  const { hasCopied, onCopy } = useClipboard(address || "");
 
   useEffect(() => {
     if (hasCopied) {
@@ -59,7 +59,7 @@ const DisconnectModal: NextPage<IDisconnectModalProps> = ({
               <Avatar mb={[2, 4]} size={["lg", "xl"]} bg="brand.red" />
 
               <Text size="lg" fontWeight="bold">
-                {formatPublicKey(account)}
+                {formatPublicKey(address!)}
               </Text>
             </Box>
 
@@ -80,7 +80,7 @@ const DisconnectModal: NextPage<IDisconnectModalProps> = ({
                 w="48%"
                 h={"55px"}
                 flexDir="column"
-                onClick={logout}
+                onClick={() => disconnect()}
                 variant="ghost"
                 isActive
               >

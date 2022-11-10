@@ -8,6 +8,7 @@ const colors = {
     grayText: "#E0E0E0",
     transparent: "transparent",
   },
+  red: "#ff0000",
 };
 
 export { colors };

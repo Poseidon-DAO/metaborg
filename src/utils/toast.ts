@@ -5,7 +5,7 @@ function getDefaultToastConfig(params?: UseToastOptions): UseToastOptions {
     position: "top-right",
     title: "Please install Metamask extension",
     status: "error",
-    duration: 2000,
+    duration: 6000,
     isClosable: true,
     variant: "solid",
     ...params,
