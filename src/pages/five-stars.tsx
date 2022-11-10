@@ -16,7 +16,7 @@ const IS_APP_ENABLED = process.env.NEXT_PUBLIC_APP_AVAILABLE === "true";
 const APP_DISABLED_MESSAGE = process.env.NEXT_PUBLIC_APP_NOT_AVAILABLE_MESSAGE;
 
 const FiveStars: NextPage = () => {
-  const { isConnected, address } = useAccount();
+  const { isConnected } = useAccount();
 
   const { availablePages, areAvailablePagesLoading, availablePagesError } =
     useAvailablePages();
@@ -56,7 +56,7 @@ const FiveStars: NextPage = () => {
           <AccountInfo />
         </Box>
       )}
-      {/* <Box my={[8, 4]}>
+      <Box my={[8, 4]}>
         <Packages />
       </Box>
       <Box my={20}>
@@ -67,7 +67,7 @@ const FiveStars: NextPage = () => {
       </Box>
       <Box my={16}>
         <Benefits />
-      </Box> */}
+      </Box>
     </>
   );
 };

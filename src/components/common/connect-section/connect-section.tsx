@@ -1,15 +1,21 @@
 import { Box, Button, Container, Heading } from "@chakra-ui/react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import { Strips } from "components/common";
 
 import { type NextPage } from "next";
 import { useAccount, useConnect } from "wagmi";
+
 interface IConnectSection {
   title: string;
 }
 
 const ConnectSection: NextPage<IConnectSection> = ({ title }) => {
+  const { connect, connectors } = useConnect();
+
+  function handleConnect() {
+    connect({ connector: connectors[0] });
+  }
+
   return (
     <Container centerContent>
       <Box maxW="xl">
@@ -20,7 +26,9 @@ const ConnectSection: NextPage<IConnectSection> = ({ title }) => {
 
       <Box my={[4, 8]}>
         <Strips />
-        <ConnectButton />
+        <Button onClick={handleConnect} size={["lg", "xl"]}>
+          Connect
+        </Button>
       </Box>
     </Container>
   );

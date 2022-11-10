@@ -1,13 +1,6 @@
-import "@rainbow-me/rainbowkit/styles.css";
-
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-import {
-  darkTheme,
-  getDefaultWallets,
-  RainbowKitProvider,
-} from "@rainbow-me/rainbowkit";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 
@@ -16,19 +9,13 @@ import { theme } from "theme";
 
 import type { AppProps } from "next/app";
 
-const { chains, provider } = configureChains(
-  [chain.goerli],
+const { provider } = configureChains(
+  [chain.goerli, chain.mainnet],
   [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID })]
 );
 
-const { connectors } = getDefaultWallets({
-  appName: "Poseidon DAO",
-  chains,
-});
-
 const wagmiClient = createClient({
   autoConnect: true,
-  connectors,
   provider,
 });
 
@@ -59,15 +46,9 @@ function App({ Component, pageProps }: AppProps) {
 
       <ChakraProvider theme={theme}>
         <WagmiConfig client={wagmiClient}>
-          <RainbowKitProvider
-            chains={chains}
-            modalSize="compact"
-            theme={darkTheme({ borderRadius: "none" })}
-          >
-            <PageLayout>
-              <Component {...pageProps} />
-            </PageLayout>
-          </RainbowKitProvider>
+          <PageLayout>
+            <Component {...pageProps} />
+          </PageLayout>
         </WagmiConfig>
       </ChakraProvider>
     </>

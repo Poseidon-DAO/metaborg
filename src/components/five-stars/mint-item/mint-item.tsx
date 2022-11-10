@@ -30,6 +30,7 @@ const MintItem: NextPage<IMintItem> = ({
 }) => {
   const toast = useToast();
   const { isConnected } = useAccount();
+
   const { buy, buyData, isBuying, isBuyFetching, isBuyingSuccess, error } =
     useBuyMetaborgStars({
       args: { salePrice: ethers.utils.formatEther(price) },
@@ -126,7 +127,7 @@ const MintItem: NextPage<IMintItem> = ({
           hasArrow
           label={getToolTipMessage()}
         >
-          <div>
+          <Box>
             <Button
               minW="240px"
               size="xl"
@@ -143,7 +144,7 @@ const MintItem: NextPage<IMintItem> = ({
                 <Text fontSize="sm">{ethers.utils.formatUnits(price)} ETH</Text>
               )}
             </Button>
-          </div>
+          </Box>
         </Tooltip>
       </Box>
     </Flex>

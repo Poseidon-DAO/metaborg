@@ -3,7 +3,7 @@ import { Text, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
 
 import { getTransactionLink } from "utils/transactionLink";
-import { useConnect } from "wagmi";
+import { useNetwork } from "wagmi";
 
 interface ITransactionLinkProps {
   text: string;
@@ -14,11 +14,8 @@ const TransactionLink: FC<ITransactionLinkProps> = ({
   text,
   transactionHash,
 }) => {
-  const { data } = useConnect();
-  const transactionLink = getTransactionLink(
-    transactionHash,
-    `${data?.chain.id}`
-  );
+  const { chain } = useNetwork();
+  const transactionLink = getTransactionLink(transactionHash, `${chain?.id}`);
 
   return (
     <Text>

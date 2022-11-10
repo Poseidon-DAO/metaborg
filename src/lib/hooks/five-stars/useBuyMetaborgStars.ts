@@ -19,6 +19,7 @@ const useBuyMetaborgStars = ({
   onError,
 }: IUseBuyMetaborgStars) => {
   const { address } = useAccount();
+
   const { config } = usePrepareContractWrite({
     abi: [
       {
@@ -31,7 +32,7 @@ const useBuyMetaborgStars = ({
     ],
     address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
     functionName: "buyMetaborgStars",
-    enabled: !!args?.salePrice,
+    enabled: false && !!args?.salePrice,
     overrides: {
       from: address,
       value: ethers.utils.parseEther(args?.salePrice),
