@@ -95,7 +95,6 @@ const MintItem: NextPage<IMintItem> = ({
   }, [!!error]);
 
   function handleMintClick() {
-    console.log("hini");
     buy?.();
   }
 

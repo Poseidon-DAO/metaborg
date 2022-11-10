@@ -41,7 +41,6 @@ const useBuyMetaborgStars = ({
 
   const { data, write, status } = useContractWrite(config);
 
-  console.log({ prr, status });
   const { isLoading, isFetching, isSuccess, error } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess,
