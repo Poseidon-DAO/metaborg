@@ -1,5 +1,3 @@
-import { UseContractReadConfig } from "wagmi/dist/declarations/src/hooks/contracts/useContractRead";
-
-export type ICustomHookBaseProps = UseContractReadConfig & {
+export type ICustomHookBaseProps = {
   args?: any | any[];
 };

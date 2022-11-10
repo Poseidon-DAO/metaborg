@@ -11,7 +11,7 @@ import type { AppProps } from "next/app";
 
 const { provider } = configureChains(
   [chain.goerli, chain.mainnet],
-  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID })]
+  [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID! })]
 );
 
 const wagmiClient = createClient({
