@@ -26,7 +26,7 @@ const navigationForRoute: Record<
 };
 
 const PageLayout: NextPage<IPageLayoutProps> = ({ children }) => {
-  const { pathname, push } = useRouter();
+  const { pathname } = useRouter();
 
   return (
     <Box position="relative">

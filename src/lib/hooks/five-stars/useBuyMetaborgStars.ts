@@ -20,7 +20,7 @@ const useBuyMetaborgStars = ({
 }: IUseBuyMetaborgStars) => {
   const { address } = useAccount();
 
-  const { config } = usePrepareContractWrite({
+  const { config, error: prr } = usePrepareContractWrite({
     abi: [
       {
         inputs: [],
@@ -39,8 +39,9 @@ const useBuyMetaborgStars = ({
     },
   });
 
-  const { data, write } = useContractWrite(config);
+  const { data, write, status } = useContractWrite(config);
 
+  console.log({ prr, status });
   const { isLoading, isFetching, isSuccess, error } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess,
