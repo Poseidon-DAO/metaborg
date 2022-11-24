@@ -5,7 +5,7 @@ import FiveStarsABI from "contracts/abis/FiveStars.json";
 const useAvailablePages = () => {
   const query = useContractRead({
     abi: FiveStarsABI,
-    functionName: "pagesAvailable",
+    functionName: "getAvailablePagesNumber",
     address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
   });
 

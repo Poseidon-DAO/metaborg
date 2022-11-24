@@ -20,7 +20,7 @@ const useBuyMetaborgStars = ({
 }: IUseBuyMetaborgStars) => {
   const { address } = useAccount();
 
-  const { config, error: prr } = usePrepareContractWrite({
+  const { config } = usePrepareContractWrite({
     abi: [
       {
         inputs: [],
@@ -32,14 +32,14 @@ const useBuyMetaborgStars = ({
     ],
     address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
     functionName: "buyMetaborgStars",
-    enabled: false && !!args?.salePrice,
+    enabled: !!args?.salePrice,
     overrides: {
       from: address,
       value: ethers.utils.parseEther(args?.salePrice),
     },
   });
 
-  const { data, write, status } = useContractWrite(config);
+  const { data, write } = useContractWrite(config);
 
   const { isLoading, isFetching, isSuccess, error } = useWaitForTransaction({
     hash: data?.hash,
