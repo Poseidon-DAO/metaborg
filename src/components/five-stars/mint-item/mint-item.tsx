@@ -22,11 +22,13 @@ import { ethers } from "ethers";
 interface IMintItem {
   item: IDataItem;
   disableButton?: boolean;
+  label?: string;
 }
 
 const MintItem: NextPage<IMintItem> = ({
   item: { amount, imageUrl, price },
   disableButton,
+  label,
 }) => {
   const toast = useToast();
   const { isConnected } = useAccount();
@@ -35,15 +37,6 @@ const MintItem: NextPage<IMintItem> = ({
     useBuyMetaborgStars({
       args: { salePrice: ethers.utils.formatEther(price) },
     });
-
-  function getToolTipMessage() {
-    const key = !isConnected ? "auth" : disableButton ? "sufficentPages" : "";
-
-    return {
-      auth: "Please connect Metamask to mint!",
-      sufficentPages: "No more pages available!",
-    }[key as string];
-  }
 
   useEffect(() => {
     if (isBuyingSuccess) {
@@ -122,11 +115,7 @@ const MintItem: NextPage<IMintItem> = ({
       />
 
       <Box textAlign="left">
-        <Tooltip
-          isDisabled={isTooltipDisabled}
-          hasArrow
-          label={getToolTipMessage()}
-        >
+        <Tooltip isDisabled={isTooltipDisabled} hasArrow label={label}>
           <Box>
             <Button
               minW="240px"
