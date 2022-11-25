@@ -129,9 +129,7 @@ const MintItem: NextPage<IMintItem> = ({
               <Text fontSize="lg">
                 {amount} NFT{amount > 1 ? "S" : ""}
               </Text>
-              {isConnected && (
-                <Text fontSize="sm">{ethers.utils.formatUnits(price)} ETH</Text>
-              )}
+              <Text fontSize="sm">{ethers.utils.formatUnits(price)} ETH</Text>
             </Button>
           </Box>
         </Tooltip>
