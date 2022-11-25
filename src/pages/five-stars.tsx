@@ -1,7 +1,12 @@
 import { Box, Heading } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
 
-import { useAddressMetadata, useAvailablePages } from "lib/hooks/five-stars";
+import {
+  useAddressMetadata,
+  useAvailablePages,
+  useUserGroup,
+  useVisibility,
+} from "lib/hooks/five-stars";
 import {
   ConnectSection,
   AccountInfo,
@@ -18,12 +23,18 @@ const APP_DISABLED_MESSAGE = process.env.NEXT_PUBLIC_APP_NOT_AVAILABLE_MESSAGE;
 const FiveStars: NextPage = () => {
   const { isConnected } = useAccount();
 
+  const { userGroup, userGroupStatus } = useUserGroup();
+  const { isVisibile, visibilityStatus } = useVisibility({ userGroup });
   const { availablePages, areAvailablePagesLoading, availablePagesError } =
     useAvailablePages();
   const { addressMetadata, areAddressMetadataLoading, addressMetadataError } =
     useAddressMetadata();
 
-  const showSpinner = areAvailablePagesLoading || areAddressMetadataLoading;
+  const showSpinner =
+    areAvailablePagesLoading ||
+    areAddressMetadataLoading ||
+    userGroupStatus === "loading" ||
+    visibilityStatus === "loading";
   const hasError = availablePagesError || addressMetadataError;
 
   if (showSpinner) {
@@ -51,20 +62,37 @@ const FiveStars: NextPage = () => {
           <ConnectSection title="Welcome fighter collector, collect your wallet" />
         </Box>
       )}
+
       {isConnected && (
         <Box pt={[40, 60]} mb={[20, 40]}>
           <AccountInfo />
         </Box>
       )}
+
+      {!isVisibile && isConnected && (
+        <Box my={[8, 14]} textAlign="center" color="red">
+          <Heading>You are not eligble for mint!</Heading>
+        </Box>
+      )}
+
       <Box my={[8, 4]}>
         <Packages />
       </Box>
+
+      {!(!isVisibile && isConnected) && availablePages && (
+        <Box my={[8, 14]} textAlign="center" color="red">
+          <Heading>{136 - availablePages} / 136 claimed</Heading>
+        </Box>
+      )}
+
       <Box my={20}>
         <MintSection
           maxPages={availablePages}
           addressMetadata={addressMetadata}
+          disableButtons={!isVisibile}
         />
       </Box>
+
       <Box my={16}>
         <Benefits />
       </Box>
