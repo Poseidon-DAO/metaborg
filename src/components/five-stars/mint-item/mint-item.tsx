@@ -36,6 +36,7 @@ const MintItem: NextPage<IMintItem> = ({
   const { buy, buyData, isBuying, isBuyFetching, isBuyingSuccess, error } =
     useBuyMetaborgStars({
       args: { salePrice: ethers.utils.formatEther(price) },
+      enabled: !disableButton,
     });
 
   useEffect(() => {
