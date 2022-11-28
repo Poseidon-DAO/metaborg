@@ -11,12 +11,14 @@ interface IUseBuyMetaborgStars {
   args: { salePrice: string };
   onSuccess?: (data: any) => void;
   onError?: (data: any) => void;
+  enabled?: boolean;
 }
 
 const useBuyMetaborgStars = ({
   args,
   onSuccess,
   onError,
+  enabled,
 }: IUseBuyMetaborgStars) => {
   const { address } = useAccount();
 
@@ -32,7 +34,7 @@ const useBuyMetaborgStars = ({
     ],
     address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
     functionName: "buyMetaborgStars",
-    enabled: !!args?.salePrice,
+    enabled: !!args?.salePrice && enabled,
     overrides: {
       from: address,
       value: ethers.utils.parseEther(args?.salePrice),

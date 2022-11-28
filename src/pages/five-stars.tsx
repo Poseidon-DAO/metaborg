@@ -4,8 +4,9 @@ import { useAccount } from "wagmi";
 import {
   useAddressMetadata,
   useAvailablePages,
+  usePublicVisibility,
   useUserGroup,
-  useVisibility,
+  useVisibilityForGroup,
 } from "lib/hooks/five-stars";
 import {
   ConnectSection,
@@ -19,12 +20,20 @@ import { type NextPage } from "next";
 
 const IS_APP_ENABLED = process.env.NEXT_PUBLIC_APP_AVAILABLE === "true";
 const APP_DISABLED_MESSAGE = process.env.NEXT_PUBLIC_APP_NOT_AVAILABLE_MESSAGE;
+const USER_GROUPS_FOR_CHECK = [1, 2, 3, 4, 5];
 
 const FiveStars: NextPage = () => {
   const { isConnected } = useAccount();
 
-  const { userGroup, userGroupStatus } = useUserGroup();
-  const { isVisibile, visibilityStatus } = useVisibility({ userGroup });
+  const { publicVisibility } = usePublicVisibility();
+  const { userGroup, userGroupStatus } = useUserGroup({
+    enabled: USER_GROUPS_FOR_CHECK.includes(Number(publicVisibility)),
+  });
+  const { isVisibile, visibilityStatus } = useVisibilityForGroup({
+    userGroup,
+    enabled: USER_GROUPS_FOR_CHECK.includes(Number(publicVisibility)),
+  });
+
   const { availablePages, areAvailablePagesLoading, availablePagesError } =
     useAvailablePages();
   const { addressMetadata, areAddressMetadataLoading, addressMetadataError } =
@@ -89,7 +98,7 @@ const FiveStars: NextPage = () => {
         <MintSection
           maxPages={availablePages}
           addressMetadata={addressMetadata}
-          disableButtons={!isVisibile}
+          disableButtons={publicVisibility !== 0 && !isVisibile}
         />
       </Box>
 
