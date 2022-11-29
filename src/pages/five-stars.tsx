@@ -68,7 +68,7 @@ const FiveStars: NextPage = () => {
     <>
       {!isConnected && (
         <Box pt={[40, 80]}>
-          <ConnectSection title="Welcome fighter collector, collect your wallet" />
+          <ConnectSection title="Welcome fighter collector, connect your wallet" />
         </Box>
       )}
 
