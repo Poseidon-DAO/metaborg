@@ -16,7 +16,7 @@ import { getDefaultToastConfig } from "utils/toast";
 import { TransactionLink } from "components/common";
 
 import { type IDataItem } from "components/five-stars/mint-section/section-data-utils";
-import { useAccount } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import { ethers } from "ethers";
 
 interface IMintItem {
@@ -31,12 +31,15 @@ const MintItem: NextPage<IMintItem> = ({
   label,
 }) => {
   const toast = useToast();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
+  const { data: balance } = useBalance({ address, watch: true });
+  const formatedBalance = Number(balance?.formatted);
+  const formatedPrice = Number(ethers.utils.formatUnits(price));
 
   const { buy, buyData, isBuying, isBuyFetching, isBuyingSuccess, error } =
     useBuyMetaborgStars({
       args: { salePrice: ethers.utils.formatEther(price) },
-      enabled: !disableButton,
+      enabled: !disableButton && formatedPrice < formatedBalance,
     });
 
   useEffect(() => {
@@ -93,9 +96,21 @@ const MintItem: NextPage<IMintItem> = ({
   }
 
   const isButtonDisabled =
-    disableButton || !isConnected || isBuying || isBuyFetching;
+    disableButton ||
+    !isConnected ||
+    isBuying ||
+    isBuyFetching ||
+    formatedPrice > formatedBalance;
   const isButtonLoading = isBuying || isBuyFetching;
-  const isTooltipDisabled = (isConnected && !disableButton) || false;
+  const isTooltipDisabled =
+    (isConnected && !disableButton && !(formatedPrice > formatedBalance)) ||
+    false;
+  const formatedLabel =
+    !!label && !(formatedPrice > formatedBalance)
+      ? label
+      : formatedPrice > formatedBalance
+      ? "Insufficient funds!"
+      : "";
 
   return (
     <Flex
@@ -116,7 +131,7 @@ const MintItem: NextPage<IMintItem> = ({
       />
 
       <Box textAlign="left">
-        <Tooltip isDisabled={isTooltipDisabled} hasArrow label={label}>
+        <Tooltip isDisabled={isTooltipDisabled} hasArrow label={formatedLabel}>
           <Box>
             <Button
               minW="240px"
