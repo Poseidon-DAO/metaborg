@@ -10,7 +10,7 @@ import { theme } from "theme";
 import type { AppProps } from "next/app";
 
 const { provider } = configureChains(
-  [chain.goerli, chain.mainnet],
+  [chain.mainnet, chain.goerli],
   [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID! })]
 );
 
