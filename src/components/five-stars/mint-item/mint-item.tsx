@@ -105,11 +105,12 @@ const MintItem: NextPage<IMintItem> = ({
   const isTooltipDisabled =
     (isConnected && !disableButton && !(formatedPrice > formatedBalance)) ||
     false;
-  const formatedLabel = !!label
-    ? label
-    : formatedPrice > formatedBalance
-    ? "Insufficient funds!"
-    : "";
+  const formatedLabel =
+    !!label && !(formatedPrice > formatedBalance)
+      ? label
+      : formatedPrice > formatedBalance
+      ? "Insufficient funds!"
+      : "";
 
   return (
     <Flex
