@@ -101,11 +101,9 @@ const FiveStars: NextPage = () => {
         </Box>
       )}
 
-      {!!availablePages && (
-        <Box my={[8, 14]} textAlign="center" color="red">
-          <Heading>{136 - availablePages} / 136 claimed</Heading>
-        </Box>
-      )}
+      <Box my={[8, 14]} textAlign="center" color="red">
+        <Heading>{136 - (availablePages || 0)} / 136 claimed</Heading>
+      </Box>
 
       <Box my={20}>
         <MintSection
