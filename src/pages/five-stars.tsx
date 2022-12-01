@@ -78,12 +78,6 @@ const FiveStars: NextPage = () => {
         </Box>
       )}
 
-      {!isVisibile && isConnected && (
-        <Box my={[8, 14]} textAlign="center" color="red">
-          <Heading>You are not eligble for mint!</Heading>
-        </Box>
-      )}
-
       <Box my={[8, 4]}>
         <Packages />
       </Box>
