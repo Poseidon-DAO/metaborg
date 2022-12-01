@@ -1,4 +1,4 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Link } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
 
 import {
@@ -20,7 +20,7 @@ import { type NextPage } from "next";
 
 const IS_APP_ENABLED = process.env.NEXT_PUBLIC_APP_AVAILABLE === "true";
 const APP_DISABLED_MESSAGE = process.env.NEXT_PUBLIC_APP_NOT_AVAILABLE_MESSAGE;
-const USER_GROUPS_FOR_CHECK = [1, 2, 3, 4, 5];
+const USER_GROUPS_FOR_CHECK = [1, 2, 3, 4];
 
 const FiveStars: NextPage = () => {
   const { isConnected } = useAccount();
@@ -82,6 +82,25 @@ const FiveStars: NextPage = () => {
         <Packages />
       </Box>
 
+      {publicVisibility === 5 && (
+        <Box my={[8, 14]} textAlign="center" color="red">
+          <Heading fontSize="xl">
+            Minting is over, thanks for participating! <br /> <br /> In 6 months
+            you will be able to burn your NFT and retrieve the physical copy of
+            the page. <br /> Come back here in 6 months in order to burn the NFT
+            and provide delivery details. <br /> Follow metaborg on{" "}
+            <Link
+              href="https://twitter.com/metaborg2024"
+              isExternal
+              textDecoration="underline"
+            >
+              twitter
+            </Link>{" "}
+            to receive all the updates and know when burn is unlocked
+          </Heading>
+        </Box>
+      )}
+
       {!!availablePages && (
         <Box my={[8, 14]} textAlign="center" color="red">
           <Heading>{136 - availablePages} / 136 claimed</Heading>
@@ -92,7 +111,9 @@ const FiveStars: NextPage = () => {
         <MintSection
           maxPages={availablePages}
           addressMetadata={addressMetadata}
-          disableButtons={publicVisibility !== 0 && !isVisibile}
+          disableButtons={
+            publicVisibility === 5 || (publicVisibility !== 0 && !isVisibile)
+          }
         />
       </Box>
 

@@ -16,7 +16,7 @@ interface IMintSectionProps {
 const tooltipMessages = {
   auth: "Please connect Metamask to mint!",
   sufficentPages: "No more pages available!",
-  general: "You are not eligble for mint!",
+  general: "Minting is closed!",
 };
 
 const MintSection: NextPage<IMintSectionProps> = ({
