@@ -20,13 +20,14 @@ function formatResult(data: BigNumber[]) {
 }
 
 const useAddressMetadata = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
 
   const query = useContractRead({
     abi: FiveStarsABI,
     functionName: "getAddressMetadata",
     address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
     args: [address || "0x0000000000000000000000000000000000000001"],
+    enabled: !!isConnected,
   });
 
   return {

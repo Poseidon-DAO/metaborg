@@ -1,12 +1,15 @@
-import { useContractRead } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 
 import FiveStarsABI from "contracts/abis/FiveStars.json";
 
 const useAvailablePages = () => {
+  const { isConnected } = useAccount();
+
   const query = useContractRead({
     abi: FiveStarsABI,
     functionName: "getAvailablePagesNumber",
     address: process.env.NEXT_PUBLIC_FIVE_STARS_CONTRAT_ADDRESS!,
+    enabled: !!isConnected,
   });
 
   return {

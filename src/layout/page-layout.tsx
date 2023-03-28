@@ -23,6 +23,10 @@ const navigationForRoute: Record<
     header: <FiveStarsHeader />,
     footer: <Footer />,
   },
+  "/burn": {
+    header: <FiveStarsHeader />,
+    footer: <Footer />,
+  },
 };
 
 const PageLayout: NextPage<IPageLayoutProps> = ({ children }) => {
