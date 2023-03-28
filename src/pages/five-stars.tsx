@@ -1,4 +1,5 @@
-import { Box, Heading, Link } from "@chakra-ui/react";
+import { Box, Flex, Heading, Link } from "@chakra-ui/react";
+import NextLink from "next/link";
 import { useAccount } from "wagmi";
 
 import {
@@ -50,7 +51,7 @@ const FiveStars: NextPage = () => {
     return <FullPageLoader />;
   }
 
-  if (hasError) {
+  if (hasError && isConnected) {
     return <ErrorPage />;
   }
 
@@ -73,10 +74,29 @@ const FiveStars: NextPage = () => {
       )}
 
       {isConnected && (
-        <Box pt={[40, 60]} mb={[20, 40]}>
+        <Flex
+          pt={[40, 60]}
+          mb={[20, 40]}
+          justifyContent="flex-end"
+          alignItems="center"
+        >
+          <Box mr="8">
+            <NextLink href="/burn" passHref>
+              <Link color="brand.white" fontWeight="bold">
+                Burn
+              </Link>
+            </NextLink>
+          </Box>
+
           <AccountInfo />
-        </Box>
+        </Flex>
       )}
+
+      <Box my={[8, 16]} textAlign="center">
+        <Heading fontSize="4xl" color="red">
+          Burning is now available 🔥
+        </Heading>
+      </Box>
 
       <Box my={[8, 4]}>
         <Packages />
