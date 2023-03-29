@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   Flex,
   Grid,
   GridItem,
@@ -19,13 +20,21 @@ const IS_BURN_AVAILABLE = process.env.NEXT_PUBLIC_BURN_AVAILABLE === "true";
 
 const Burn: NextPage = () => {
   const { replace } = useRouter();
-  const { nfts } = useNfts();
+  const { nfts, status } = useNfts();
 
   const showItemsNumber = nfts.length === 1 ? 1 : 2;
 
   if (!IS_BURN_AVAILABLE) {
     replace("/five-stars");
     return null;
+  }
+
+  if (status === "loading") {
+    return (
+      <Flex justifyContent="center" alignItems="center" h="90vh" pt={[40, 60]}>
+        <CircularProgress isIndeterminate color="brand.red" />
+      </Flex>
+    );
   }
 
   return (
