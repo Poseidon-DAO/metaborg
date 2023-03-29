@@ -13,11 +13,20 @@ import { type NextPage } from "next";
 import NextLink from "next/link";
 import { useNfts } from "lib/hooks/common";
 import { BurnItem } from "components/five-stars/burn-item";
+import { useRouter } from "next/router";
+
+const IS_BURN_AVAILABLE = process.env.NEXT_PUBLIC_BURN_AVAILABLE === "true";
 
 const Burn: NextPage = () => {
+  const { replace } = useRouter();
   const { nfts } = useNfts();
 
   const showItemsNumber = nfts.length === 1 ? 1 : 2;
+
+  if (!IS_BURN_AVAILABLE) {
+    replace("/five-stars");
+    return null;
+  }
 
   return (
     <Box pt={[40, 60]}>

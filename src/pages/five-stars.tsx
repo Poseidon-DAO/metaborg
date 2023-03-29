@@ -21,6 +21,8 @@ import { type NextPage } from "next";
 
 const IS_APP_ENABLED = process.env.NEXT_PUBLIC_APP_AVAILABLE === "true";
 const APP_DISABLED_MESSAGE = process.env.NEXT_PUBLIC_APP_NOT_AVAILABLE_MESSAGE;
+const IS_BURN_AVAILABLE = process.env.NEXT_PUBLIC_BURN_AVAILABLE === "true";
+
 const USER_GROUPS_FOR_CHECK = [1, 2, 3, 4];
 
 const FiveStars: NextPage = () => {
@@ -80,23 +82,36 @@ const FiveStars: NextPage = () => {
           justifyContent="flex-end"
           alignItems="center"
         >
-          <Box mr="8">
-            <NextLink href="/burn" passHref>
-              <Link color="brand.white" fontWeight="bold">
-                Burn
-              </Link>
-            </NextLink>
-          </Box>
+          {!!IS_BURN_AVAILABLE && (
+            <Box mr="8">
+              <NextLink href="/burn" passHref>
+                <Link color="brand.white" fontWeight="bold">
+                  Burn
+                </Link>
+              </NextLink>
+            </Box>
+          )}
 
           <AccountInfo />
         </Flex>
       )}
 
-      <Box my={[8, 16]} textAlign="center">
-        <Heading fontSize="4xl" color="red">
-          Burning is now available 🔥
-        </Heading>
-      </Box>
+      {!!IS_BURN_AVAILABLE && (
+        <Box my={[8, 16]} textAlign="center">
+          <NextLink href="/burn" passHref>
+            <Heading
+              fontSize="4xl"
+              color="red"
+              _hover={{
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
+              Burning is now available 🔥
+            </Heading>
+          </NextLink>
+        </Box>
+      )}
 
       <Box my={[8, 4]}>
         <Packages />
