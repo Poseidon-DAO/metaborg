@@ -9,8 +9,11 @@ import { theme } from "theme";
 
 import type { AppProps } from "next/app";
 
+const chainToUse =
+  process.env.NEXT_PUBLIC_CHAIN_ID === "0x5" ? chain.goerli : chain.mainnet;
+
 const { provider } = configureChains(
-  [chain.mainnet, chain.goerli],
+  [chainToUse],
   [alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID! })]
 );
 

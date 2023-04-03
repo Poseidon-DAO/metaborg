@@ -56,7 +56,7 @@ const Burn: NextPage = () => {
         </Tooltip>
 
         <Heading size="lg" ml="8">
-          Exchange NFTs for Physical Copies through Burning
+          Burn your NFT to receive the fine art printed page
         </Heading>
       </Flex>
 
