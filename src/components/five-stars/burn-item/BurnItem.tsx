@@ -23,7 +23,9 @@ const BurnItem: NextPage<IProps> = ({ id, metadata }) => {
 
   return (
     <Box textAlign="center">
-      <BurnModal {...disClosureProps} tokenId={id.tokenId} />
+      {disClosureProps.isOpen && (
+        <BurnModal {...disClosureProps} tokenId={id.tokenId} />
+      )}
 
       <Box position="relative" overflow="hidden" border="1px solid white">
         <Image

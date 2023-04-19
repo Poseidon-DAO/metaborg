@@ -98,6 +98,10 @@ const FiveStars: NextPage = () => {
 
       {!!IS_BURN_AVAILABLE && (
         <Box my={[8, 16]} textAlign="center">
+          <Heading fontSize="3xl" mb={4}>
+            Now you can burn you NFT to retrieve the fine art.
+          </Heading>
+
           <NextLink href="/burn" passHref>
             <Heading
               fontSize="4xl"
@@ -113,9 +117,11 @@ const FiveStars: NextPage = () => {
         </Box>
       )}
 
-      <Box my={[8, 4]}>
-        <Packages />
-      </Box>
+      {!IS_BURN_AVAILABLE && (
+        <Box my={[8, 4]}>
+          <Packages />
+        </Box>
+      )}
 
       {publicVisibility === 5 && (
         <Box my={[8, 14]} textAlign="center" color="red">
