@@ -1,7 +1,6 @@
 import { Flex, Box } from "@chakra-ui/react";
 
 import { useAccount } from "wagmi";
-import { useStore } from "store/store";
 import { AccountInfo } from "components/common/account-info";
 import { Logo, PageContainer, ConnectMetamask } from "components/common";
 

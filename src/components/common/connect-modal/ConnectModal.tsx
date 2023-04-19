@@ -16,7 +16,6 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 
-import { useStore } from "store/store";
 import { Image } from "components/common";
 import { getDefaultToastConfig } from "utils/toast";
 

@@ -28,20 +28,35 @@ async function submitData(
 interface IUseBurnDataSubmit {
   data: {
     name: string;
+    phone: string;
     email: string;
     address: string;
+    state: string;
+    zip: string;
     tokenId: string;
   };
 }
 
 const useBurnDataSubmit = ({
-  data: { name, email, address, tokenId },
+  data: { name, phone, email, address, state, zip, tokenId },
   enabled,
 }: IUseBurnDataSubmit & { enabled?: boolean }) => {
-  const query = useQuery([key, name, email, address, tokenId], {
-    queryFn: () => submitData({ name, email, address, tokenId }),
-    enabled: !!name && !!email && !!address && !!tokenId && enabled,
-  });
+  const query = useQuery(
+    [key, name, phone, email, address, state, zip, tokenId],
+    {
+      queryFn: () =>
+        submitData({ name, phone, email, address, state, zip, tokenId }),
+      enabled:
+        !!name &&
+        !!phone &&
+        !!email &&
+        !!address &&
+        !!state &&
+        !!zip &&
+        !!tokenId &&
+        enabled,
+    }
+  );
 
   return query;
 };

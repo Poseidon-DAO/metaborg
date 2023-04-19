@@ -1,31 +1,28 @@
 import create from "zustand";
-
-import type { DistributionMetaData } from "./types";
+import { persist } from "zustand/middleware";
 
 interface StateObject {
-  token: string;
-  setToken: (token: string) => void;
-  distributionMetaData: DistributionMetaData;
-  setDistributionMetaData: (distributionMetaData: DistributionMetaData) => void;
+  userBurnData: {
+    name: string;
+    phone: string;
+    email: string;
+    confirmationEmail: string;
+    address: string;
+    state: string;
+    zip: string;
+  } | null;
+  setUserBurnData: (burnData: StateObject["userBurnData"]) => void;
 }
 
-export const useStore = create<StateObject>((set) => ({
-  token: "",
-  setToken: (token) => set(() => ({ token })),
-  distributionMetaData: {
-    formatedData: {
-      price: 0,
-      diamondSupply: 0,
-      goldSupply: 0,
-      originlSupply: 0,
-    },
-    originalData: {
-      price: "",
-      diamondSupply: "",
-      goldSupply: "",
-      originlSupply: "",
-    },
-  },
-  setDistributionMetaData: (distributionMetaData) =>
-    set(() => ({ distributionMetaData })),
-}));
+export const useBurnDataFromStorage = create<StateObject>()(
+  persist(
+    (set) => ({
+      userBurnData: null,
+      setUserBurnData: (burnData: StateObject["userBurnData"]) =>
+        set(() => ({ userBurnData: burnData })),
+    }),
+    {
+      name: "burn-user-data-storage",
+    }
+  )
+);
