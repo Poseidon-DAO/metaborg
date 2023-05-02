@@ -30,6 +30,7 @@ interface IUseBurnDataSubmit {
     name: string;
     phone: string;
     email: string;
+    country: string;
     address: string;
     state: string;
     zip: string;
@@ -38,14 +39,23 @@ interface IUseBurnDataSubmit {
 }
 
 const useBurnDataSubmit = ({
-  data: { name, phone, email, address, state, zip, tokenId },
+  data: { name, phone, email, country, address, state, zip, tokenId },
   enabled,
 }: IUseBurnDataSubmit & { enabled?: boolean }) => {
   const query = useQuery(
-    [key, name, phone, email, address, state, zip, tokenId],
+    [key, name, phone, email, country, address, state, zip, tokenId],
     {
       queryFn: () =>
-        submitData({ name, phone, email, address, state, zip, tokenId }),
+        submitData({
+          name,
+          phone,
+          email,
+          country,
+          address,
+          state,
+          zip,
+          tokenId,
+        }),
       enabled:
         !!name &&
         !!phone &&

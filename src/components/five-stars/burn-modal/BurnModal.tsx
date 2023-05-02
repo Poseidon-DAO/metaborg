@@ -16,6 +16,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
   Stack,
   useToast,
 } from "@chakra-ui/react";
@@ -25,6 +26,8 @@ import { getDefaultToastConfig } from "utils/toast";
 import { TransactionLink } from "components/common";
 import { useNfts } from "lib/hooks/common";
 import { useBurnDataFromStorage } from "store/store";
+
+import countires from "../../../countries";
 
 interface IProps {
   isOpen?: boolean;
@@ -37,6 +40,7 @@ interface FormData {
   phone: string;
   email: string;
   confirmationEmail: string;
+  country: string;
   address: string;
   state: string;
   zip: string;
@@ -47,6 +51,7 @@ const initialValues = {
   phone: "",
   email: "",
   confirmationEmail: "",
+  country: "",
   address: "",
   state: "",
   zip: "",
@@ -87,11 +92,12 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
   watch("phone");
   watch("email");
   watch("confirmationEmail");
+  watch("country");
   watch("address");
   watch("state");
   watch("zip");
 
-  const { name, phone, email, address, state, zip } = getValues();
+  const { name, phone, email, country, address, state, zip } = getValues();
 
   const { burn, burnData, burnStatus } = useBurn({
     args: { email, tokenId },
@@ -101,6 +107,7 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
       name,
       phone,
       email,
+      country,
       address,
       state,
       zip,
@@ -169,6 +176,8 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
     burn?.();
   }
 
+  const isSubmitting = burnStatus === "loading" || status === "loading";
+
   return (
     <Modal size="xl" isOpen={isOpen} onClose={handleClose}>
       <ModalOverlay />
@@ -180,7 +189,10 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <ModalBody>
                 <Stack spacing={3}>
-                  <FormControl isInvalid={!!errors?.name}>
+                  <FormControl
+                    isInvalid={!!errors?.name}
+                    isDisabled={isSubmitting}
+                  >
                     <FormLabel htmlFor="name">
                       Full name (name + surname)
                     </FormLabel>
@@ -197,7 +209,10 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                     </FormHelperText>
                   </FormControl>
 
-                  <FormControl isInvalid={!!errors?.phone}>
+                  <FormControl
+                    isInvalid={!!errors?.phone}
+                    isDisabled={isSubmitting}
+                  >
                     <FormLabel htmlFor="phone">Phone</FormLabel>
                     <Input
                       placeholder="+41 xx xxx xx xx"
@@ -218,7 +233,10 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                   </FormControl>
 
                   <Flex gap={2}>
-                    <FormControl isInvalid={!!errors?.email}>
+                    <FormControl
+                      isInvalid={!!errors?.email}
+                      isDisabled={isSubmitting}
+                    >
                       <FormLabel htmlFor="email">Email</FormLabel>
                       <Input
                         type="email"
@@ -238,7 +256,10 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                       </FormHelperText>
                     </FormControl>
 
-                    <FormControl isInvalid={!!errors?.confirmationEmail}>
+                    <FormControl
+                      isInvalid={!!errors?.confirmationEmail}
+                      isDisabled={isSubmitting}
+                    >
                       <FormLabel htmlFor="confirmationEmail">
                         Confirm email
                       </FormLabel>
@@ -262,7 +283,10 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                     </FormControl>
                   </Flex>
 
-                  <FormControl isInvalid={!!errors?.address}>
+                  <FormControl
+                    isInvalid={!!errors?.address}
+                    isDisabled={isSubmitting}
+                  >
                     <FormLabel htmlFor="address">Address</FormLabel>
                     <Input
                       placeholder="Address"
@@ -276,8 +300,35 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                     </FormHelperText>
                   </FormControl>
 
+                  <FormControl
+                    isInvalid={!!errors?.country}
+                    isDisabled={isSubmitting}
+                  >
+                    <FormLabel htmlFor="country">Country</FormLabel>
+
+                    <Select
+                      placeholder="Select country"
+                      errorBorderColor="crimson"
+                      {...register("country", {
+                        required: "Country is required",
+                      })}
+                    >
+                      {countires.map((country) => (
+                        <option key={country.code} value={country.name}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </Select>
+                    <FormHelperText color="crimson">
+                      {errors.country && errors.country.message}
+                    </FormHelperText>
+                  </FormControl>
+
                   <Flex gap={2}>
-                    <FormControl isInvalid={!!errors?.state}>
+                    <FormControl
+                      isInvalid={!!errors?.state}
+                      isDisabled={isSubmitting}
+                    >
                       <FormLabel htmlFor="state">State</FormLabel>
                       <Input
                         placeholder="State"
@@ -291,7 +342,11 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                       </FormHelperText>
                     </FormControl>
 
-                    <FormControl w="40%" isInvalid={!!errors?.zip}>
+                    <FormControl
+                      w="40%"
+                      isInvalid={!!errors?.zip}
+                      isDisabled={isSubmitting}
+                    >
                       <FormLabel htmlFor="zip">Zip code</FormLabel>
                       <Input
                         placeholder="Zip code"
@@ -319,6 +374,7 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                     colorScheme="blue"
                     isChecked={rememberUser}
                     onChange={handleRememberMeClick}
+                    isDisabled={isSubmitting}
                   >
                     Remember me
                   </Checkbox>
@@ -330,9 +386,7 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                         variant="ghost"
                         borderRadius="0"
                         mx="2"
-                        disabled={
-                          burnStatus === "loading" || status === "loading"
-                        }
+                        disabled={isSubmitting}
                         onClick={handleClearClick}
                       >
                         Clear
@@ -343,12 +397,8 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                       size="md"
                       variant="solid"
                       type="submit"
-                      isLoading={
-                        burnStatus === "loading" || status === "loading"
-                      }
-                      disabled={
-                        burnStatus === "loading" || status === "loading"
-                      }
+                      isLoading={isSubmitting}
+                      disabled={isSubmitting}
                     >
                       Burn
                     </Button>
