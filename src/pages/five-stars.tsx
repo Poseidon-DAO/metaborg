@@ -1,6 +1,18 @@
+import React, { useState, useEffect } from "react";
 import { Box, Flex, Heading, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useAccount } from "wagmi";
+import {
+  addHours,
+  differenceInSeconds,
+  intervalToDuration,
+  format,
+  formatDistanceToNowStrict,
+  intlFormatDistance,
+  formatDuration,
+  parseISO,
+  addDays,
+} from "date-fns";
 
 import {
   useAddressMetadata,
@@ -22,6 +34,7 @@ import { type NextPage } from "next";
 const IS_APP_ENABLED = process.env.NEXT_PUBLIC_APP_AVAILABLE === "true";
 const APP_DISABLED_MESSAGE = process.env.NEXT_PUBLIC_APP_NOT_AVAILABLE_MESSAGE;
 const IS_BURN_AVAILABLE = process.env.NEXT_PUBLIC_BURN_AVAILABLE === "true";
+const BURN_START_DATE = process.env.NEXT_PUBLIC_BURN_START_DATE!;
 
 const USER_GROUPS_FOR_CHECK = [1, 2, 3, 4];
 
@@ -41,6 +54,28 @@ const FiveStars: NextPage = () => {
     useAvailablePages();
   const { addressMetadata, areAddressMetadataLoading, addressMetadataError } =
     useAddressMetadata();
+
+  const [countdown, setCountdown] = useState("");
+
+  useEffect(() => {
+    const startDate = parseISO(BURN_START_DATE!);
+    const endDate = addDays(startDate, 1);
+
+    const intervalId = setInterval(() => {
+      const now = new Date();
+
+      const duration = intervalToDuration({ start: now, end: endDate });
+
+      setCountdown(
+        formatDuration(duration, {
+          format: ["hours", "minutes", "seconds"],
+          delimiter: ":",
+        })
+      );
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const showSpinner =
     areAvailablePagesLoading ||
@@ -114,6 +149,12 @@ const FiveStars: NextPage = () => {
               Burning is now available 🔥
             </Heading>
           </NextLink>
+
+          <Heading size="md" ml="8" mt="4">
+            Burn ends in
+          </Heading>
+
+          <Heading size="lg">{countdown}</Heading>
         </Box>
       )}
 
