@@ -66,12 +66,12 @@ const FiveStars: NextPage = () => {
 
       const duration = intervalToDuration({ start: now, end: endDate });
 
-      setCountdown(
-        formatDuration(duration, {
-          format: ["hours", "minutes", "seconds"],
-          delimiter: ":",
-        })
-      );
+      let durationString = "";
+      if (duration.hours) durationString += `${duration.hours}h:`;
+      if (duration.minutes) durationString += `${duration.minutes}m:`;
+      if (duration.seconds) durationString += `${duration.seconds}s`;
+
+      setCountdown(durationString);
     }, 1000);
 
     return () => clearInterval(intervalId);
