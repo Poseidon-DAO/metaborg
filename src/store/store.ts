@@ -7,6 +7,7 @@ interface StateObject {
     phone: string;
     email: string;
     confirmationEmail: string;
+    city: string;
     country: string;
     address: string;
     state: string;

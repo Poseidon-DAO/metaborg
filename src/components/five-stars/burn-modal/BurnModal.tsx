@@ -40,6 +40,7 @@ interface FormData {
   phone: string;
   email: string;
   confirmationEmail: string;
+  city: string;
   country: string;
   address: string;
   state: string;
@@ -51,6 +52,7 @@ const initialValues = {
   phone: "",
   email: "",
   confirmationEmail: "",
+  city: "",
   country: "",
   address: "",
   state: "",
@@ -94,10 +96,12 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
   watch("confirmationEmail");
   watch("country");
   watch("address");
+  watch("city");
   watch("state");
   watch("zip");
 
-  const { name, phone, email, country, address, state, zip } = getValues();
+  const { name, phone, email, city, country, address, state, zip } =
+    getValues();
 
   const { burn, burnData, burnStatus } = useBurn({
     args: { email, tokenId },
@@ -110,6 +114,7 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
       country,
       address,
       state,
+      city,
       zip,
       tokenId,
     },
@@ -283,22 +288,41 @@ const BurnModal: NextPage<IProps> = ({ isOpen = false, tokenId, onClose }) => {
                     </FormControl>
                   </Flex>
 
-                  <FormControl
-                    isInvalid={!!errors?.address}
-                    isDisabled={isSubmitting}
-                  >
-                    <FormLabel htmlFor="address">Address</FormLabel>
-                    <Input
-                      placeholder="Address"
-                      errorBorderColor="crimson"
-                      {...register("address", {
-                        required: "Address is required",
-                      })}
-                    />
-                    <FormHelperText color="crimson">
-                      {errors.address && errors.address.message}
-                    </FormHelperText>
-                  </FormControl>
+                  <Flex gap={2}>
+                    <FormControl
+                      isInvalid={!!errors?.address}
+                      isDisabled={isSubmitting}
+                    >
+                      <FormLabel htmlFor="address">Address</FormLabel>
+                      <Input
+                        placeholder="Address"
+                        errorBorderColor="crimson"
+                        {...register("address", {
+                          required: "Address is required",
+                        })}
+                      />
+                      <FormHelperText color="crimson">
+                        {errors.address && errors.address.message}
+                      </FormHelperText>
+                    </FormControl>
+
+                    <FormControl
+                      isInvalid={!!errors?.city}
+                      isDisabled={isSubmitting}
+                    >
+                      <FormLabel htmlFor="city">City</FormLabel>
+                      <Input
+                        placeholder="City"
+                        errorBorderColor="crimson"
+                        {...register("city", {
+                          required: "City is required",
+                        })}
+                      />
+                      <FormHelperText color="crimson">
+                        {errors.city && errors.city.message}
+                      </FormHelperText>
+                    </FormControl>
+                  </Flex>
 
                   <FormControl
                     isInvalid={!!errors?.country}
