@@ -5,3 +5,4 @@ export * from "./header";
 export * from "./mint-item";
 export * from "./mint-section";
 export * from "./packages";
+export * from "./timer";
