@@ -39,7 +39,7 @@ const Timer = () => {
       {!countdown ? (
         <CircularProgress size="6" mt="2" isIndeterminate color="red" />
       ) : (
-        <Heading size="lg">{countdown}</Heading>
+        <Heading size="2xl">{countdown}</Heading>
       )}
     </Box>
   );
