@@ -25,18 +25,18 @@ const Burn: NextPage = () => {
 
   const showItemsNumber = nfts.length === 1 ? 1 : 2;
 
-  const startDate = parseISO(process.env.NEXT_PUBLIC_BURN_START_DATE!);
-  const endDate = addDays(startDate, 1);
-  const now = new Date();
+  // const startDate = parseISO(process.env.NEXT_PUBLIC_BURN_START_DATE!);
+  // const endDate = addDays(startDate, 1);
+  // const now = new Date();
 
-  const allowNavigateToBurn = !(
-    isAfter(startDate, now) || isAfter(now, endDate)
-  );
+  // const allowNavigateToBurn = !(
+  //   isAfter(startDate, now) || isAfter(now, endDate)
+  // );
 
-  if (!allowNavigateToBurn) {
-    replace("/five-stars");
-    return null;
-  }
+  // if (!allowNavigateToBurn) {
+  //   replace("/five-stars");
+  //   return null;
+  // }
 
   if (!IS_BURN_AVAILABLE) {
     replace("/five-stars");
