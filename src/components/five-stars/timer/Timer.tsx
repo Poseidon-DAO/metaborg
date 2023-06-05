@@ -1,12 +1,13 @@
 import { Box, CircularProgress, Heading, Image } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { intervalToDuration, parseISO, addDays } from "date-fns";
+import { intervalToDuration, parseISO, addDays, isAfter } from "date-fns";
 
 const IS_BURN_AVAILABLE = process.env.NEXT_PUBLIC_BURN_AVAILABLE === "true";
 const BURN_START_DATE = process.env.NEXT_PUBLIC_BURN_START_DATE!;
 
-const Timer = () => {
-  const [countdown, setCountdown] = useState("");
+const Timer = ({ onChange }: { onChange?: (duration: string) => void }) => {
+  const [countdown, setCountdown] = useState<string | null>(null);
+  const [isFuture, setIsFuture] = useState(false);
 
   useEffect(() => {
     const startDate = parseISO(BURN_START_DATE!);
@@ -17,12 +18,29 @@ const Timer = () => {
     const intervalId = setInterval(() => {
       const now = new Date();
 
-      const duration = intervalToDuration({ start: now, end: endDate });
+      let duration;
+
+      if (isAfter(now, endDate)) {
+        // burn end
+        return setCountdown("");
+      }
+
+      if (isAfter(startDate, now)) {
+        // burn will start
+        duration = intervalToDuration({ start: now, end: startDate });
+        setIsFuture(true);
+      } else {
+        // burn will end
+        duration = intervalToDuration({ start: now, end: endDate });
+        setIsFuture(false);
+      }
 
       let durationString = "";
-      if (duration.hours) durationString += `${duration.hours}h:`;
-      if (duration.minutes) durationString += `${duration.minutes}m:`;
-      if (duration.seconds) durationString += `${duration.seconds}s`;
+
+      if (duration.days) durationString += `${duration.days}d:`;
+      durationString += `${duration.hours}h:`;
+      durationString += `${duration.minutes}m:`;
+      durationString += `${duration.seconds}s`;
 
       setCountdown(durationString);
     }, 1000);
@@ -30,13 +48,21 @@ const Timer = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  if (countdown === "") {
+    return (
+      <Heading size="2xl" mt="2" color="red">
+        Burn ended!
+      </Heading>
+    );
+  }
+
   return (
     <Box>
       <Heading size="md" mt="4">
-        Burn ends in
+        {isFuture ? "Burn starts in" : "Burn ends in"}
       </Heading>
 
-      {!countdown ? (
+      {countdown === null ? (
         <CircularProgress size="6" mt="2" isIndeterminate color="red" />
       ) : (
         <Heading size="2xl">{countdown}</Heading>
