@@ -18,6 +18,8 @@ import {
 import { Benefits, MintSection, Packages, Timer } from "components/five-stars";
 
 import { type NextPage } from "next";
+import { addDays, isAfter, parseISO } from "date-fns";
+import { useState } from "react";
 
 const IS_APP_ENABLED = process.env.NEXT_PUBLIC_APP_AVAILABLE === "true";
 const APP_DISABLED_MESSAGE = process.env.NEXT_PUBLIC_APP_NOT_AVAILABLE_MESSAGE;
@@ -67,6 +69,14 @@ const FiveStars: NextPage = () => {
     );
   }
 
+  const startDate = parseISO(process.env.NEXT_PUBLIC_BURN_START_DATE!);
+  const endDate = addDays(startDate, 1);
+  const now = new Date();
+
+  const allowNavigateToBurn = !(
+    isAfter(startDate, now) || isAfter(now, endDate)
+  );
+
   return (
     <>
       {!isConnected && (
@@ -82,7 +92,7 @@ const FiveStars: NextPage = () => {
           justifyContent="flex-end"
           alignItems="center"
         >
-          {!!IS_BURN_AVAILABLE && (
+          {!!IS_BURN_AVAILABLE && allowNavigateToBurn && (
             <Box mr="8">
               <NextLink href="/burn" passHref>
                 <Link color="brand.white" fontWeight="bold">
@@ -98,22 +108,36 @@ const FiveStars: NextPage = () => {
 
       {!!IS_BURN_AVAILABLE && (
         <Box my={[8, 16]} textAlign="center">
-          <Heading fontSize="3xl" mb={4}>
-            Now you can burn you NFT to retrieve the fine art.
-          </Heading>
-
-          <NextLink href="/burn" passHref>
-            <Heading
-              fontSize="4xl"
-              color="red"
-              _hover={{
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-            >
-              Burning is now available 🔥
+          {!isAfter(now, endDate) && (
+            <Heading fontSize="3xl" mb={4}>
+              Now you can burn you NFT to retrieve the fine art.
             </Heading>
-          </NextLink>
+          )}
+
+          {!isAfter(now, endDate) && (
+            <NextLink
+              href={allowNavigateToBurn ? "/burn" : ""}
+              style={{ cursor: "none" }}
+              passHref
+            >
+              <Heading
+                fontSize="4xl"
+                color="red"
+                _hover={
+                  allowNavigateToBurn
+                    ? {
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                      }
+                    : {}
+                }
+                opacity={allowNavigateToBurn ? 1 : 0.7}
+                cursor={!allowNavigateToBurn ? "not-allowed" : "pointer"}
+              >
+                Burning is now available 🔥
+              </Heading>
+            </NextLink>
+          )}
 
           <Timer />
         </Box>

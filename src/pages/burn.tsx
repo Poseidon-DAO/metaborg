@@ -15,6 +15,7 @@ import NextLink from "next/link";
 import { useNfts } from "lib/hooks/common";
 import { BurnItem } from "components/five-stars/burn-item";
 import { useRouter } from "next/router";
+import { addDays, isAfter, parseISO } from "date-fns";
 
 const IS_BURN_AVAILABLE = process.env.NEXT_PUBLIC_BURN_AVAILABLE === "true";
 
@@ -23,6 +24,19 @@ const Burn: NextPage = () => {
   const { nfts, status } = useNfts();
 
   const showItemsNumber = nfts.length === 1 ? 1 : 2;
+
+  const startDate = parseISO(process.env.NEXT_PUBLIC_BURN_START_DATE!);
+  const endDate = addDays(startDate, 1);
+  const now = new Date();
+
+  const allowNavigateToBurn = !(
+    isAfter(startDate, now) || isAfter(now, endDate)
+  );
+
+  if (!allowNavigateToBurn) {
+    replace("/five-stars");
+    return null;
+  }
 
   if (!IS_BURN_AVAILABLE) {
     replace("/five-stars");
